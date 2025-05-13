@@ -1,6 +1,13 @@
 import { Text, View } from "react-native";
+import { useEffect } from "react";
+import app from "@/firebaseConfig";
 
 export default function Index() {
+
+  useEffect(() => {
+    console.log('Firebase App:', app); // Check if the app object exists
+  }, []);
+
   return (
     <View
       style={{
