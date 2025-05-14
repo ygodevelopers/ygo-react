@@ -1,12 +1,10 @@
-import { Text, View } from "react-native";
-import { useEffect } from "react";
-import app from "@/firebaseConfig";
+import { ActivityIndicator, Text, View } from "react-native";
+import firebaseConf from "@/firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-export default function Index() {
 
-  useEffect(() => {
-    console.log('Firebase App:', app); // Check if the app object exists
-  }, []);
+export default function StartPage() {
+
 
   return (
     <View
@@ -16,7 +14,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <ActivityIndicator size="large" color="gray" />
     </View>
   );
 }
