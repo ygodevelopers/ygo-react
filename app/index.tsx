@@ -1,7 +1,7 @@
 import { ActivityIndicator, Text, View } from "react-native";
 import firebaseConf from "@/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
+import SplashScreen from "./splash";
 
 export default function StartPage() {
 
@@ -10,11 +10,10 @@ export default function StartPage() {
     <View
       style={{
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
       }}
     >
-      <ActivityIndicator size="large" color="gray" />
+      <SplashScreen />
+      {/* <ActivityIndicator size="large" color="gray" /> */}
     </View>
   );
 }
