@@ -4,8 +4,8 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth } from "firebase/auth";
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getFirestore, collection} from 'firebase/firestore'
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -17,9 +17,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const app = initializeApp(firebaseConfig);
 
-const firebaseConf = {app, auth}
+export const auth = getAuth(app);
 
-export default firebaseConf;
+export const db = getFirestore(app);
+
+// export const userRef = collection(db, 'users');
+
+// const firebaseConf = {app, db, auth};
+
+// export default firebaseConf;
