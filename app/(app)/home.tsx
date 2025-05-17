@@ -1,5 +1,4 @@
 import { ActivityIndicator, Text, View } from "react-native";
-import firebaseConf from "@/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 
