@@ -4,21 +4,25 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { StatusBar } from "expo-status-bar";
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Loading from '../components/Loading';
+import { useAuth } from "@/context/authContext";
+// import Loading from '../components/Loading';
 import CustomKeyboardView from '../components/CustomKeyboardView';
 
 
 export default function SingIn() {
     const router = useRouter();
-    const [loading, setLoadong] = useState(false);
     const emailRef = useRef("");
     const passwordRef = useRef("");
+    const {login} = useAuth();
 
     const handleLogin = async () => {
-        if (!emailRef.current || !passwordRef.current) {
-            Alert.alert('Sign In', "Please fill all the fields!");
-            return;
-        }
+
+        //if (!emailRef.current || !passwordRef.current) {
+            // TODO: add login
+            await login(emailRef.current, passwordRef.current);
+            router.replace('/(app)/home');
+            
+        //}
     }
 
     return (
@@ -101,32 +105,21 @@ export default function SingIn() {
                     </View>
 
                     <View>
-                        {
-                            loading ? (
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: "center",
-                                }}>
-                                    <Loading size={hp(6.5)} />
-                                </View>
-                            ) : (
-                                <TouchableOpacity onPress={handleLogin} style={{
-                                    backgroundColor: '#6366F1',
-                                    borderRadius: 16,
-                                    justifyContent: 'center',
-                                    alignItems: "center",
-                                    height: hp(6.5),
-                                }}>
-                                    <Text style={{
-                                        fontSize: hp(2.7),
-                                        fontWeight: 700,
-                                        color: '#ffffff',
-                                        letterSpacing: 1,
-                                    }}>Sign In
-                                    </Text>
-                                </TouchableOpacity>
-                            )
-                        }
+                        <TouchableOpacity onPress={handleLogin} style={{
+                            backgroundColor: '#6366F1',
+                            borderRadius: 16,
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            height: hp(6.5),
+                        }}>
+                            <Text style={{
+                                fontSize: hp(2.7),
+                                fontWeight: 700,
+                                color: '#ffffff',
+                                letterSpacing: 1,
+                            }}>Sign In
+                            </Text>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={{
