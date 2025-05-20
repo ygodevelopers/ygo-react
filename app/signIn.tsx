@@ -14,23 +14,17 @@ export default function SingIn() {
     const router = useRouter();
     const emailRef = useRef("");
     const passwordRef = useRef("");
-    const {login} = useAuth();
-
-    const handleLogin = async () => {
-
-        //if (!emailRef.current || !passwordRef.current) {
-            // TODO: add login
-            await login(emailRef.current, passwordRef.current);
-            router.replace('/(app)/home');
-            
-        //}
-    }
-
+  
     const { login, user } = useAuth();
 
     const handleLogin= async()=>{
-        console.log("handleLogin user: ", user);
-        const response = await login("jimmyzhang@test.com","123456");
+ 
+        if (!emailRef.current || !passwordRef.current) {
+            console.log("need to fill out form?");
+            return ;
+        }
+            // TODO: add login
+        const response = await login(emailRef.current, passwordRef.current);
         if(!response.success){
             console.log("sign in error:", response.msg);
         }

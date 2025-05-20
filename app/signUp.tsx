@@ -6,6 +6,7 @@ import { Octicons, Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Loading from '../components/Loading';
 import CustomKeyboardView from '../components/CustomKeyboardView';
+import { useAuth } from "@/context/authContext";
 
 
 export default function SingUp() {
@@ -16,11 +17,18 @@ export default function SingUp() {
   const usernameRef = useRef("");
   const profileRef = useRef("");
 
+  const {register} = useAuth();
+
   const handleRegister = async () => {
     if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileRef.current) {
       Alert.alert('Sign Up', "Please fill all the fields!");
       return;
     }
+   const response =  await register(emailRef.current,passwordRef.current,usernameRef.current,profileRef.current);
+    if(!response.success){
+      console.log("sign up error:", response.msg);
+  }
+  console.log("sign up user success: ");
   }
 
   
