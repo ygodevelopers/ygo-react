@@ -9,6 +9,7 @@ import { useAuth } from "@/context/authContext";
 import CustomKeyboardView from '../components/CustomKeyboardView';
 
 
+
 export default function SingIn() {
     const router = useRouter();
     const emailRef = useRef("");
@@ -25,7 +26,19 @@ export default function SingIn() {
         //}
     }
 
+    const { login, user } = useAuth();
+
+    const handleLogin= async()=>{
+        console.log("handleLogin user: ", user);
+        const response = await login("jimmyzhang@test.com","123456");
+        if(!response.success){
+            console.log("sign in error:", response.msg);
+        }
+        console.log("handleLogin user success: ", user);
+    }
+
     return (
+
         <CustomKeyboardView>
             <StatusBar style="dark" />
             <View

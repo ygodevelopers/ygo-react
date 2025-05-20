@@ -82,3 +82,5 @@ yarn-error.log
 
 expo-env.d.ts
 # @end expo-cli
+
+.expo

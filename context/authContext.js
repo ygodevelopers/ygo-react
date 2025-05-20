@@ -8,28 +8,35 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(undefined);
+    const currentuser = auth.currentUser;
 
     useEffect(() => {
-       console.log("got user: ",user?.email)
+       console.log("AuthContextProvider got user: ",user?.email)
 
-       const unsub = onAuthStateChanged(auth, (user) => {
-        if(user){
+       const unsub = onAuthStateChanged(auth, (currentuser) => {
+        if(currentuser){
             setIsAuthenticated(true);
-            setUser(user);
-            updateUserData(user.uid);
+            console.log("AuthContextProvider update currentuser: ",currentuser)
+            setUser({...user, email: currentuser.email, id: currentuser.uid });
+            updateUserData(currentuser.uid);
+            
         }else{
             setIsAuthenticated(false);
             setUser(null);
         }
-       })
+       });
+       return unsub;
     }, []);
 
     const updateUserData = async (userId) => {
+
         const docRef = doc(db,'users', userId);
         const docSnap = await getDoc(docRef);
+        console.log('update user docSnap:', docSnap);
         if(docSnap.exists()){
             let data = docSnap.data();
-            setUser({...user, username: data.firstName, profileUrl: data.profileImageUel, userId: data.id });
+            setUser({...user, firstName: data.firstName, profileImageUel: data.profileImageUel, id: data.id });
+            console.log('update user data:', user);
         }
     }
 
@@ -37,7 +44,7 @@ export const AuthContextProvider = ({children}) => {
     const login = async (email, password) => {
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
-            console.log('response.user:', response?.user);
+            console.log('login response.user:', response?.user);
 
             updateUserData(response?.user?.uid);
 
@@ -59,16 +66,16 @@ export const AuthContextProvider = ({children}) => {
         }
     }
 
-    const register = async (email, password, username, profileUrl) => {
+    const register = async (email, password, firstName, profileImageUrl) => {
         try {
             const response = await createUserWithEmailAndPassword(auth, email, password);
             console.log('response.user:', response?.user);
 
             await setDoc(doc(db, "users", response?.user?.uid),{
                email,
-               firstName: username,
+               firstName,
                id: response?.user?.uid,
-               profileImageUel: profileUrl
+               profileImageUrl
             });
 
             return {success: true, data: response?.user}
