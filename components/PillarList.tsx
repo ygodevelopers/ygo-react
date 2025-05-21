@@ -20,7 +20,7 @@ export const PillarList = () => {
         type: string;
         userId: string;
         // Add other fields as needed
-      }
+    }
 
     useEffect(()=>{
         console.log("PillarList: ", Pillars)
@@ -28,8 +28,6 @@ export const PillarList = () => {
             getPillars();
         }
     },[])
-
-  
 
     const getPillars = async()=>{
         //fetch pillars

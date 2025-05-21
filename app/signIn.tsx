@@ -77,7 +77,7 @@ export default function SingIn() {
                             fontSize: hp(2),
                             flex: 1,
                             color: '#404040'
-                        }} placeholder="Email address" placeholderTextColor={'gray'} onChangeText={value => emailRef.current = value} />
+                        }} placeholder="Email address" placeholderTextColor={'gray'} onChangeText={value => emailRef.current = value} autoCapitalize='none' />
                     </View>
 
                     <View style={{
@@ -101,7 +101,8 @@ export default function SingIn() {
                             }} placeholder="Password"
                                 secureTextEntry
                                 placeholderTextColor={'gray'}
-                                onChangeText={value => passwordRef.current = value} />
+                                onChangeText={value => passwordRef.current = value} 
+                                autoCapitalize='none'/>
                         </View>
                         <Text style={{
                             fontSize: hp(1.8),

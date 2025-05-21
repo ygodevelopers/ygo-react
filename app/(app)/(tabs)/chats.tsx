@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import { useEffect } from "react";
 import { app } from "@/firebaseConfig";
+import { UserList } from "@/components/UserList";
 
 export default function Chats() {
 
@@ -16,7 +17,7 @@ export default function Chats() {
         alignItems: "center",
       }}
     >
-      <Text>Chats.</Text>
+      <UserList/>
     </View>
   );
 }
