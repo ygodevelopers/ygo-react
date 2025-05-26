@@ -35,7 +35,8 @@ export const AuthContextProvider = ({children}) => {
         console.log('update user docSnap:', docSnap);
         if(docSnap.exists()){
             let data = docSnap.data();
-            setUser({...user, firstName: data.firstName, profileImageUel: data.profileImageUel, id: data.id });
+            console.log(data);
+            setUser({...user, firstName: data.firstName, profileImageUrl: data.profileImageUrl, id: data.id });
             console.log('update user data:', user);
         }
     }
