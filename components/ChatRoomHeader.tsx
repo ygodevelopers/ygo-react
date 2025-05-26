@@ -11,6 +11,7 @@ type props = {
 }
 
 export const ChatRoomHeader = ({user, router} : props) => {
+    console.log(user);
     return (
         <Stack.Screen options={{
             title: '',
@@ -23,7 +24,7 @@ export const ChatRoomHeader = ({user, router} : props) => {
                     <View className="flex-row items-center gap-3">
                         <Image source={user?.profileImageUrl} style={{borderRadius: 100, height: hp(4.5), aspectRatio: 1}}/>
                         <Text style={{fontSize: hp(2.5)}} className="text-neutral-700 font-medium">
-                            {user?.userName}
+                            {user?.firstName}
                         </Text>
                     </View>
                 </View>

@@ -8,10 +8,12 @@ import { threadsCollection} from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
 import { Thread, User } from "@/types";
 import { fetchPreviousMessages } from "@/utils/chatService";
+import { useRouter } from "expo-router";
 
 export const UserList = () => {
     const {user} = useAuth();
     const [users, setUsers] = useState<User[]>([]);
+    const router = useRouter();
 
     useEffect(()=>{
         if(user?.id){
@@ -69,7 +71,7 @@ export const UserList = () => {
                             contentContainerStyle = {{flex:1, paddingVertical: 25}}
                             keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator = {false}
-                            renderItem={({item, index})=><UserItems item={item}/>}
+                            renderItem={({item, index})=><UserItems item={item} router={router}/>}
                             />
 
                     </View>
