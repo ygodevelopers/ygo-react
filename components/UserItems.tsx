@@ -5,6 +5,8 @@ import { Image } from "expo-image";
 
 export default function UserItems(item: any) {
     
+    // TODO: COMPONENT PARAMETER IS A USER BUT SHOULD PROBABLY FIX TO BE A THREAD. Only way to get last message and time. 
+
     return (
         <TouchableOpacity className={`flex-row justify-between mx-4 items-center gap-3 mb-4 pb-2 border-b border-neutral-200`}>
             <Image 

@@ -4,12 +4,12 @@ export type User = {
     firstName: string, 
     id: string, 
     lastName: string,
-    profileImageOffset: {
+    profileImageOffset?: {
         height: number, 
         width: number
     }
-    profileImageScale: number, 
-    profileImageUrl: string, 
+    profileImageScale?: number, 
+    profileImageUrl?: string, 
     token: string
 }
 

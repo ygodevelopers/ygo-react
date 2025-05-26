@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
-import { getDocs, query, QuerySnapshot, where } from 'firebase/firestore'
-import { contactCollection, threadsCollection, userRef} from '@/firebaseConfig'
+import { getDocs, query, where } from 'firebase/firestore'
+import { threadsCollection} from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
-import { Contact, Thread, User } from "@/types";
+import { Thread, User } from "@/types";
 import { fetchPreviousMessages } from "@/utils/chatService";
 
 export const UserList = () => {
@@ -15,50 +15,42 @@ export const UserList = () => {
 
     useEffect(()=>{
         if(user?.id){
-            getContacts();
             getThreads();
         }
     },[user?.id])
 
-
-    const getContacts = async () =>{
-        //fetch users
-        const q = query(contactCollection, where('ownerId','==',user?.id));
-        const querySnapshot = await getDocs(q);
-        let contacts :Contact[] = [];
-        
-        querySnapshot.forEach(doc => {
-            contacts.push({...doc.data() as Contact});
-        })
-
-        const contactsInfo: User[] = [];
-
-        contacts.forEach( async (contact) => {
-            const q = query(userRef, where('id', '==', contact.contactUserId));
-            const querySnapshot = await getDocs(q);
-            
-            querySnapshot.forEach(doc => {
-                contactsInfo.push(doc.data() as User);
-            })
-        })
-        setUsers(contactsInfo);
-    }
-
     const getThreads = async () => {
         const threads : Thread[] = [];
+        const users: User[][] = [];
+
         const q = query(threadsCollection, where("uids", "array-contains", user?.id));
         const querySnapshot = await getDocs(q);
+
 
         querySnapshot.forEach(doc => {
             threads.push(doc.data() as Thread);
         })
 
-        threads.map(fetchPreviousMessages);
+        threads.forEach((thread) => {
+            let others: User[]= [];
+
+            thread.users.forEach((otherUser) => {
+
+                if(otherUser.id !== user?.id) {
+                    others.push(otherUser);
+                }
+
+            })
+            users.push(others);
+        })
+
+        // TODO: FIX COMPONENT TO TAKE AN 2D ARRAY OF USERS. NEEDED FOR GROUP CHATS
+        setUsers(users[0])
+
+        // TODO: ACTUALLY DO SOMETHING WITH MESSAGES. JUST WANTED TO PROVE IT WORKS.
+        const messages = threads.map(fetchPreviousMessages);
+        
     }
-
-
-
-
 
     return (
         <View
