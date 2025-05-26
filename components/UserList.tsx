@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
 import { getDocs, query, where } from 'firebase/firestore'
-import { userRef } from '@/firebaseConfig'
+import { contactCollection } from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
 
 export const UserList = () => {
@@ -12,10 +12,8 @@ export const UserList = () => {
     const [users, setUsers] = useState<User[]>([]);
 
     useEffect(()=>{
-        console.log("UserList currentuser: ", user)
-        console.log("UserList currentuser ID : ", user?.id)
         if(user?.id){
-            getUsers();
+            getContacts();
         }
     },[])
 
@@ -25,11 +23,11 @@ export const UserList = () => {
         firstName: string;
         profileImageUel: string;
         // Add other fields as needed
-      }
+    }
 
-    const getUsers = async()=>{
+    const getContacts = async()=>{
         //fetch users
-        const q = query(userRef, where('id','!=',user?.id));
+        const q = query(contactCollection, where('ownerId','==',user?.id));
         const querySnapshot = await getDocs(q);
         let data:User[] = [];
         querySnapshot.forEach(doc => {
@@ -47,9 +45,7 @@ export const UserList = () => {
                 alignItems: "center",
             }}
             >
-            <StatusBar style="light" />
-            <Text>User List</Text>
-      
+            <StatusBar style="light" />     
             {
                 users.length > 0 ? (
                     <View className = "flex-1">
