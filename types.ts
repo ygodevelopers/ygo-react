@@ -21,6 +21,8 @@ export type Contact = {
 }
 
 export type Thread = {
+    chatName?: string,
+    encrtyptedKeys?: Map<string, string>, 
     firstMessageId: string, 
     id: string, 
     lastMessage: {

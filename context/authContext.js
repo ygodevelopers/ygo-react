@@ -73,16 +73,16 @@ export const AuthContextProvider = ({children}) => {
             console.log('response.user:', response?.user);
 
             await setDoc(doc(db, "users", response?.user?.uid),{
-               email,
-               firstName,
-               id: response?.user?.uid,
-               profileImageUrl
+                email,
+                firstName,
+                id: response?.user?.uid,
+                profileImageUrl
             });
 
             return {success: true, data: response?.user}
         }   
         catch (e) {
-           return {success: false, msg: e.message};
+            return {success: false, msg: e.message};
         }
     }
 

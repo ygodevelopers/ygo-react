@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
-import { getDocs, query, where } from 'firebase/firestore'
-import { contactCollection } from '@/firebaseConfig'
+import { getDocs, query, QuerySnapshot, where } from 'firebase/firestore'
+import { contactCollection, threadsCollection, userRef} from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
+import { Contact, Thread, User } from "@/types";
+import { fetchPreviousMessages } from "@/utils/chatService";
 
 export const UserList = () => {
     const {user} = useAuth();
@@ -14,28 +16,49 @@ export const UserList = () => {
     useEffect(()=>{
         if(user?.id){
             getContacts();
+            getThreads();
         }
-    },[])
+    },[user?.id])
 
-    interface User {
-        id: string;
-        email: string;
-        firstName: string;
-        profileImageUel: string;
-        // Add other fields as needed
-    }
 
-    const getContacts = async()=>{
+    const getContacts = async () =>{
         //fetch users
         const q = query(contactCollection, where('ownerId','==',user?.id));
         const querySnapshot = await getDocs(q);
-        let data:User[] = [];
+        let contacts :Contact[] = [];
+        
         querySnapshot.forEach(doc => {
-            data.push({...doc.data() as User});
+            contacts.push({...doc.data() as Contact});
         })
-        console.log("fetch users: ", data);
-        setUsers(data);
+
+        const contactsInfo: User[] = [];
+
+        contacts.forEach( async (contact) => {
+            const q = query(userRef, where('id', '==', contact.contactUserId));
+            const querySnapshot = await getDocs(q);
+            
+            querySnapshot.forEach(doc => {
+                contactsInfo.push(doc.data() as User);
+            })
+        })
+        setUsers(contactsInfo);
     }
+
+    const getThreads = async () => {
+        const threads : Thread[] = [];
+        const q = query(threadsCollection, where("uids", "array-contains", user?.id));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(doc => {
+            threads.push(doc.data() as Thread);
+        })
+
+        threads.map(fetchPreviousMessages);
+    }
+
+
+
+
 
     return (
         <View
