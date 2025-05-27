@@ -24,7 +24,7 @@ export default function SingUp() {
       Alert.alert('Sign Up', "Please fill all the fields!");
       return;
     }
-   const response =  await register(emailRef.current,passwordRef.current,usernameRef.current,profileRef.current);
+    const response =  await register(emailRef.current,passwordRef.current,usernameRef.current,profileRef.current);
     if(!response.success){
       console.log("sign up error:", response.msg);
   }

@@ -4,37 +4,55 @@ import { useEffect, useState } from "react";
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
 import { getDocs, query, where } from 'firebase/firestore'
-import { contactCollection } from '@/firebaseConfig'
+import { threadsCollection} from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
+import { Thread, User } from "@/types";
+import { fetchPreviousMessages } from "@/utils/chatService";
+import { useRouter } from "expo-router";
 
 export const UserList = () => {
     const {user} = useAuth();
-    const [users, setUsers] = useState<User[]>([]);
+    // const [users, setUsers] = useState<User[]>([]);
+    const [threads, setThreads] = useState<Thread[]>([]);
+    const router = useRouter();
 
     useEffect(()=>{
         if(user?.id){
-            getContacts();
+            getThreads();
         }
-    },[])
+    },[user?.id])
 
-    interface User {
-        id: string;
-        email: string;
-        firstName: string;
-        profileImageUel: string;
-        // Add other fields as needed
-    }
+    const getThreads = async () => {
+        const threadsRef : Thread[] = [];
+        
 
-    const getContacts = async()=>{
-        //fetch users
-        const q = query(contactCollection, where('ownerId','==',user?.id));
+        const q = query(threadsCollection, where("uids", "array-contains", user?.id));
         const querySnapshot = await getDocs(q);
-        let data:User[] = [];
+
+
         querySnapshot.forEach(doc => {
-            data.push({...doc.data() as User});
+            threadsRef.push(doc.data() as Thread);
         })
-        console.log("fetch users: ", data);
-        setUsers(data);
+
+        // threads.forEach((thread) => {
+        //     let others: User[]= [];
+
+        //     thread.users.forEach((otherUser) => {
+
+        //         if(otherUser.id !== user?.id) {
+        //             others.push(otherUser);
+        //         }
+
+        //     })
+        //     users.push(others);
+        // })
+
+        // TODO: FIX COMPONENT TO TAKE AN 2D ARRAY OF USERS. NEEDED FOR GROUP CHATS.
+        setThreads(threadsRef);
+
+        // TODO: ACTUALLY DO SOMETHING WITH MESSAGES. JUST WANTED TO PROVE IT WORKS.
+        // const messages = threads.map(fetchPreviousMessages);
+        
     }
 
     return (
@@ -47,14 +65,14 @@ export const UserList = () => {
             >
             <StatusBar style="light" />     
             {
-                users.length > 0 ? (
-                    <View className = "flex-1">
+                threads.length > 0 ? (
+                    <View className="flex-1">
                         <FlatList
-                            data = {users}
+                            data = {threads}
                             contentContainerStyle = {{flex:1, paddingVertical: 25}}
-                            keyExtractor={(item, index) => index.toString()}
+                            keyExtractor={(item: Thread, index) => index.toString()}
                             showsVerticalScrollIndicator = {false}
-                            renderItem={({item, index})=><UserItems item={item}/>}
+                            renderItem={({item, index})=><UserItems item={item} router={router}/>}
                             />
 
                     </View>

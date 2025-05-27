@@ -13,8 +13,7 @@ export default function CustomKeyboardView({children}) {
             flex:1,
             justifyContent: "center",
             alignItems: "center",
-            
-         }}
+        }}
     >
         <ScrollView
             contentContainerStyle={{
@@ -28,7 +27,7 @@ export default function CustomKeyboardView({children}) {
         }}
             bounces={false}
             showsVerticalScrollIndicator = {false}
-             keyboardShouldPersistTaps="handled"
+            keyboardShouldPersistTaps="handled"
         >
             {
                 children
