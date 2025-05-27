@@ -2,10 +2,10 @@ import { Thread, Message} from "@/types";
 import { db } from "@/firebaseConfig";
 import { collection, doc, getDocs, orderBy, query } from "firebase/firestore";
 
-export const fetchPreviousMessages =  async (thread: Thread) : Promise<Message[]> => {
+export const fetchPreviousMessages =  async (threadID : string) : Promise<Message[]> => {
     const messages : Message[] = [];
     try {
-        const threadDoc = doc(db, 'threads' ,thread.id);
+        const threadDoc = doc(db, 'threads' ,threadID);
         const messageCollection = collection(threadDoc, 'messages');
         
         const querySnapshot = query(messageCollection, orderBy("timestamp", "desc"));
@@ -14,6 +14,8 @@ export const fetchPreviousMessages =  async (thread: Thread) : Promise<Message[]
         messagesOrdered.forEach((doc) => {
             messages.push(doc.data() as Message);
         })  
+
+        console.log(messages);
         
     }
     catch (e) {

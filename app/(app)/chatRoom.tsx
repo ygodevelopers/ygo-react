@@ -3,21 +3,35 @@ import '@/global.css';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {ChatRoomHeader} from '@/components/ChatRoomHeader';
 import { MessageList } from '@/components/MessageList';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Message } from '@/types';
+import { fetchPreviousMessages } from '@/utils/chatService';
 
 export default function ChatRoom() {
-    const item = useLocalSearchParams();
+    const {threadID, userName} = useLocalSearchParams();
     const router = useRouter();
-    const [messages, setMessages] = useState([]); 
+    const [messages, setMessages] = useState<Message[]>([]); 
 
+    useEffect(() => {
+        const messagesContainer: Message[] = [];
+        fetchPreviousMessages(threadID as string).then(message => {messagesContainer.concat(message)}).catch((err) => console.log(err));
+        console.log(messagesContainer);
+        setMessages(messagesContainer);
+    }, [])
+
+    const textRef = useRef('');
+
+    const handleSendMessage = () => {
+
+    }
     
     // TODO: FIX KEYBOARD SCROLLING ONCE CUSTOM COMPONENT IS CREATED
 
     return (
         <View className='flex-1 bg-white'> 
             <StatusBar barStyle={'dark-content'}/>
-            <ChatRoomHeader user={item} router={router}/>
+            <ChatRoomHeader user={userName} router={router}/>
             <View className='h-3 border-b border-neutral-300'/>
             <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
                 <View className='flex-1'>
