@@ -4,9 +4,12 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 
 export const MessageList = ({messages}: {messages: Message[]}) => {
+    
     return (
-        <View>
-            <Text>Message List</Text>
+        <View className="flex-1 flex-col justify-center items-center">
+            {
+                messages.map((message) => (<Text key={message.id}>{message.messageText}</Text>))
+            }
         </View>
     )
 }

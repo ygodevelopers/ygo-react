@@ -14,8 +14,6 @@ export const fetchPreviousMessages =  async (threadID : string) : Promise<Messag
         messagesOrdered.forEach((doc) => {
             messages.push(doc.data() as Message);
         })  
-
-        console.log(messages);
         
     }
     catch (e) {

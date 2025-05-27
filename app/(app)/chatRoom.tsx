@@ -14,11 +14,12 @@ export default function ChatRoom() {
     const [messages, setMessages] = useState<Message[]>([]); 
 
     useEffect(() => {
-        const messagesContainer: Message[] = [];
-        fetchPreviousMessages(threadID as string).then(message => {messagesContainer.concat(message)}).catch((err) => console.log(err));
-        console.log(messagesContainer);
-        setMessages(messagesContainer);
-    }, [])
+        let messagesContainer: Message[] = [];
+        fetchPreviousMessages(threadID as string).then(messageList => {
+            messagesContainer = messageList;
+            setMessages(messagesContainer);
+        }).catch((err) => console.log(err));
+    }, []);
 
     const textRef = useRef('');
 
@@ -40,7 +41,7 @@ export default function ChatRoom() {
                 <View style={{marginBottom: hp(2.7)}} className="pt-2">
                     <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
                         <TextInput placeholder='Type message...' className='flex-1 mr-2' style={{fontSize: hp(2)}}/>
-                        <TouchableOpacity className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
+                        <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
                             <Text>Send</Text>
                         </TouchableOpacity>
                     </View>
