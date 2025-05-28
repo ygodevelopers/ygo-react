@@ -41,10 +41,12 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
                 />
             <View className="flex-1 gap-1">
                 <View className="flex-1 flex-row justify-between">
-                    <Text style={{fontSize: hp(1.8)}} className="font-semibold text-neutral-500">{contact?.firstName}</Text>
-                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">Time</Text>
+                    <Text style={{fontSize: hp(1.8), marginRight: 40}} className="font-semibold text-neutral-500">{contact?.firstName}</Text>
+                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated.toDate().toLocaleDateString()}</Text>
                 </View>
-                <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">Last Message</Text>
+                <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">
+                    {item.lastMessage.messageText.length <= 10 ? item.lastMessage.messageText : item.lastMessage.messageText.slice(0,7) + "..."}
+                    </Text>
             </View>
         </TouchableOpacity>
     );

@@ -28,7 +28,7 @@ export type Thread = {
     firstMessageId: string, 
     id: string, 
     lastMessage: Message, 
-    lastUpdated: Date,
+    lastUpdated: Timestamp,
     uids: Array<User["id"]>,
     users: Array<User>
 }

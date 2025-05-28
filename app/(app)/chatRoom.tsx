@@ -3,7 +3,7 @@ import '@/global.css';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {ChatRoomHeader} from '@/components/ChatRoomHeader';
 import { MessageList } from '@/components/MessageList';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { Message } from '@/types';
 import { fetchPreviousMessages } from '@/utils/chatService';
@@ -55,7 +55,8 @@ export default function ChatRoom() {
             
             // Update Thread's last message
             await updateDoc(threadDoc, {
-                lastMessage: message
+                lastMessage: message, 
+                lastUpdated: message.timestamp
             });
             
 

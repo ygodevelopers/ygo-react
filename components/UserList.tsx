@@ -20,7 +20,7 @@ export const UserList = () => {
         if(user?.id){
             getThreads();
         }
-    },[user?.id])
+    },[])
 
     const getThreads = async () => {
         const threadsRef : Thread[] = [];
