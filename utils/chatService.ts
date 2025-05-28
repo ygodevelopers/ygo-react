@@ -8,7 +8,7 @@ export const fetchPreviousMessages =  async (threadID : string) : Promise<Messag
         const threadDoc = doc(db, 'threads' ,threadID);
         const messageCollection = collection(threadDoc, 'messages');
         
-        const querySnapshot = query(messageCollection, orderBy("timestamp", "desc"));
+        const querySnapshot = query(messageCollection, orderBy("timestamp", "asc"));
         const messagesOrdered = await getDocs(querySnapshot);
 
         messagesOrdered.forEach((doc) => {

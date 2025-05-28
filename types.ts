@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 export type User = {
     email:  string,
     fcmToken?: string, 
@@ -25,14 +27,7 @@ export type Thread = {
     encrtyptedKeys?: Map<string, string>, 
     firstMessageId: string, 
     id: string, 
-    lastMessage: {
-        fromId: User["id"], 
-        id: string, 
-        messageText?: string, 
-        status: Array<string>,
-        timestamp: Date, 
-        toId: User["id"]
-    }, 
+    lastMessage: Message, 
     lastUpdated: Date,
     uids: Array<User["id"]>,
     users: Array<User>
@@ -43,7 +38,7 @@ export type Message = {
     id: string, 
     isEncrypted: boolean, 
     messageText: string, 
-    status: Array<string>,
-    timestamp: Date, 
+    status: Object,
+    timestamp: Timestamp, 
     toId: User['id'];
 }

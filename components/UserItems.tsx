@@ -17,7 +17,7 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
 
     const openChatRoom = () => {
         const threadID = item.id; 
-        router.push({pathname: '/(app)/chatRoom', params: {threadID: threadID, userName: contact?.firstName}});
+        router.push({pathname: '/(app)/chatRoom', params: {threadID: threadID, contactName: contact?.firstName, contactID: contact?.id}});
     }
 
 
