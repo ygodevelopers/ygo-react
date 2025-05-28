@@ -1,24 +1,32 @@
-import { Thread, Message} from "@/types";
+import { Message} from "@/types";
 import { db } from "@/firebaseConfig";
-import { collection, doc, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, doc, orderBy, query, onSnapshot, Unsubscribe } from "firebase/firestore";
 
-export const fetchPreviousMessages =  async (threadID : string) : Promise<Message[]> => {
-    const messages : Message[] = [];
+
+export const subscribeToMessages = (
+    threadID: string, 
+    callback: (messages: Message[]) => void
+): Unsubscribe => {
     try {
-        const threadDoc = doc(db, 'threads' ,threadID);
+        const threadDoc = doc(db, 'threads', threadID);
         const messageCollection = collection(threadDoc, 'messages');
         
         const querySnapshot = query(messageCollection, orderBy("timestamp", "asc"));
-        const messagesOrdered = await getDocs(querySnapshot);
-
-        messagesOrdered.forEach((doc) => {
-            messages.push(doc.data() as Message);
-        })  
         
-    }
-    catch (e) {
-        console.log(e);
-    }
+        const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+            const messages: Message[] = [];
+            snapshot.forEach((doc) => {
+                messages.push(doc.data() as Message);
+            });
+            callback(messages);
+        }, (error) => {
+            console.log("Error listening to messages:", error);
+        });
 
-    return messages;
+        return unsubscribe;
+    } catch (e) {
+        console.log("Error setting up message subscription:", e);
+        // Return a no-op unsubscribe function in case of error
+        return () => {};
+    }
 }

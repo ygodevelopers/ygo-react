@@ -5,27 +5,28 @@ import {ChatRoomHeader} from '@/components/ChatRoomHeader';
 import { MessageList } from '@/components/MessageList';
 import { useEffect, useState } from 'react';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { Message } from '@/types';
-import { fetchPreviousMessages } from '@/utils/chatService';
+import { Message, User } from '@/types';
+import { subscribeToMessages } from '@/utils/chatService';
 import { useAuth } from '@/context/authContext';
-import { collection, doc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebaseConfig';
+import { collection, doc, getDoc, getDocs, query, QuerySnapshot, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { userRef, db} from '@/firebaseConfig';
 
 export default function ChatRoom() {
-    // TODO: CHANGE LOCAL SEARCH PARAMS TO ALSO PASS CONCTACT ID SO MESSAGE CAN BE CREATED WITH FROM - TO IDS.
     const {threadID, contactName, contactID} = useLocalSearchParams();
     const router = useRouter();
     const [messages, setMessages] = useState<Message[]>([]); 
     const [userMessage, setUserMessage] = useState<string>('');
+    const [contact, setContact] = useState<User>();
     const {user} = useAuth();
 
     useEffect(() => {
-        let messagesContainer: Message[] = [];
-        fetchPreviousMessages(threadID as string).then(messageList => {
-            messagesContainer = messageList;
-            setMessages(messagesContainer);
-        }).catch((err) => console.log(err));
+        return () => unsubscribe();
     }, []);
+
+    const unsubscribe = subscribeToMessages(threadID as string, (messagesArray) => {
+        getUser();
+        setMessages(messagesArray);
+    })
 
 
     const createMessage = () => {
@@ -44,6 +45,13 @@ export default function ChatRoom() {
         return message; 
     }
 
+    const getUser = async () => {
+        const q = query(userRef, where('id', '==', contactID));
+        const qSnapshot = await getDocs(q);
+        qSnapshot.forEach((doc) => setContact(doc.data() as User));
+    }
+
+
     const handleSendMessage = async () => {
         
         try {
@@ -59,11 +67,8 @@ export default function ChatRoom() {
                 lastUpdated: message.timestamp
             });
             
-
             // add message to messages collection.
             await setDoc(messageRef, message);
-
-
         } catch (err) {
             console.log(err);
         }
@@ -75,7 +80,7 @@ export default function ChatRoom() {
     return (
         <View className='flex-1 bg-white'> 
             <StatusBar barStyle={'dark-content'}/>
-            <ChatRoomHeader user={contactName} router={router}/>
+            <ChatRoomHeader user={contact!} router={router}/>
             <View className='h-3 border-b border-neutral-300'/>
             <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
                 <View className='flex-1'>
