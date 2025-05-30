@@ -8,7 +8,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { Message, User } from '@/types';
 import { subscribeToMessages } from '@/utils/chatService';
 import { useAuth } from '@/context/authContext';
-import { collection, doc, getDocs, query, setDoc, Timestamp, Unsubscribe, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where, serverTimestamp, Timestamp} from 'firebase/firestore';
 import { userRef, db} from '@/firebaseConfig';
 
 export default function ChatRoom() {
@@ -78,7 +78,7 @@ export default function ChatRoom() {
             status: {
                 [contactID as string] : 0
             },
-            timestamp: Timestamp.fromDate(new Date()),
+            timestamp: serverTimestamp() as Timestamp,
             id: "0"
         }
         setUserMessage('');
