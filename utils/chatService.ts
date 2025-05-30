@@ -18,6 +18,7 @@ export const subscribeToMessages = (
             snapshot.forEach((doc) => {
                 messages.push(doc.data() as Message);
             });
+            console.log("fetching messages");
             callback(messages);
         }, (error) => {
             console.log("Error listening to messages:", error);

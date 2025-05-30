@@ -8,33 +8,73 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { Message, User } from '@/types';
 import { subscribeToMessages } from '@/utils/chatService';
 import { useAuth } from '@/context/authContext';
-import { collection, doc, getDoc, getDocs, query, QuerySnapshot, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, Timestamp, Unsubscribe, updateDoc, where } from 'firebase/firestore';
 import { userRef, db} from '@/firebaseConfig';
 
 export default function ChatRoom() {
-    const {threadID, contactName, contactID} = useLocalSearchParams();
+    const {threadID, contactID} = useLocalSearchParams();
     const router = useRouter();
     const [messages, setMessages] = useState<Message[]>([]); 
     const [userMessage, setUserMessage] = useState<string>('');
     const [contact, setContact] = useState<User>();
     const {user} = useAuth();
 
-    useEffect(() => {
-        return () => unsubscribe();
-    }, []);
+    const [unsubscribeFromMessages, setUnsubscribeFromMessages] = useState<Unsubscribe | null>(null);
 
-    const unsubscribe = subscribeToMessages(threadID as string, (messagesArray) => {
-        getUser();
-        setMessages(messagesArray);
-    })
+
+    useEffect(() => {
+        if (!threadID) {
+            console.warn("threadID is undefined, cannot subscribe to messages.");
+            return;
+        }
+
+        // Subscribe to messages only once when the component mounts
+        const unsubscribe = subscribeToMessages(threadID as string, (messagesArray) => {
+            setMessages(messagesArray);
+        });
+
+        // Store the unsubscribe function
+        setUnsubscribeFromMessages(() => unsubscribe);
+
+        // Fetch contact information when the component mounts
+        getContact();
+
+        // Cleanup function: unsubscribe when the component unmounts
+        return () => {
+            if (unsubscribeFromMessages) {
+                unsubscribeFromMessages();
+                setUnsubscribeFromMessages(null); // Clear the unsubscribe function
+            }
+        };
+    }, [threadID, contactID]); // Add dependencies to ensure effect re-runs if threadID or contactID changes
+
+    // Move getContact inside useEffect or make sure it's called only when needed
+    // If contact is not changing often, it can be called once on mount
+    const getContact = async () => {
+        if (!contactID) {
+            console.warn("contactID is undefined, cannot fetch contact.");
+            return;
+        }
+        try {
+            const q = query(userRef, where('id', '==', contactID));
+            const qSnapshot = await getDocs(q);
+            qSnapshot.forEach((doc) => setContact(doc.data() as User));
+        } catch (error) {
+            console.error("Error fetching contact:", error);
+        }
+    }
 
 
     const createMessage = () => {
+        if (!user || !contactID) {
+            console.error("User or contactID is missing, cannot create message.");
+            return null; // Or throw an error
+        }
         const message : Message = {
             fromId: user.id,
             toId: contactID as string,
-            isEncrypted: false, 
-            messageText: userMessage!, 
+            isEncrypted: false,
+            messageText: userMessage!,
             status: {
                 [contactID as string] : 0
             },
@@ -42,37 +82,35 @@ export default function ChatRoom() {
             id: "0"
         }
         setUserMessage('');
-        return message; 
+        return message;
     }
-
-    const getUser = async () => {
-        const q = query(userRef, where('id', '==', contactID));
-        const qSnapshot = await getDocs(q);
-        qSnapshot.forEach((doc) => setContact(doc.data() as User));
-    }
-
 
     const handleSendMessage = async () => {
-        
         try {
             const message = createMessage();
+            if (!message) return; // If message creation failed
+
             const threadDoc = doc(db, 'threads' ,threadID as string);
             const messageRef = doc(collection(threadDoc, 'messages'));
 
             message.id = messageRef.id;
-            
+
+            // Immediately change UI (optimistic update)
+            setMessages((prevMessages) => [...prevMessages, message]);
+
+
             // Update Thread's last message
             await updateDoc(threadDoc, {
-                lastMessage: message, 
+                lastMessage: message,
                 lastUpdated: message.timestamp
             });
-            
+
             // add message to messages collection.
             await setDoc(messageRef, message);
         } catch (err) {
-            console.log(err);
+            console.log("Error sending message:", err);
         }
-        
+
     }
     
     // TODO: FIX KEYBOARD SCROLLING ONCE CUSTOM COMPONENT IS CREATED
