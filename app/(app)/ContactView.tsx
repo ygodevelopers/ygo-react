@@ -58,10 +58,10 @@ export default function ContactView() {
         <View className="flex-1 flex-col gap-3">
             <ContactBanner contact={contact as User}/>
             <View className="flex-1 flex-col">
-                <ContactOption symbol={<FontAwesome name="refresh" size={24} color="black" />} text="Change Pillar"/>
-                <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People"/>
-                <ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security"/>
-                <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments"/>
+                <ContactOption symbol={<FontAwesome name="refresh" size={24} color="black" />} text="Change Pillar" handlePress={() => {console.log("pressed Change Pillar")}}/>
+                <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People" handlePress={() => {console.log("pressed People")}}/>
+                <ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security" handlePress={() => {console.log("pressed Priv")}}/>
+                <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments" handlePress={() => {console.log("pressed Attachments")}}/>
             </View>
         </View>
     )
