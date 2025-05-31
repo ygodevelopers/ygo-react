@@ -1,11 +1,102 @@
-import { ActivityIndicator, Text, TouchableOpacity, View, Image } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
+import { Dimensions } from 'react-native';
+import { useEffect, useState } from "react";
+import { Modal } from 'react-native';
+import PillarAddColor from '@/components/PillarAddColor';
+import PillarAddIcon from '@/components/PillarAddIcon';
+import {usePillar} from '@/context/pillarContext';
+
+const screenWidth = Dimensions.get('window').width;
+const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
+
 
 export default function PalliarItems(item: any) {
-    
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handlePress = () => {
+
+        if (item?.item?.title === 'New Pillar') {
+            setModalVisible(true);
+        }
+        else {
+            console.log("Pressed:", item?.item?.title);
+        }
+        // Add your navigation or action here
+    };
+
+    const handleSavePillar = () => {
+
+        setModalVisible(false);
+    };
+
+    console.log("item.icon", item?.item?.icon);
     return (
-        <View style={{ flexDirection: 'row'}} >
-            <Text>{item?.item?.icon}</Text>
-            <Text>{item?.item?.title}</Text>
-        </View>
+        <>
+            <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+                <View style={{
+                    flexDirection: 'row',
+                    padding: 10, 
+                    marginHorizontal: 10,
+                    marginVertical: 5, 
+                    width: ITEM_WIDTH,
+                    borderWidth: 1,
+                    borderColor: '#aaa',
+                    borderRadius: 12,
+                    gap: 8,}} >
+                        {item.type === 'new' ? 
+                        (<Text style={{ fontSize: 24, width:40, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{item?.item?.icon}</Text>)
+                        
+                        :(
+                            <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.item?.icon}</Text>
+                        )}
+                        <Text>{item?.item?.title}</Text>
+                </View>
+            </TouchableOpacity>
+            <Modal visible={modalVisible} animationType="slide">
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
+                        <TouchableOpacity onPress={() => setModalVisible(false)}>    
+                            <Text>Cancel</Text>
+                        </TouchableOpacity>
+                        <Text>Create Pillar</Text>
+                        <TouchableOpacity onPress={() => handleSavePillar()}>    
+                            <Text>Save</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <NewPillar />  
+
+                </View>
+            </Modal>
+        </>
     );
+}
+
+function NewPillar(){
+    const {selectedColor, pillarname, setpillarName, selectedicon, setselectedicon} = usePillar();
+    useEffect(() => {
+        setselectedicon('📸');
+    }, []);
+    return(
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+
+            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{selectedicon}</Text>
+            <View style={{ flexDirection: 'row'}}>
+                <PillarAddIcon />
+                <PillarAddColor />
+            </View> 
+            <TextInput
+                    style={{borderWidth: 1,
+                            borderColor: '#ccc',
+                            padding: 10,
+                            fontSize: 16,
+                            borderRadius: 6,
+                            marginBottom: 20,}}
+                    placeholder="Pillar Name"
+                    value={pillarname}
+                    onChangeText={setpillarName}
+                />
+        </View>
+   
+    )
 }
