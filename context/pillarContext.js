@@ -6,13 +6,17 @@ export const PillarContext = createContext();
 export const PillarContextProvider = ({children}) => {
     const [selectedColor, setSelectedColor] = useState("orange");
     const [pillarname, setpillarName] = useState('');
+    const [selectedicon,setselectedicon] = useState('📸');
 
     return (
         <PillarContext.Provider value={{
             selectedColor, 
             setSelectedColor, 
             pillarname, 
-            setpillarName}}>
+            setpillarName,
+            selectedicon,
+            setselectedicon
+            }}>
             {children}
         </PillarContext.Provider>
     )

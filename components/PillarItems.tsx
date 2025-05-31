@@ -73,12 +73,14 @@ export default function PalliarItems(item: any) {
 }
 
 function NewPillar(){
-    const {selectedColor,setSelectedColor, pillarname, setpillarName} = usePillar();
-
+    const {selectedColor, pillarname, setpillarName, selectedicon, setselectedicon} = usePillar();
+    useEffect(() => {
+        setselectedicon('📸');
+    }, []);
     return(
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
 
-            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>📸</Text>
+            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{selectedicon}</Text>
             <View style={{ flexDirection: 'row'}}>
                 <PillarAddIcon />
                 <PillarAddColor />

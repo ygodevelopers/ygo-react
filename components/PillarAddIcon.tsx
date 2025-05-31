@@ -1,9 +1,13 @@
+import { usePillar } from '@/context/pillarContext';
 import React, { useState } from 'react';
-import { Modal, View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, Button, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
+const ICONS = {'Stocks':'📈',  'Family':'🏠', 'Work':'🧑‍💻', 'Games':'🎮', 'Hockey':'🏒', 'Friends':'🕺', 'Foodie':'🍔', 'Pick Image':'🖼️'};
+const TITLES = ['Stocks','Family','Work','Games','Hockey','Friends','Foodie','Pick Image'];
 export default function PillarAddColor() {
-  const [modalVisible, setModalVisible] = useState(false);
 
+  const {setselectedicon} = usePillar();
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -28,8 +32,40 @@ export default function PillarAddColor() {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalBox}>
-            <Text>This is a popup!</Text>
-            <Button title="Close" onPress={() => setModalVisible(false)} />
+         <Text style={styles.title}>Select a Icon</Text>
+
+            <FlatList
+              data={Object.entries(ICONS)} 
+              keyExtractor={([key]) => key}
+              numColumns={1}
+              contentContainerStyle={styles.grid}
+              renderItem={({ item: [label, icon] }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setselectedicon(icon);
+                    setModalVisible(false);
+                  }}
+                >
+                  <View style={{flexDirection: 'row',  padding: 10 }}>
+                    <Text style={{ fontSize: 20, marginRight: 10 }}>{icon}</Text>
+                    <Text style={{ fontSize: 20 }}>{label}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              ItemSeparatorComponent={() => (
+                <View
+                  style={{
+                    height: 1,
+                    backgroundColor: '#ccc',
+                    marginHorizontal: 10,
+                  }}
+                />
+              )}
+            />
+
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButton}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -51,5 +87,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     elevation: 5, // Android shadow
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  grid: {
+    justifyContent: 'center',
+    paddingVertical: 55,
+  },
+  closeButton: {
+    textAlign: 'center',
+    marginTop: 12,
+    color: 'blue',
   },
 });
