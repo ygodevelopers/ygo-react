@@ -1,7 +1,9 @@
-import { ActivityIndicator, Text, TouchableOpacity, View, Image } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
 import { Dimensions } from 'react-native';
 import { useEffect, useState } from "react";
 import { Modal } from 'react-native';
+import PillarAddColor from '@/components/PillarAddColor'
+import PillarAddIcon from '@/components/PillarAddIcon'
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
@@ -21,6 +23,7 @@ export default function PalliarItems(item: any) {
         }
         // Add your navigation or action here
     };
+
     console.log("item.icon", item?.item?.icon);
     return (
         <>
@@ -64,10 +67,28 @@ export default function PalliarItems(item: any) {
 }
 
 function NewPillar(){
+    const [selectedColor, setSelectedColor] = useState("orange");
+    const [name, setName] = useState('');
     return(
-        <view>
-            <Text>Create New Pillar</Text>
-        </view>
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+
+            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>📸</Text>
+            <View style={{ flexDirection: 'row'}}>
+                <PillarAddIcon />
+                <PillarAddColor selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
+            </View> 
+            <TextInput
+                    style={{borderWidth: 1,
+                            borderColor: '#ccc',
+                            padding: 10,
+                            fontSize: 16,
+                            borderRadius: 6,
+                            marginBottom: 20,}}
+                    placeholder="Pillar Name"
+                    value={name}
+                    onChangeText={setName}
+                />
+        </View>
    
     )
 }
