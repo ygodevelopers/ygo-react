@@ -2,8 +2,9 @@ import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput } fro
 import { Dimensions } from 'react-native';
 import { useEffect, useState } from "react";
 import { Modal } from 'react-native';
-import PillarAddColor from '@/components/PillarAddColor'
-import PillarAddIcon from '@/components/PillarAddIcon'
+import PillarAddColor from '@/components/PillarAddColor';
+import PillarAddIcon from '@/components/PillarAddIcon';
+import {usePillar} from '@/context/pillarContext';
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
@@ -22,6 +23,11 @@ export default function PalliarItems(item: any) {
             console.log("Pressed:", item?.item?.title);
         }
         // Add your navigation or action here
+    };
+
+    const handleSavePillar = () => {
+
+        setModalVisible(false);
     };
 
     console.log("item.icon", item?.item?.icon);
@@ -54,7 +60,7 @@ export default function PalliarItems(item: any) {
                             <Text>Cancel</Text>
                         </TouchableOpacity>
                         <Text>Create Pillar</Text>
-                        <TouchableOpacity onPress={() => setModalVisible(false)}>    
+                        <TouchableOpacity onPress={() => handleSavePillar()}>    
                             <Text>Save</Text>
                         </TouchableOpacity>
                     </View>
@@ -67,15 +73,15 @@ export default function PalliarItems(item: any) {
 }
 
 function NewPillar(){
-    const [selectedColor, setSelectedColor] = useState("orange");
-    const [name, setName] = useState('');
+    const {selectedColor,setSelectedColor, pillarname, setpillarName} = usePillar();
+
     return(
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
 
             <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>📸</Text>
             <View style={{ flexDirection: 'row'}}>
                 <PillarAddIcon />
-                <PillarAddColor selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
+                <PillarAddColor />
             </View> 
             <TextInput
                     style={{borderWidth: 1,
@@ -85,8 +91,8 @@ function NewPillar(){
                             borderRadius: 6,
                             marginBottom: 20,}}
                     placeholder="Pillar Name"
-                    value={name}
-                    onChangeText={setName}
+                    value={pillarname}
+                    onChangeText={setpillarName}
                 />
         </View>
    

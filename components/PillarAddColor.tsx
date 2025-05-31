@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, Button, StyleSheet, TouchableOpacity,FlatList } from 'react-native';
+import { usePillar } from '@/context/pillarContext';
 
 const COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'gray', 'brown', 'black', 'cyan', 'mint'];
 
-type PillarAddColorProps = {
-  selectedColor: string;
-  setSelectedColor: (color: string) => void;
-};
+export default function PillarAddColor() {
 
-export default function PillarAddColor({ selectedColor, setSelectedColor }:PillarAddColorProps) {
-
+  const {selectedColor, setSelectedColor} = usePillar();
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
   return (
     <View style={styles.container}>
