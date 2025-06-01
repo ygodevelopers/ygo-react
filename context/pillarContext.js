@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getDocs, query, where } from 'firebase/firestore'
+import { getDocs, setDoc, doc, query, where } from 'firebase/firestore'
 import { pillarRef } from '@/firebaseConfig'
 import { useAuth } from '@/context/authContext'
+import { db } from "../firebaseConfig";
 
 export const PillarContext = createContext();
 export const PillarContextProvider = ({children}) => {
@@ -35,6 +36,24 @@ export const PillarContextProvider = ({children}) => {
         setPillars(data);
     }
     
+    //save pillars to firebase
+    const savePillars = async(PillarID, pillarname, selectedColor, selectedicon)=>{
+       try {
+             await setDoc(doc(db, "pillars", PillarID),{
+                color: selectedColor,
+                icon: selectedicon,
+                id: PillarID,
+                title: pillarname,
+                type: "main",
+                userId: user?.id
+            });
+
+            return {success: true}
+        }   
+        catch (e) {
+            return {success: false, msg: e.message};
+        }
+    }
 
     return (
         <PillarContext.Provider value={{
@@ -46,7 +65,8 @@ export const PillarContextProvider = ({children}) => {
             setselectedicon,
             Pillars,
             setPillars,
-            getPillars
+            getPillars,
+            savePillars
             }}>
             {children}
         </PillarContext.Provider>

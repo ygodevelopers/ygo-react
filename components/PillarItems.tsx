@@ -5,6 +5,8 @@ import { Modal } from 'react-native';
 import PillarAddColor from '@/components/PillarAddColor';
 import PillarAddIcon from '@/components/PillarAddIcon';
 import {usePillar} from '@/context/pillarContext';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from "uuid";
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
@@ -13,6 +15,13 @@ const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2;
 export default function PalliarItems(item: any) {
 
     const [modalVisible, setModalVisible] = useState(false);
+    const {         
+        selectedColor, 
+        pillarname, 
+        selectedicon,
+        getPillars,
+        savePillars
+    } = usePillar();
 
     const handlePress = () => {
 
@@ -27,6 +36,9 @@ export default function PalliarItems(item: any) {
 
     const handleSavePillar = () => {
 
+        
+        savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
+        getPillars();
         setModalVisible(false);
     };
 
