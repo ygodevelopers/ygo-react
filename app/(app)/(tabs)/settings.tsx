@@ -1,20 +1,15 @@
 import { Text, View, Button } from "react-native";
 import { useEffect } from "react";
 import { app }  from "@/firebaseConfig";
-import { useAuth } from "@/context/authContext"
+import UserProfile from "@/components/UserProfile";
+
+
 
 export default function Index() {
 
   useEffect(() => {
     console.log('Firebase App:', app); // Check if the app object exists
   }, []);
-
-  const {logout, user} = useAuth();
-
-  const handleLogout=async()=>{
-    await logout()
-    console.log("logout success: ", user);
-  }
 
   return (
     <View
@@ -24,8 +19,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Settings.</Text>
-      <Button title="Log out" onPress={handleLogout}/>
+      <UserProfile />
     </View>
   );
 }
