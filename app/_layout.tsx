@@ -18,7 +18,7 @@ const MainLayout = () => {
     
     if(isAuthenticated && !inApp) {
       // redirect user to home
-      router.replace('/(app)/(tabs)/pilliars')
+      router.replace('/(app)/(tabs)/pillars')
 
     }
     else if (!isAuthenticated){

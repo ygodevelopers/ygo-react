@@ -1,12 +1,17 @@
-import { ActivityIndicator, Text, View, FlatList, StyleSheet} from "react-native";
+import { ActivityIndicator, Text, View, FlatList, StyleSheet, TouchableOpacity} from "react-native";
 import { useEffect, useState } from "react";
 
 import { StatusBar } from 'expo-status-bar'
 import { useAuth } from '@/context/authContext'
-import PillarItems from '@/components/PillarItems'
+import { PillarItems } from '@/components/PillarItems'
 import {usePillar} from '@/context/pillarContext'
 
-export const PillarList = () => {
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PillarStackParamList } from '@/types';
+
+type Props = NativeStackScreenProps<PillarStackParamList, 'Home'>;
+
+export const PillarList = ({ navigation }: Props) => {
     const {user} = useAuth();
     const {getPillars, Pillars} = usePillar();
     useEffect(()=>{
@@ -38,7 +43,14 @@ export const PillarList = () => {
                             numColumns={2}
                             showsVerticalScrollIndicator = {false}
                             columnWrapperStyle={{justifyContent: 'space-between'}}
-                            renderItem={({item, index})=><PillarItems item={item}/>}
+                            renderItem={({item, index})=>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('Detail', { pillar: item })}
+                                    style={{ padding: 20, borderBottomWidth: 1, borderColor: '#ccc' }}
+                                >
+                                    <PillarItems item={item}/>
+                                </TouchableOpacity>
+                                }                   
                             />
       
                     </View>

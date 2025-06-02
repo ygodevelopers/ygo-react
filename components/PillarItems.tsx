@@ -1,3 +1,4 @@
+import { Pillar } from '@/types'
 import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
 import { Dimensions } from 'react-native';
 import { useEffect, useState } from "react";
@@ -7,14 +8,17 @@ import PillarAddIcon from '@/components/PillarAddIcon';
 import {usePillar} from '@/context/pillarContext';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
+import { useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
 
 
-export default function PalliarItems(item: any) {
+export const PillarItems=({item}:{item: Pillar})=> {
 
     const [modalVisible, setModalVisible] = useState(false);
+    
+    const navigation = useNavigation();
     const {         
         selectedColor, 
         pillarname, 
@@ -25,24 +29,24 @@ export default function PalliarItems(item: any) {
 
     const handlePress = () => {
 
-        if (item?.item?.title === 'New Pillar') {
+        if (item?.title === 'New Pillar') {
             setModalVisible(true);
         }
         else {
-            console.log("Pressed:", item?.item?.title);
+            // navigation.navigate('PillarDetail', { pillar: item })}
+            // console.log("Pressed:", item?.title);
         }
         // Add your navigation or action here
     };
 
     const handleSavePillar = () => {
-
         
         savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
         getPillars();
         setModalVisible(false);
     };
 
-    console.log("item.icon", item?.item?.icon);
+    console.log("item.icon", item?.icon);
     return (
         <>
             <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
@@ -57,12 +61,12 @@ export default function PalliarItems(item: any) {
                     borderRadius: 12,
                     gap: 8,}} >
                         {item.type === 'new' ? 
-                        (<Text style={{ fontSize: 24, width:40, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{item?.item?.icon}</Text>)
+                        (<Text style={{ fontSize: 24, width:40, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{item?.icon}</Text>)
                         
                         :(
-                            <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.item?.icon}</Text>
+                            <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.icon}</Text>
                         )}
-                        <Text>{item?.item?.title}</Text>
+                        <Text>{item?.title}</Text>
                 </View>
             </TouchableOpacity>
             <Modal visible={modalVisible} animationType="slide">
