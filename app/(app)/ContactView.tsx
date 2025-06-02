@@ -15,12 +15,16 @@ import BottomSheet, {BottomSheetView, BottomSheetBackdrop} from '@gorhom/bottom-
 import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
 
+
+// TODO: Fix pillar context to add it to this page, should wrap the entire app like auth. Remove dummy emoji data to render correct pillar. 
+// Add null pillar or simply don't unless they tap into it? Clear selected pillar if they close the select menu?
+
 export default function ContactView() {
     const {contactID} = useLocalSearchParams();
     const [contact, setContact] = useState<User>();
     // const [contactPillars, setContactPillars] = useState<Contact>();
     const {user} = useAuth();
-
+    const [selectedPillar, setSelectedPillar] = useState<Pillar>();
     // const {Pillars} = usePillar();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
@@ -114,7 +118,7 @@ export default function ContactView() {
                         <SelectDropdown
                             data={emojisWithIcons}
                             onSelect={(selectedItem, index) => {
-                                console.log(selectedItem, index);
+                                setSelectedPillar(selectedItem);
                             }}
                             renderButton={(selectedItem, isOpened) => {
                                 return (
