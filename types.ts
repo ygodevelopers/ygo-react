@@ -42,3 +42,18 @@ export type Message = {
     timestamp: Timestamp, 
     toId: User['id'];
 }
+
+export type Pillar = {
+    color: string,   
+    icon: string,       
+    id: string, 
+    subPillars: Pillar[],
+    title: string,
+    type: string,
+    userId: User['id'];
+}
+
+export type PillarStackParamList = {
+    Home: undefined;
+    Detail: Pillar;
+  };
