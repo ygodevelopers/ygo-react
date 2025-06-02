@@ -5,7 +5,7 @@ import { User, Contact, Pillar } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import { getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, GestureResponderEvent} from "react-native";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ContactOption } from "@/components/ContactOption";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -76,6 +76,10 @@ export default function ContactView() {
     []
 );
 
+    function handlePillarChange(event: GestureResponderEvent): void {
+        throw new Error("Function not implemented.");
+    }
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <View className="flex-1 flex-col gap-3">
@@ -133,6 +137,13 @@ export default function ContactView() {
                             dropdownStyle={styles.dropdownMenuStyle}
                             dropdownOverlayColor="transparent"
                         />
+                    <Text>Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}</Text>
+                    <TouchableOpacity onPress={handlePillarChange} className="flex-1">
+                        <View className=" flex-row justify-between items-center">
+                            <Text>Change Pillar</Text>
+                            <FontAwesome name="refresh" size={24} color="blue" />
+                        </View>
+                    </TouchableOpacity>
                     </BottomSheetView>
                 </BottomSheet>  
             </View>
