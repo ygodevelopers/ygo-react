@@ -11,9 +11,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="pilliars"
+        name="pillars"
         options={{
-          title: 'pilliars',
+          title: 'pillars',
           tabBarIcon: ({ color }) => (
             <FontAwesome name="book" size={24} color={color} />
           ),
