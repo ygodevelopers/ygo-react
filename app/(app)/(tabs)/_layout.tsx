@@ -28,8 +28,7 @@ export default function TabLayout() {
           headerShown: true,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="file-text" size={24} color={color} />
-          ),
-          header: () => <HomeHeader/>
+          )
         }}
       />
 
