@@ -6,12 +6,10 @@ import { useAuth } from '@/context/authContext'
 import { PillarItems } from '@/components/PillarItems'
 import {usePillar} from '@/context/pillarContext'
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PillarStackParamList } from '@/types';
 
-type Props = NativeStackScreenProps<PillarStackParamList, 'Home'>;
+// type Props = NativeStackScreenProps<PillarStackParamList, 'Home'>;
 
-export const PillarList = ({ navigation }: Props) => {
+export const PillarList = () => {
     const {user} = useAuth();
     const {getPillars, Pillars} = usePillar();
     useEffect(()=>{
@@ -22,6 +20,11 @@ export const PillarList = ({ navigation }: Props) => {
     },[])
 
     const combinedData = [...Pillars, { icon: '➕', title: 'New Pillar' }];
+
+    const handlePillarDetail = () => {
+        // Navigate to the PillarDetail screen
+        console.log("Pillar Detail Pressed");
+    }
 
     return (
         <View
@@ -43,14 +46,7 @@ export const PillarList = ({ navigation }: Props) => {
                             numColumns={2}
                             showsVerticalScrollIndicator = {false}
                             columnWrapperStyle={{justifyContent: 'space-between'}}
-                            renderItem={({item, index})=>
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('Detail', { pillar: item })}
-                                    style={{ padding: 20, borderBottomWidth: 1, borderColor: '#ccc' }}
-                                >
-                                    <PillarItems item={item}/>
-                                </TouchableOpacity>
-                                }                   
+                            renderItem={({item, index})=><PillarItems item={item}/>}
                             />
       
                     </View>

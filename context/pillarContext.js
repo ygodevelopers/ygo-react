@@ -1,6 +1,6 @@
 import { Pillar } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
-import { getDocs, setDoc, doc, query, where } from 'firebase/firestore'
+import { getDocs, setDoc, doc, query, where, updateDoc ,arrayUnion } from 'firebase/firestore'
 import { pillarRef } from '@/firebaseConfig'
 import { useAuth } from '@/context/authContext'
 import { db } from "../firebaseConfig";
@@ -27,16 +27,18 @@ export const PillarContextProvider = ({children}) => {
         setPillars(data);
     }
     
-    //save pillars to firebase
+    //save pillars to firestore
     const savePillars = async(PillarID, pillarname, selectedColor, selectedicon)=>{
        try {
+        
              await setDoc(doc(db, "pillars", PillarID),{
                 color: selectedColor,
                 icon: selectedicon,
                 id: PillarID,
                 title: pillarname,
                 type: "main",
-                userId: user?.id
+                userId: user?.id,
+                subPillars: []
             });
 
             return {success: true}
@@ -45,6 +47,21 @@ export const PillarContextProvider = ({children}) => {
             return {success: false, msg: e.message};
         }
     }
+
+    const addSubPillar = async (parentPillarId, newSubPillar) => {
+        try {
+    
+            const pillarRef = doc(db, 'pillars', parentPillarId);
+
+            await updateDoc(pillarRef, {
+            subPillars: arrayUnion(newSubPillar)
+            });
+
+            return { success: true };
+        } catch (e) {
+            return { success: false, msg: e.message };
+        }
+    };
 
     return (
         <PillarContext.Provider value={{
@@ -57,7 +74,8 @@ export const PillarContextProvider = ({children}) => {
             Pillars,
             setPillars,
             getPillars,
-            savePillars
+            savePillars,
+            addSubPillar
             }}>
             {children}
         </PillarContext.Provider>

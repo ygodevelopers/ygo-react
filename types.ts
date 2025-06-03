@@ -53,7 +53,3 @@ export type Pillar = {
     userId: User['id'];
 }
 
-export type PillarStackParamList = {
-    Home: undefined;
-    Detail: Pillar;
-  };

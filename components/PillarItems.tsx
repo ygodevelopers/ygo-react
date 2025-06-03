@@ -1,5 +1,5 @@
 import { Pillar } from '@/types'
-import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput,StyleSheet } from "react-native";
 import { Dimensions } from 'react-native';
 import { useEffect, useState } from "react";
 import { Modal } from 'react-native';
@@ -8,7 +8,8 @@ import PillarAddIcon from '@/components/PillarAddIcon';
 import {usePillar} from '@/context/pillarContext';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
-import { useNavigation } from '@react-navigation/native';
+import { PillarDetail } from '@/components/PillarDetail';
+
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
@@ -16,34 +17,65 @@ const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2;
 
 export const PillarItems=({item}:{item: Pillar})=> {
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalNewVisible, setModalNewVisible] = useState(false);
+    const [modalEditVisible, setModalEditVisible] = useState(false);
+    const [subpillar, setsubpillar] = useState(false);
     
-    const navigation = useNavigation();
     const {         
         selectedColor, 
         pillarname, 
         selectedicon,
         getPillars,
-        savePillars
-    } = usePillar();
+        savePillars,
+        addSubPillar
+        } = usePillar();
 
     const handlePress = () => {
 
         if (item?.title === 'New Pillar') {
-            setModalVisible(true);
+            setModalNewVisible(true);
         }
         else {
-            // navigation.navigate('PillarDetail', { pillar: item })}
-            // console.log("Pressed:", item?.title);
+            setModalEditVisible(true);
         }
         // Add your navigation or action here
     };
 
-    const handleSavePillar = () => {
-        
-        savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
+    const handleSavePillar = async() => {
+        if(subpillar){
+            const newSub: Pillar = {
+            id: uuidv4(),
+            title: pillarname,
+            icon: selectedicon,
+            color: selectedColor,
+            type: 'sub',
+            subPillars: [],
+            userId: item?.userId, // Assuming you have a userId in the item
+            };
+            const result = await addSubPillar(item.id, newSub);
+            if (result.success) {
+                console.log("SubPillar added!");
+            } else {
+                console.error("Failed:", result.msg);
+            }
+            setsubpillar(false);
+            setModalEditVisible(true);
+
+        }else{
+            await savePillars(uuidv4(), pillarname, selectedColor, selectedicon);     
+        }
         getPillars();
-        setModalVisible(false);
+        setModalNewVisible(false);
+    };
+
+    const handleSubPillar = () => {
+        setsubpillar(true);
+        // savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
+        // getPillars();
+        // setModalNewVisible(false);
+        setModalEditVisible(false)
+        setModalNewVisible(true);
+        console.log("handleSubPillar", item);
     };
 
     console.log("item.icon", item?.icon);
@@ -69,10 +101,10 @@ export const PillarItems=({item}:{item: Pillar})=> {
                         <Text>{item?.title}</Text>
                 </View>
             </TouchableOpacity>
-            <Modal visible={modalVisible} animationType="slide">
+            <Modal visible={modalNewVisible} animationType="slide">
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
-                        <TouchableOpacity onPress={() => setModalVisible(false)}>    
+                        <TouchableOpacity onPress={() => setModalNewVisible(false)}>    
                             <Text>Cancel</Text>
                         </TouchableOpacity>
                         <Text>Create Pillar</Text>
@@ -81,6 +113,22 @@ export const PillarItems=({item}:{item: Pillar})=> {
                         </TouchableOpacity>
                     </View>
                     <NewPillar />  
+
+                </View>
+            </Modal>
+
+            <Modal visible={modalEditVisible} animationType="slide">
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
+                        <TouchableOpacity onPress={() => setModalEditVisible(false)}>    
+                            <Text style={styles.title}>{"<"}Pillars</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.icon}>{item?.icon + item?.title}</Text>
+                        <TouchableOpacity onPress={() => handleSubPillar()}>    
+                            <Text style={styles.title}>➕</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {item && <PillarDetail item={item} />}
 
                 </View>
             </Modal>
@@ -116,3 +164,9 @@ function NewPillar(){
    
     )
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  icon: { fontSize: 20 },
+  title: { fontSize: 20, marginTop: 12 },
+});
