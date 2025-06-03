@@ -7,13 +7,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: 'blue',
-        headerShown: true,
+        headerTitleAlign: 'center'
       }}
     >
       <Tabs.Screen
         name="pillars"
         options={{
           title: 'pillars',
+          headerShown: true,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="book" size={24} color={color} />
           ),
@@ -24,6 +25,7 @@ export default function TabLayout() {
         name="chats"
         options={{
           title: 'Chats',
+          headerShown: true,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="file-text" size={24} color={color} />
           ),
@@ -35,6 +37,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
+          headerShown: true,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="gear" size={24} color={color} />
           ),
