@@ -1,13 +1,37 @@
 import { Text, View } from "react-native";
-import { useEffect } from "react";
-import { app } from "@/firebaseConfig";
 import { UserList } from "@/components/UserList";
+import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { Thread } from "@/types";
+import { useAuth } from "@/context/authContext";
+import { threadsCollection } from "@/firebaseConfig";
+import { getDocs, query, where } from "firebase/firestore";
 
 export default function Chats() {
 
-  useEffect(() => {
-    console.log('Firebase App:', app); // Check if the app object exists
-  }, []);
+      const [threads, setThreads] = useState<Thread[]>([]);
+      const router = useRouter();
+      const {user} = useAuth();
+      
+      useFocusEffect(()=>{
+          if(user?.id){
+              getThreads();
+          }
+      })
+  
+  
+      // TODO: Thread last update isn't real time even though messages are. Maybe create a listener for the thread too? 
+      const getThreads = async () => {
+          const threadsRef : Thread[] = [];
+          const q = query(threadsCollection, where("uids", "array-contains", user?.id));
+          const querySnapshot = await getDocs(q);
+  
+          querySnapshot.forEach(doc => {
+              threadsRef.push(doc.data() as Thread);
+          })
+          setThreads(threadsRef);
+      }
+
 
   return (
     <View
@@ -17,7 +41,7 @@ export default function Chats() {
         alignItems: "center",
       }}
     >
-      <UserList/>
+      <UserList threads={threads} router={router}/>
     </View>
   );
 }

@@ -15,14 +15,12 @@ import BottomSheet, {BottomSheetView, BottomSheetBackdrop} from '@gorhom/bottom-
 import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
 
-
-// TODO: Fix pillar context to add it to this page, should wrap the entire app like auth. Remove dummy emoji data to render correct pillar. 
+// TODO: Separate out select menu, prop should be array of pillars.
 // Add null pillar or simply don't unless they tap into it? Clear selected pillar if they close the select menu?
 
 export default function ContactView() {
     const {contactID} = useLocalSearchParams();
     const [contact, setContact] = useState<User>();
-    // const [contactPillars, setContactPillars] = useState<Contact>();
     const {user} = useAuth();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
     const {Pillars} = usePillar();
@@ -36,7 +34,6 @@ export default function ContactView() {
 
     useEffect(() => {
         getContactInfo();
-        // getContactPillars();
     }, [contactID])
 
 
@@ -53,16 +50,6 @@ export default function ContactView() {
             console.error("Error fetching contact:", error);
         }
     }
-
-    // const getContactPillars = async () => {
-    //     try {
-    //         const q = query(contactCollection, where('contactUserId', '==', contactID), where('ownerId', '==', user.id));
-    //         const qSnapshot = await getDocs(q);
-    //         qSnapshot.forEach((doc) => setContactPillars(doc.data() as Contact));
-    //     } catch (error) {
-    //         console.error("Error fetching contact:", error);
-    //     }
-    // }
 
     const renderBackdrop = useCallback(
     (props: any) => (
