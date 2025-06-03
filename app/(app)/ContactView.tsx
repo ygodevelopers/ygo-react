@@ -1,11 +1,11 @@
 import { ContactBanner } from "@/components/ContactBanner";
 import { useAuth } from "@/context/authContext";
-import { contactCollection, userRef } from "@/firebaseConfig";
-import { User, Contact, Pillar } from "@/types";
+import { userRef } from "@/firebaseConfig";
+import { User, Pillar } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import { getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity, GestureResponderEvent} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent} from "react-native";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ContactOption } from "@/components/ContactOption";
 import FontAwesome from "@expo/vector-icons/FontAwesome";

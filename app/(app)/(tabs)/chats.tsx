@@ -1,6 +1,6 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { UserList } from "@/components/UserList";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Thread } from "@/types";
 import { useAuth } from "@/context/authContext";

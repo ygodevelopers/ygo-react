@@ -1,5 +1,5 @@
-import { Stack, useRouter, useSegments } from "expo-router";
-import {useAuth, AuthContextProvider} from '@/context/authContext'
+import { useRouter, useSegments } from "expo-router";
+import { useAuth, AuthContextProvider} from '@/context/authContext'
 import { useEffect } from "react";
 import { Slot } from "expo-router";
 import { PillarContextProvider } from "@/context/pillarContext";
