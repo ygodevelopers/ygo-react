@@ -2,7 +2,8 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import {useAuth, AuthContextProvider} from '@/context/authContext'
 import { useEffect } from "react";
 import { Slot } from "expo-router";
-import { MenuProvider } from 'react-native-popup-menu';
+import { PillarContextProvider } from "@/context/pillarContext";
+
 
 
 const MainLayout = () => {
@@ -33,16 +34,12 @@ const MainLayout = () => {
 
 export default function RootLayout() {
   return (
-    <MenuProvider customStyles={{
-      backdrop: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        opacity: 1,
-      },
-    }}>
-      <AuthContextProvider>
-        <MainLayout/>
-      </AuthContextProvider>
-    </MenuProvider>
-    
-  )
+
+        <AuthContextProvider>
+          <PillarContextProvider>
+            <MainLayout/>
+          </PillarContextProvider>
+        </AuthContextProvider>    
+
+    )
 }

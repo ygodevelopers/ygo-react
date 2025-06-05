@@ -25,12 +25,12 @@ export default function ContactView() {
     // const [contactPillars, setContactPillars] = useState<Contact>();
     const {user} = useAuth();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
-    // const {Pillars} = usePillar();
+    const {Pillars} = usePillar();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["40%"], []);
+    
     const handlePresentPress = useCallback(() => {
-        console.log("trying to open bottomsheet");
         bottomSheetRef.current?.expand();
     }, []);
 
@@ -76,23 +76,6 @@ export default function ContactView() {
     []
 );
 
-    const emojisWithIcons = [
-        {title: 'happy', icon: 'emoticon-happy-outline'},
-        {title: 'cool', icon: 'emoticon-cool-outline'},
-        {title: 'lol', icon: 'emoticon-lol-outline'},
-        {title: 'sad', icon: 'emoticon-sad-outline'},
-        {title: 'cry', icon: 'emoticon-cry-outline'},
-        {title: 'angry', icon: 'emoticon-angry-outline'},
-        {title: 'confused', icon: 'emoticon-confused-outline'},
-        {title: 'excited', icon: 'emoticon-excited-outline'},
-        {title: 'kiss', icon: 'emoticon-kiss-outline'},
-        {title: 'devil', icon: 'emoticon-devil-outline'},
-        {title: 'dead', icon: 'emoticon-dead-outline'},
-        {title: 'wink', icon: 'emoticon-wink-outline'},
-        {title: 'sick', icon: 'emoticon-sick-outline'},
-        {title: 'frown', icon: 'emoticon-frown-outline'},
-    ];
-
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <View className="flex-1 flex-col gap-3">
@@ -116,7 +99,7 @@ export default function ContactView() {
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <Text style={styles.bottomSheetTitle}>Select Pillar</Text>
                         <SelectDropdown
-                            data={emojisWithIcons}
+                            data={Pillars}
                             onSelect={(selectedItem, index) => {
                                 setSelectedPillar(selectedItem);
                             }}
@@ -139,7 +122,7 @@ export default function ContactView() {
                                     <View style={{
                                         ...styles.dropdownItemStyle, 
                                         ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                                        borderBottomWidth: index < emojisWithIcons.length - 1 ? 1 : 0,
+                                        borderBottomWidth: index < Pillars.length - 1 ? 1 : 0,
                                         borderBottomColor: '#C0C0C0'
                                     }}>
                                         <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
@@ -157,6 +140,7 @@ export default function ContactView() {
     )
 }
 
+// Copied styles from documentation
 const styles = StyleSheet.create({
     bottomSheetContent: {
         flex: 1,
