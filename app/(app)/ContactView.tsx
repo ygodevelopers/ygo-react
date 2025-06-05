@@ -3,9 +3,9 @@ import { useAuth } from "@/context/authContext";
 import { userRef } from "@/firebaseConfig";
 import { User, Pillar } from "@/types";
 import { useLocalSearchParams } from "expo-router";
-import { getDocs, query, where } from "firebase/firestore";
+import { getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ContactOption } from "@/components/ContactOption";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -14,12 +14,13 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
+import { db } from "@/firebaseConfig";
 
 // TODO: Separate out select menu, prop should be array of pillars.
 // Add null pillar or simply don't unless they tap into it? Clear selected pillar if they close the select menu?
 
 export default function ContactView() {
-    const {contactID} = useLocalSearchParams();
+    const {contactID, threadID} = useLocalSearchParams();
     const [contact, setContact] = useState<User>();
     const {user} = useAuth();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
@@ -51,6 +52,10 @@ export default function ContactView() {
         }
     }
 
+    const handleNotFinishedPress = () => {
+        alert("Not implemented yet sorry!");
+    }
+
     const renderBackdrop = useCallback(
     (props: any) => (
         <BottomSheetBackdrop
@@ -60,12 +65,19 @@ export default function ContactView() {
             onPress={() => bottomSheetRef.current?.close()}
         />
     ),
-    []
-);
+        []
+    );
 
-    function handlePillarChange(event: GestureResponderEvent): void {
-        throw new Error("Function not implemented.");
+    const handlePillarChange = async (pillarID : String) => {
+        const threadRef = doc(db, "threads", threadID as string);
+        await updateDoc(threadRef, 
+            {
+                pillarId: [pillarID]
+            }
+        )
+        bottomSheetRef.current?.close();
     }
+
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -73,12 +85,12 @@ export default function ContactView() {
                 <ContactBanner contact={contact as User}/>
                 <View className="flex-1 flex-col">
                     <ContactOption symbol={<FontAwesome name="refresh" size={24} color="black" />} text="Change Pillar" handlePress={handlePresentPress}/>
-                    <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People" handlePress={() => {console.log("pressed People")}}/>
-                    <ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security" handlePress={() => {console.log("pressed Priv")}}/>
-                    <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments" handlePress={() => {console.log("pressed Attachments")}}/>
+                    <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People" handlePress={handleNotFinishedPress}/>
+                    <ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security" handlePress={handleNotFinishedPress}/>
+                    <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments" handlePress={handleNotFinishedPress}/>
                 </View>
                 <BottomSheet 
-                    ref={bottomSheetRef} 
+                    ref={bottomSheetRef}    
                     index={-1} 
                     snapPoints={snapPoints} 
                     enablePanDownToClose={false} 
@@ -125,7 +137,16 @@ export default function ContactView() {
                             dropdownOverlayColor="transparent"
                         />
                     <Text>Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}</Text>
-                    <TouchableOpacity onPress={handlePillarChange} className="flex-1">
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (selectedPillar) {
+                                handlePillarChange(selectedPillar.id);
+                            } else {
+                                alert("Please select a pillar first.");
+                            }
+                        }}
+                        className="flex-1"
+                    >
                         <View className=" flex-row justify-between items-center">
                             <Text>Change Pillar</Text>
                             <FontAwesome name="refresh" size={24} color="blue" />
