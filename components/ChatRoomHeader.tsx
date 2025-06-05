@@ -7,7 +7,7 @@ import { Image } from "expo-image";
 import { User } from "@/types";
 
 
-export const ChatRoomHeader = ({user, router} : {user: User, router: Router}) => {
+export const ChatRoomHeader = ({user, router, threadID} : {user: User, router: Router, threadID: string}) => {
     return (
         <Stack.Screen options={{
             title: '',
@@ -17,7 +17,7 @@ export const ChatRoomHeader = ({user, router} : {user: User, router: Router}) =>
                     <TouchableOpacity onPress={() => router.back()}>
                         <Text style={{fontSize: hp(4), color: '#737373'}}>Back</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => router.push({params: {contactID: user.id}, pathname: '/(app)/ContactView'})}>
+                    <TouchableOpacity onPress={() => router.push({params: {contactID: user.id, threadID: threadID}, pathname: '/(app)/ContactView'})}>
                         <View className="flex-row items-center gap-3">
                             <Image source={user?.profileImageUrl} style={{borderRadius: 100, height: hp(4.5), aspectRatio: 1}}/>
                             <Text style={{fontSize: hp(2.5)}} className="text-neutral-700 font-medium">

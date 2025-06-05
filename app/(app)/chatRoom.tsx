@@ -118,7 +118,7 @@ export default function ChatRoom() {
     return (
         <View className='flex-1 bg-white'> 
             <StatusBar barStyle={'dark-content'}/>
-            <ChatRoomHeader user={contact!} router={router}/>
+            <ChatRoomHeader user={contact!} router={router} threadID={threadID as string}/>
             <View className='h-3 border-b border-neutral-300'/>
             <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
                 <View className='flex-1'>
