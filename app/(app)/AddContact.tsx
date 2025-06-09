@@ -31,7 +31,6 @@ export default function AddContact()  {
         }
     }
 
-
     return (
         <CustomKeyboardView>
             <View className='flex-1 flex-col justify-center items-center'>

@@ -17,7 +17,7 @@ export type User = {
 
 export type Contact = {
     contactUserId: User["id"], 
-    id: string, 
+    id?: string, 
     ownerId: User["id"], 
     pillarId: Array<string>
 }
