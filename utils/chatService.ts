@@ -1,7 +1,6 @@
-import { Message} from "@/types";
+import { Message } from "@/types";
 import { db } from "@/firebaseConfig";
 import { collection, doc, orderBy, query, onSnapshot, Unsubscribe } from "firebase/firestore";
-
 
 export const subscribeToMessages = (
     threadID: string, 
@@ -18,7 +17,7 @@ export const subscribeToMessages = (
             snapshot.forEach((doc) => {
                 messages.push(doc.data() as Message);
             });
-            console.log("fetching messages");
+            console.log("Fetching messages");
             callback(messages);
         }, (error) => {
             console.log("Error listening to messages:", error);

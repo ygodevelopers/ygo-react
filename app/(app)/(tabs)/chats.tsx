@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from "react-native";
 import { UserList } from "@/components/UserList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Thread } from "@/types";
 import { useAuth } from "@/context/authContext";
@@ -14,19 +14,20 @@ export default function Chats() {
       const router = useRouter();
       const {user} = useAuth();
       
-      useFocusEffect(()=>{
+      useEffect(()=>{
           if(user?.id){
               getThreads();
           }
-      })
+      },[]);
 
       // TODO: Thread last update isn't real time even though messages are. Maybe create a listener for the thread too? 
       const getThreads = async () => {
           const threadsRef : Thread[] = [];
           const q = query(threadsCollection, where("uids", "array-contains", user?.id));
           const querySnapshot = await getDocs(q);
-  
+          
           querySnapshot.forEach(doc => {
+              console.log(doc.data());
               threadsRef.push(doc.data() as Thread);
           })
           setThreads(threadsRef);

@@ -4,9 +4,9 @@ import { useAuth } from '@/context/authContext';
 import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, Thread, User } from '@/types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { addDoc, getDocs, query, serverTimestamp, Timestamp, where } from 'firebase/firestore';
+import { addDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import {Button, View} from 'react-native';
+import { Button, View} from 'react-native';
 
 export default function ConfirmContact() {
     const {user} = useAuth();
@@ -17,6 +17,7 @@ export default function ConfirmContact() {
 
     useEffect( () => {  
         getContact();
+        console.log(user);
     }, [email]);
 
     const getContact = async () => {
@@ -36,6 +37,7 @@ export default function ConfirmContact() {
 
     // TODO: Should I check to see if the contact has already been added?
     // Create thread with contact? Why is the contact id handled differently?
+    // Should messages collection be created as just left empty? or wait until first message to create?
     const handleSaveContact = async () => {
         if(contact?.id == user.id) {
             alert("cannot add yourself as a contact");
@@ -43,17 +45,19 @@ export default function ConfirmContact() {
         }
 
         if(contact) {
-            
+            const contactRef = doc(contactCollection);
+
             const contactDoc : Contact = {
                 contactUserId: contact.id,
                 ownerId: user.id,
                 pillarId: [selectedPillar ? selectedPillar.id : ""],
+                id: contactRef.id
             };
 
             try {
-                const docRef = await addDoc(contactCollection, contactDoc);
-                console.log('Contact created with ID:', docRef.id);
+                const docRef = await setDoc(contactRef, contactDoc);
                 createThread();
+                router.replace('/(app)/(tabs)/chats');
 
             } catch (error) {
                 console.error('Error creating contact:', error);
@@ -62,19 +66,21 @@ export default function ConfirmContact() {
     }
 
     const createThread = async () => {
-        const thread : Omit<Thread, "id"|"firstMessageId"|"lastMessage"> = {
+        const threadRef = doc(threadsCollection); 
+
+        const thread : Omit<Thread, "firstMessageId"|"lastMessage"> = {
             lastUpdated: serverTimestamp() as Timestamp,
             uids: [user.id, contact!.id],
-            users: [user, contact]
+            users: [user, contact],
+            creatorId: user.id,
+            id: threadRef.id 
         };
-        console.log(user);
-        console.log(contact);
-        console.log(thread);
+
         try {
-            const threadRef = await addDoc(threadsCollection, thread);
-            console.log('Thread created with ID:', threadRef.id);
+            await setDoc(threadRef, thread);
+            console.log("Thread created with ID: ", threadRef.id);
         } catch (error) {
-            console.error('Error creating contact:', error);
+            console.error('Error creating thread:', error);
         }
     }
 

@@ -31,8 +31,7 @@ export const AuthContextProvider = ({children}) => {
         const docSnap = await getDoc(docRef);
         if(docSnap.exists()){
             let data = docSnap.data();
-            console.log(data);
-            setUser({...user, firstName: data.firstName, profileImageUrl: data.profileImageUrl, id: data.id });
+            setUser(data);
             console.log('update user data:', user);
         }
     }
@@ -41,8 +40,6 @@ export const AuthContextProvider = ({children}) => {
     const login = async (email, password) => {
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
-            console.log('login response.user:', response?.user);
-
             updateUserData(response?.user?.uid);
 
             return {success: true, data: response?.user}
