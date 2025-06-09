@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { UserList } from "@/components/UserList";
 import { useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -6,6 +6,7 @@ import { Thread } from "@/types";
 import { useAuth } from "@/context/authContext";
 import { threadsCollection } from "@/firebaseConfig";
 import { getDocs, query, where } from "firebase/firestore";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function Chats() {
 
@@ -18,8 +19,7 @@ export default function Chats() {
               getThreads();
           }
       })
-  
-  
+
       // TODO: Thread last update isn't real time even though messages are. Maybe create a listener for the thread too? 
       const getThreads = async () => {
           const threadsRef : Thread[] = [];
@@ -41,6 +41,9 @@ export default function Chats() {
         alignItems: "center",
       }}
     >
+      <TouchableOpacity onPress={() => {router.push('/AddContact')}}>
+        <AntDesign name="plussquare" size={24} color="black" />
+      </TouchableOpacity>
       <UserList threads={threads} router={router}/>
     </View>
   );
