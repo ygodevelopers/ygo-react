@@ -71,6 +71,7 @@ export default function ContactView() {
 
     const handlePillarChange = async (pillarID : String) => {
         const threadRef = doc(db, "threads", threadID as string);
+        console.log(pillarID);
         await updateDoc(threadRef, 
             {
                 pillarId: [pillarID]
