@@ -15,6 +15,7 @@ import BottomSheet, {BottomSheetView, BottomSheetBackdrop} from '@gorhom/bottom-
 import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
 import { db } from "@/firebaseConfig";
+import { SelectPillarDropDown } from "@/components/SelectPillarDropDown";
 
 // TODO: Separate out select menu, prop should be array of pillars.
 // Add null pillar or simply don't unless they tap into it? Clear selected pillar if they close the select menu?
@@ -77,6 +78,10 @@ export default function ContactView() {
         )
         bottomSheetRef.current?.close();
     }
+    
+    const handleSelectPillar = (item: Pillar) => {
+        setSelectedPillar(item);
+    }
 
 
     return (
@@ -101,57 +106,23 @@ export default function ContactView() {
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <Text style={styles.bottomSheetTitle}>Select Pillar</Text>
-                        <SelectDropdown
-                            data={Pillars}
-                            onSelect={(selectedItem, index) => {
-                                setSelectedPillar(selectedItem);
+                        <SelectPillarDropDown showIcons={false} handleSelectPillar={handleSelectPillar}/>
+                        <Text>Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (selectedPillar) {
+                                    handlePillarChange(selectedPillar.id);
+                                } else {
+                                    alert("Please select a pillar first.");
+                                }
                             }}
-                            renderButton={(selectedItem, isOpened) => {
-                                return (
-                                    <View style={styles.dropdownButtonStyle}>
-                                        <Text style={styles.dropdownButtonTxtStyle}>
-                                            {(selectedItem && selectedItem.title) || 'Change Pillar'}
-                                        </Text>
-                                        <FontAwesome 
-                                            name={isOpened ? 'chevron-up' : 'chevron-down'} 
-                                            size={16} 
-                                            color="#151E26"
-                                        />
-                                    </View>
-                                );
-                            }}
-                            renderItem={(item, index, isSelected) => {
-                                return (
-                                    <View style={{
-                                        ...styles.dropdownItemStyle, 
-                                        ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                                        borderBottomWidth: index < Pillars.length - 1 ? 1 : 0,
-                                        borderBottomColor: '#C0C0C0'
-                                    }}>
-                                        <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-                                    </View>
-                                );
-                            }}
-                            showsVerticalScrollIndicator={false}
-                            dropdownStyle={styles.dropdownMenuStyle}
-                            dropdownOverlayColor="transparent"
-                        />
-                    <Text>Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}</Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (selectedPillar) {
-                                handlePillarChange(selectedPillar.id);
-                            } else {
-                                alert("Please select a pillar first.");
-                            }
-                        }}
-                        className="flex-1"
-                    >
-                        <View className=" flex-row justify-between items-center">
-                            <Text>Change Pillar</Text>
-                            <FontAwesome name="refresh" size={24} color="blue" />
-                        </View>
-                    </TouchableOpacity>
+                            className="flex-1"
+                        >
+                            <View className=" flex-row justify-between items-center">
+                                <Text>Change Pillar</Text>
+                                <FontAwesome name="refresh" size={24} color="blue" />
+                            </View>
+                        </TouchableOpacity>
                     </BottomSheetView>
                 </BottomSheet>  
             </View>
