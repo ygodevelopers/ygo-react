@@ -44,7 +44,8 @@ export const PillarItems=({item}:{item: Pillar})=> {
     const handleSavePillar = async() => {
         if(subpillar){
             const newSub: Pillar = {
-            id: uuidv4(),
+            //get uuid with capital letter
+            id: uuidv4().toUpperCase(),
             title: pillarname,
             icon: selectedicon,
             color: selectedColor,
