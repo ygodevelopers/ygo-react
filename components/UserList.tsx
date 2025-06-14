@@ -1,4 +1,4 @@
-import { ActivityIndicator, View, FlatList} from "react-native";
+import { View, FlatList, Text} from "react-native";
 import { useEffect, useState } from "react";
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
@@ -8,10 +8,12 @@ import UserItems from '@/components/UserItems'
 import { Thread } from "@/types";
 import { useRouter } from "expo-router";
 
-export const UserList = () => {
+export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     const {user} = useAuth();
     const [threads, setThreads] = useState<Thread[]>([]);
     const router = useRouter();
+    const pid = pillarid ?? null;
+
 
     useEffect(()=>{
         if(user?.id){
@@ -24,12 +26,22 @@ export const UserList = () => {
     const getThreads = async () => {
         const threadsRef : Thread[] = [];
         
+        // Build query conditions
+        const conditions = [where("uids", "array-contains", user?.id)];
 
-        const q = query(threadsCollection, where("uids", "array-contains", user?.id));
+        // Construct the query
+        const q = query(threadsCollection, ...conditions);
+
         const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach(doc => {
-            threadsRef.push(doc.data() as Thread);
+            const thread = doc.data() as Thread;
+            // If pid is specified, filter manually based on pillarId array
+            console.log("getThreads id: ", pid);
+            if (!pid || (thread.pillarId && thread.pillarId.includes(pid))) {
+                threadsRef.push(thread);
+            }
+            // threadsRef.push(doc.data() as Thread);
         })
         setThreads(threadsRef);
     }
@@ -57,8 +69,8 @@ export const UserList = () => {
                     </View>
                 ):(
                     <View className="flex item-center">
-                        <ActivityIndicator size="large" />
-
+                        {/* <ActivityIndicator size="large" /> */}
+                        <Text style={{ color: 'gray' }}>No Messages found</Text>
                     </View>
                 )
             }

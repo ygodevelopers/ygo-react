@@ -120,16 +120,8 @@ export const PillarItems=({item}:{item: Pillar})=> {
 
             <Modal visible={modalEditVisible} animationType="slide">
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
-                        <TouchableOpacity onPress={() => setModalEditVisible(false)}>    
-                            <Text style={styles.title}>{"<"}Pillars</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.icon}>{item?.icon + item?.title}</Text>
-                        <TouchableOpacity onPress={() => handleSubPillar()}>    
-                            <Text style={styles.title}>➕</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {item && <PillarDetail item={item} />}
+
+                    {item && <PillarDetail item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}/>}
 
                 </View>
             </Modal>
