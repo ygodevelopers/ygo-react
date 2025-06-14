@@ -1,12 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity,Modal } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
+import { PillarContact } from './PillarContact';
+
+
 
 export const PillarDetail = ({ item, setModalEditVisible, handleSubPillar  }: { item: Pillar; setModalEditVisible: (visible: boolean) => void; handleSubPillar: () => void; }) => {
   console.log("PillarDetail item id: ", item.id);
   const hasSubPillars = item.subPillars && item.subPillars.length > 0;
   console.log("PillarDetail subpillars: ", hasSubPillars);
+  const [modalcontactVisible, setModalContact] = useState(false);
+
+  const handleContacts = () => {
+    setModalContact(true);
+    // setModalEditVisible(false)
+
+};
   return (
     <>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
@@ -14,7 +24,7 @@ export const PillarDetail = ({ item, setModalEditVisible, handleSubPillar  }: { 
               <Text style={styles.title}>{"<"}Pillars</Text>
           </TouchableOpacity>
           <Text style={styles.icon}>{item?.icon + item?.title}</Text>
-          <TouchableOpacity onPress={() => handleSubPillar()}>    
+          <TouchableOpacity onPress={() => handleContacts()}>    
               <Text style={styles.title}>➕</Text>
           </TouchableOpacity>
       </View>
@@ -44,6 +54,10 @@ export const PillarDetail = ({ item, setModalEditVisible, handleSubPillar  }: { 
       <View style={styles.container}>
         <UserList pillarid={item.id}/>
       </View>
+
+      <Modal visible={modalcontactVisible} animationType="slide">
+        <PillarContact setModalContact={setModalContact}/>
+      </Modal>
     </>
   );
 }

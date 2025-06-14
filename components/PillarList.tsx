@@ -13,8 +13,7 @@ export const PillarList = () => {
     const {user} = useAuth();
     const {getPillars, Pillars} = usePillar();
     useEffect(()=>{
-        console.log("PillarList: ", Pillars)
-        if(user?.id){
+          if(user?.id){
             getPillars();
         }
     },[])

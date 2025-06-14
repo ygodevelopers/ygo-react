@@ -76,10 +76,10 @@ export const PillarItems=({item}:{item: Pillar})=> {
         // setModalNewVisible(false);
         setModalEditVisible(false)
         setModalNewVisible(true);
-        console.log("handleSubPillar", item);
+     
     };
 
-    console.log("item.icon", item?.icon);
+
     return (
         <>
             <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
@@ -113,16 +113,13 @@ export const PillarItems=({item}:{item: Pillar})=> {
                             <Text>Save</Text>
                         </TouchableOpacity>
                     </View>
-                    <NewPillar />  
-
+                    <NewPillar />
                 </View>
             </Modal>
 
             <Modal visible={modalEditVisible} animationType="slide">
                 <View style={{ flex: 1, alignItems: 'center' }}>
-
                     {item && <PillarDetail item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}/>}
-
                 </View>
             </Modal>
         </>
