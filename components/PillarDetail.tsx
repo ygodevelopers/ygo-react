@@ -1,14 +1,33 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity,Modal } from 'react-native';
 import { Pillar } from '@/types';
+import { UserList } from "@/components/UserList";
+import { PillarContact } from './PillarContact';
 
-export const PillarDetail = ({ item }: { item: Pillar }) => {
-  console.log("PillarDetail item: ", item);
+
+
+export const PillarDetail = ({ item, setModalEditVisible, handleSubPillar  }: { item: Pillar; setModalEditVisible: (visible: boolean) => void; handleSubPillar: () => void; }) => {
+  console.log("PillarDetail item id: ", item.id);
   const hasSubPillars = item.subPillars && item.subPillars.length > 0;
   console.log("PillarDetail subpillars: ", hasSubPillars);
+  const [modalcontactVisible, setModalContact] = useState(false);
+
+  const handleContacts = () => {
+    setModalContact(true);
+    // setModalEditVisible(false)
+
+};
   return (
     <>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
+          <TouchableOpacity onPress={() => setModalEditVisible(false)}>    
+              <Text style={styles.title}>{"<"}Pillars</Text>
+          </TouchableOpacity>
+          <Text style={styles.icon}>{item?.icon + item?.title}</Text>
+          <TouchableOpacity onPress={() => handleContacts()}>    
+              <Text style={styles.title}>➕</Text>
+          </TouchableOpacity>
+      </View>
       <View style={styles.container}>
         {hasSubPillars ? (
           item.subPillars.map((sub, index) => (
@@ -33,8 +52,12 @@ export const PillarDetail = ({ item }: { item: Pillar }) => {
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
       <View style={styles.container}>
-        <Text style={{ color: 'gray' }}>No Messages found</Text>
+        <UserList pillarid={item.id}/>
       </View>
+
+      <Modal visible={modalcontactVisible} animationType="slide">
+        <PillarContact setModalContact={setModalContact}/>
+      </Modal>
     </>
   );
 }

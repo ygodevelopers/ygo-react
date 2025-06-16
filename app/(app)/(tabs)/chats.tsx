@@ -41,7 +41,7 @@ export default function Chats() {
         alignItems: "center",
       }}
     >
-      <UserList threads={threads} router={router}/>
+      <UserList pillarid={null}/>
     </View>
   );
 }
