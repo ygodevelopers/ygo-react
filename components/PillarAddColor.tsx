@@ -26,7 +26,7 @@ export default function PillarAddColor() {
         </View>
       </TouchableOpacity>
    {/* Color Picker Modal */}
-   <Modal
+    <Modal
         visible={isColorPickerVisible}
         transparent
         animationType="slide"

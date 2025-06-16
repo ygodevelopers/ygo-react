@@ -2,11 +2,11 @@ import { View, FlatList, Text} from "react-native";
 import { useEffect, useState } from "react";
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
-import { getDocs, query, where } from 'firebase/firestore'
-import { threadsCollection} from '@/firebaseConfig'
 import UserItems from '@/components/UserItems'
 import { Thread } from "@/types";
-import { useRouter } from "expo-router";
+import { useRouter} from "expo-router";
+import { getDocs, query, where } from "firebase/firestore";
+import { threadsCollection } from "@/firebaseConfig";
 
 export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     const {user} = useAuth();

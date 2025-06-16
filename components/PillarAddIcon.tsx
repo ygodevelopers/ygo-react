@@ -32,7 +32,7 @@ export default function PillarAddColor() {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalBox}>
-         <Text style={styles.title}>Select a Icon</Text>
+        <Text style={styles.title}>Select a Icon</Text>
 
             <FlatList
               data={Object.entries(ICONS)} 
