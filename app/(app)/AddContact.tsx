@@ -1,15 +1,17 @@
 import CustomKeyboardView from '@/components/CustomKeyboardView';
+import { useAuth } from '@/context/authContext';
 import { contactCollection } from '@/firebaseConfig';
 import { Contact } from '@/types';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import {View, Button, StyleSheet} from 'react-native';
+import {View, Button, StyleSheet, Text} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import {AlphabetList} from 'react-native-section-alphabet-list';
 
 export default function AddContact()  {
     const router = useRouter();
-
+    const {user} = useAuth();
     const [email, onChangeEmail] = useState<string>();
     const [contacts, setContacts] = useState<Contact[]>();
     
@@ -22,7 +24,7 @@ export default function AddContact()  {
     const getContacts = async () => {
         try {
             const contactsContainer : Contact[] = [];
-            const q = query(contactCollection, where('id', '==', email));
+            const q = query(contactCollection, where('ownerId', '==', user.id));
             const qSnapshot = await getDocs(q);
             qSnapshot.forEach((doc) => {contactsContainer.push(doc.data() as Contact)});
             setContacts(contactsContainer);
@@ -57,6 +59,25 @@ export default function AddContact()  {
             <View className='flex-1 flex-col justify-center items-center'>
                 <TextInput onChangeText={onChangeEmail} style={styles.input}/>
                 <Button title='Search' onPress={handleSearch}/>
+                {
+                    contacts && 
+                    <AlphabetList
+                        data={contacts.map((contact) => ({
+                            key: contact.id!,
+                            value: contact.contactUserId, // or contact.email, depending on what you want to display
+                            ...contact
+                        }))}
+                        indexLetterStyle={{ 
+                            color: 'blue', 
+                            fontSize: 15,
+                        }}
+                        renderCustomItem={(item) => (
+                            <View>
+                                <Text>{item.value}</Text>
+                            </View>
+                        )}
+                    />
+                }
             </View>
         </CustomKeyboardView>
     )
