@@ -44,7 +44,11 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
                     <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated.toDate().toLocaleDateString()}</Text>
                 </View>
                 <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">
-                    {item.lastMessage.messageText.length <= 10 ? item.lastMessage.messageText : item.lastMessage.messageText.slice(0,7) + "..."}
+                    {item.lastMessage?.messageText && item.lastMessage.messageText.length <= 10
+                        ? item.lastMessage.messageText
+                        : item.lastMessage?.messageText
+                        ? item.lastMessage.messageText.slice(0, 7) + "..."
+                        : ""}
                     </Text>
             </View>
         </TouchableOpacity>

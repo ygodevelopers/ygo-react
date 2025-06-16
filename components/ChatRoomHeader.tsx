@@ -5,6 +5,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { Router } from "expo-router";
 import { Image } from "expo-image";
 import { User } from "@/types";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 export const ChatRoomHeader = ({user, router, threadID} : {user: User, router: Router, threadID: string}) => {
@@ -13,25 +15,24 @@ export const ChatRoomHeader = ({user, router, threadID} : {user: User, router: R
             title: '',
             headerShadowVisible: false,
             headerLeft: () => (
-                <View className="flex-row items-center gap-4">
+                <View className="flex-row items-center justify-between">
                     <TouchableOpacity onPress={() => router.back()}>
-                        <Text style={{fontSize: hp(4), color: '#737373'}}>Back</Text>
+                        <AntDesign name="left" size={24} color="black" />    
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => router.push({params: {contactID: user.id, threadID: threadID}, pathname: '/(app)/ContactView'})}>
                         <View className="flex-row items-center gap-3">
                             <Image source={user?.profileImageUrl} style={{borderRadius: 100, height: hp(4.5), aspectRatio: 1}}/>
                             <Text style={{fontSize: hp(2.5)}} className="text-neutral-700 font-medium">
-                                {user?.firstName}
+                                {user?.firstName} {user?.lastName}
                             </Text>
                         </View>
                     </TouchableOpacity>
-                    
                 </View>
             ),
             headerRight: () => (
-                <View className="flex-row items-center gap-8">
-                    <Text>Call</Text>
-                    <Text>Video</Text>
+                <View className="flex-row items-center gap-8 p-3">
+                    <FontAwesome name="video-camera" size={24} color="black" />
+                    <FontAwesome name="phone" size={24} color="black" />
                 </View>
             ), 
         }}>

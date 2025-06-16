@@ -11,32 +11,27 @@ export const AuthContextProvider = ({children}) => {
     const currentuser = auth.currentUser;
 
     useEffect(() => {
-       console.log("AuthContextProvider got user: ",user?.email)
 
-       const unsub = onAuthStateChanged(auth, (currentuser) => {
-        if(currentuser){
-            setIsAuthenticated(true);
-            console.log("AuthContextProvider update currentuser: ",currentuser)
-            setUser({...user, email: currentuser.email, id: currentuser.uid });
-            updateUserData(currentuser.uid);
-            
-        }else{
-            setIsAuthenticated(false);
-            setUser(null);
-        }
-       });
-       return unsub;
+        const unsub = onAuthStateChanged(auth, (currentuser) => {
+            if(currentuser){
+                setIsAuthenticated(true);
+                setUser({...user, email: currentuser.email, id: currentuser.uid });
+                updateUserData(currentuser.uid);
+            }else{
+                setIsAuthenticated(false);
+                setUser(null);
+            }
+        });
+
+        return unsub;
     }, []);
 
     const updateUserData = async (userId) => {
-
         const docRef = doc(db,'users', userId);
         const docSnap = await getDoc(docRef);
-        console.log('update user docSnap:', docSnap);
         if(docSnap.exists()){
             let data = docSnap.data();
-            console.log(data);
-            setUser({...user, firstName: data.firstName, profileImageUrl: data.profileImageUrl, id: data.id });
+            setUser(data);
             console.log('update user data:', user);
         }
     }
@@ -45,8 +40,6 @@ export const AuthContextProvider = ({children}) => {
     const login = async (email, password) => {
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
-            console.log('login response.user:', response?.user);
-
             updateUserData(response?.user?.uid);
 
             return {success: true, data: response?.user}
@@ -58,9 +51,8 @@ export const AuthContextProvider = ({children}) => {
 
     const logout = async () => {
         try {
-      
-           await signOut(auth);
-           return {success: true}
+            await signOut(auth);
+            return {success: true}
         }
         catch (e) {
             return {success: false, msg: e.message, error: e}

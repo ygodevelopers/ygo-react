@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-, "components/HomeHeader.jsx", "context/pillarContext.js"  ]
+, "components/HomeHeader.jsx", "context/pillarContext.tsx"  ]
 }
