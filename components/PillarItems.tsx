@@ -44,7 +44,8 @@ export const PillarItems=({item}:{item: Pillar})=> {
     const handleSavePillar = async() => {
         if(subpillar){
             const newSub: Pillar = {
-            id: uuidv4(),
+            //get uuid with capital letter
+            id: uuidv4().toUpperCase(),
             title: pillarname,
             icon: selectedicon,
             color: selectedColor,
@@ -75,10 +76,10 @@ export const PillarItems=({item}:{item: Pillar})=> {
         // setModalNewVisible(false);
         setModalEditVisible(false)
         setModalNewVisible(true);
-        console.log("handleSubPillar", item);
+     
     };
 
-    console.log("item.icon", item?.icon);
+
     return (
         <>
             <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
@@ -112,24 +113,13 @@ export const PillarItems=({item}:{item: Pillar})=> {
                             <Text>Save</Text>
                         </TouchableOpacity>
                     </View>
-                    <NewPillar />  
-
+                    <NewPillar />
                 </View>
             </Modal>
 
             <Modal visible={modalEditVisible} animationType="slide">
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 20,marginTop: 20  }}>
-                        <TouchableOpacity onPress={() => setModalEditVisible(false)}>    
-                            <Text style={styles.title}>{"<"}Pillars</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.icon}>{item?.icon + item?.title}</Text>
-                        <TouchableOpacity onPress={() => handleSubPillar()}>    
-                            <Text style={styles.title}>➕</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {item && <PillarDetail item={item} />}
-
+                    {item && <PillarDetail item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}/>}
                 </View>
             </Modal>
         </>
