@@ -1,7 +1,7 @@
 import CustomKeyboardView from '@/components/CustomKeyboardView';
 import { useAuth } from '@/context/authContext';
-import { contactCollection } from '@/firebaseConfig';
-import { Contact } from '@/types';
+import { contactCollection, userRef } from '@/firebaseConfig';
+import { Contact, User } from '@/types';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -13,8 +13,8 @@ export default function AddContact()  {
     const router = useRouter();
     const {user} = useAuth();
     const [email, onChangeEmail] = useState<string>();
-    const [contacts, setContacts] = useState<Contact[]>();
-    
+    // const [contacts, setContacts] = useState<Contact[]>();
+    const [userContacts, setUserContacts] = useState<User[]>();
 
     useEffect(() => {
         getContacts();
@@ -27,11 +27,22 @@ export default function AddContact()  {
             const q = query(contactCollection, where('ownerId', '==', user.id));
             const qSnapshot = await getDocs(q);
             qSnapshot.forEach((doc) => {contactsContainer.push(doc.data() as Contact)});
-            setContacts(contactsContainer);
+            getUsersFromContacts(contactsContainer);
         } catch (error) {
             console.error("Error fetching contact:", error);
         }
     }
+
+    const getUsersFromContacts = async (contacts: Contact[]) => {
+        const userContainer : User[] = [];
+        contacts.forEach(async (contact) => {
+            const q = query(userRef, where('id', '==', contact.contactUserId));
+            const qSnapshot = await getDocs(q);
+            qSnapshot.forEach((doc) => {userContainer.push(doc.data() as User)});
+            setUserContacts(userContainer);
+        })  
+    }
+
 
     const verifyEmail = () => {
     if (!email) {
@@ -60,11 +71,11 @@ export default function AddContact()  {
                 <TextInput onChangeText={onChangeEmail} style={styles.input}/>
                 <Button title='Search' onPress={handleSearch}/>
                 {
-                    contacts && 
+                    userContacts && 
                     <AlphabetList
-                        data={contacts.map((contact) => ({
+                        data={userContacts.map((contact) => ({
                             key: contact.id!,
-                            value: contact.contactUserId, // or contact.email, depending on what you want to display
+                            value: contact.firstName, // or contact.email, depending on what you want to display
                             ...contact
                         }))}
                         indexLetterStyle={{ 
@@ -73,7 +84,7 @@ export default function AddContact()  {
                         }}
                         renderCustomItem={(item) => (
                             <View>
-                                <Text>{item.value}</Text>
+                                <Text>{item.value} {item.lastName}</Text>
                             </View>
                         )}
                     />
