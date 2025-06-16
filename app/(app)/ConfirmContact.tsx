@@ -4,9 +4,10 @@ import { useAuth } from '@/context/authContext';
 import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, Thread, User } from '@/types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { addDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
+import { doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button, View} from 'react-native';
+import { v4 } from "uuid";
 
 export default function ConfirmContact() {
     const {user} = useAuth();
@@ -51,7 +52,7 @@ export default function ConfirmContact() {
                 contactUserId: contact.id,
                 ownerId: user.id,
                 pillarId: [selectedPillar ? selectedPillar.id : ""],
-                id: contactRef.id
+                id: v4().toUpperCase()
             };
 
             try {
@@ -64,6 +65,9 @@ export default function ConfirmContact() {
             }
         }
     }
+
+
+    //TODO: Take this out and put it into util be able to call it from contactView.
 
     const createThread = async () => {
         const threadRef = doc(threadsCollection); 
