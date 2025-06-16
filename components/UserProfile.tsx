@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Switch } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "@/context/authContext"
+import uploadImageToFirebase from "@/components/ImageUploadType";
+import { db } from "@/firebaseConfig";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 
 const { height, width } = Dimensions.get("window");
@@ -12,36 +15,73 @@ export default function UserProfile() {
 
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [isEnabled, setIsEnabled] = useState(false);
-  const {logout, user} = useAuth();
+  const { logout, user } = useAuth();
 
-  const handleLogout=async()=>{
+  const handleLogout = async () => {
     await logout()
-    console.log("logout success: ", user);
   }
 
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchProfileImage = async () => {
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.id));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+
+          if (data?.profileImageUrl && typeof data.profileImageUrl === "string") {
+              const finalUrl = data.profileImageUrl.includes("?alt=media")
+              ? data.profileImageUrl
+              : `${data.profileImageUrl}?alt=media`;
+            setProfileImage(finalUrl);
+          } else {
+            console.warn("profileImageUrl is missing or invalid");
+          }
+        }
+      } catch (err) {
+        console.error("Error loading profile image:", err);
+      }
+    };
+
+    fetchProfileImage();
+  }, [user?.uid]);
 
   const handleImagePicker = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      Alert.alert("Permissions required", "Access to the gallery is needed to select an image.");
-      return;
-    }
+  if (!permissionResult.granted) {
+    Alert.alert("Permissions required", "Access to the gallery is needed to select an image.");
+    return;
+  }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 1,
+  });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const selectedImageUri = result.assets[0].uri;
       setProfileImage(selectedImageUri);
+      try {
+        const downloadUrl = await uploadImageToFirebase(selectedImageUri, "profile");
+        const userDocRef = doc(db, "users", user.id);
+        const finalDownloadUrl = downloadUrl.includes("?alt=media")
+            ? downloadUrl
+            : `${downloadUrl}?alt=media`;
+      await updateDoc(userDocRef, {
+            profileImageUrl: finalDownloadUrl,
+      });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        Alert.alert("Error", "imagen din not uploaded");
+      }
     }
   };
 
- return (
+  return (
     <View style={styles.container}>
 
       {/* profile picture */}
@@ -109,12 +149,12 @@ export default function UserProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2", 
+    backgroundColor: "#f2f2f2",
   },
   profileHeader: {
     height: height * 0.2,
-    width: width, 
-    backgroundColor: "#ffffff", 
+    width: width,
+    backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -175,7 +215,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#ccc", 
+    backgroundColor: "#ccc",
     marginRight: 12,
   },
   buttonText: {
