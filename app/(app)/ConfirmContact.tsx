@@ -4,7 +4,7 @@ import { useAuth } from '@/context/authContext';
 import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, Thread, User } from '@/types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { addDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
+import { doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button, View} from 'react-native';
 
@@ -35,16 +35,44 @@ export default function ConfirmContact() {
     }
 
 
+    const checkContact = async (): Promise<boolean> => {
+        try {
+            const q = query(contactCollection, where('ownerId', '==', user.id), where('contactUserId', '==', contact?.id));
+            const qSnapshot = await getDocs(q);
+            if (qSnapshot.empty) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+
     // TODO: Should I check to see if the contact has already been added?
     // Create thread with contact? Why is the contact id handled differently?
     // Should messages collection be created as just left empty? or wait until first message to create?
     const handleSaveContact = async () => {
+        checkContact().then((valid) => {
+            if(valid){
+                saveContact();
+            }
+            else{
+                alert('Cant add same contact!');
+            }
+        })
+    }
+
+    const saveContact = async () => {
         if(contact?.id == user.id) {
             alert("cannot add yourself as a contact");
             return;
         }
 
         if(contact) {
+
             const contactRef = doc(contactCollection);
 
             const contactDoc : Contact = {

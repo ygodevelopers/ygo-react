@@ -34,7 +34,7 @@ export default function AddContact()  {
     return (
         <CustomKeyboardView>
             <View className='flex-1 flex-col justify-center items-center'>
-                <TextInput onChangeText={onChangeEmail} style={styles.input}/>
+                <TextInput onChangeText={onChangeEmail} style={styles.input} placeholder='Enter an Email' keyboardType='email-address'/>
                 <Button title='Search' onPress={handleSearch}/>
             </View>
         </CustomKeyboardView>
