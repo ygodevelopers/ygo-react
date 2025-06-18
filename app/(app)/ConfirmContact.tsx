@@ -3,10 +3,12 @@ import { SelectPillarDropDown } from '@/components/SelectPillarDropDown';
 import { useAuth } from '@/context/authContext';
 import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, Thread, User } from '@/types';
+import { createThread } from '@/utils/chatService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button, View} from 'react-native';
+import { v4 } from "uuid";
 
 export default function ConfirmContact() {
     const {user} = useAuth();
@@ -79,36 +81,21 @@ export default function ConfirmContact() {
                 contactUserId: contact.id,
                 ownerId: user.id,
                 pillarId: [selectedPillar ? selectedPillar.id : ""],
-                id: contactRef.id
+                id: v4().toUpperCase()
             };
 
             try {
                 const docRef = await setDoc(contactRef, contactDoc);
-                createThread();
+                
+                createThread(contact, user).then((threadID) => {
+                    console.log(threadID);
+                }); 
+
                 router.replace('/(app)/(tabs)/chats');
 
             } catch (error) {
                 console.error('Error creating contact:', error);
             }
-        }
-    }
-
-    const createThread = async () => {
-        const threadRef = doc(threadsCollection); 
-
-        const thread : Omit<Thread, "firstMessageId"|"lastMessage"> = {
-            lastUpdated: serverTimestamp() as Timestamp,
-            uids: [user.id, contact!.id],
-            users: [user, contact],
-            creatorId: user.id,
-            id: threadRef.id 
-        };
-
-        try {
-            await setDoc(threadRef, thread);
-            console.log("Thread created with ID: ", threadRef.id);
-        } catch (error) {
-            console.error('Error creating thread:', error);
         }
     }
 
