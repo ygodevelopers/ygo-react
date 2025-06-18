@@ -11,7 +11,7 @@ import { useAuth } from "@/context/authContext";
 
 export default function SingUp() {
   const router = useRouter();
-  const [loading, setLoadong] = useState(false);
+  const [loading, setLoading] = useState(false);
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const usernameRef = useRef("");
@@ -19,6 +19,8 @@ export default function SingUp() {
 
   const {register} = useAuth();
 
+
+  // TODO: Need to confirm unique email address and handle it. 
   const handleRegister = async () => {
     if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileRef.current) {
       Alert.alert('Sign Up', "Please fill all the fields!");
@@ -41,7 +43,7 @@ export default function SingUp() {
           paddingHorizontal: wp(5),
           justifyContent: "flex-start",
           alignItems: "center",
-         }}
+        }}
       >
         <View>
           <Image style={{ height: hp(20) }} resizeMode='contain' source={require('../assets/images/Login-background/Group6.png')} />

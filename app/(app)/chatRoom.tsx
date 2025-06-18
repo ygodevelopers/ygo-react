@@ -10,6 +10,7 @@ import { subscribeToMessages } from '@/utils/chatService';
 import { useAuth } from '@/context/authContext';
 import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where, serverTimestamp, Timestamp} from 'firebase/firestore';
 import { userRef, db} from '@/firebaseConfig';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ChatRoom() {
     const {threadID, contactID} = useLocalSearchParams();
@@ -70,6 +71,7 @@ export default function ChatRoom() {
             console.error("User or contactID is missing, cannot create message.");
             return null; // Or throw an error
         }
+
         const message : Message = {
             fromId: user.id,
             toId: contactID as string,
@@ -107,6 +109,7 @@ export default function ChatRoom() {
 
             // add message to messages collection.
             await setDoc(messageRef, message);
+
         } catch (err) {
             console.log("Error sending message:", err);
         }
@@ -128,7 +131,7 @@ export default function ChatRoom() {
                     <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
                         <TextInput placeholder='Type message...' className='flex-1 mr-2' style={{fontSize: hp(2)}} onChangeText={(text) => {setUserMessage(text)}} value={userMessage}/>
                         <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
-                            <Text>Send</Text>
+                            <FontAwesome name="send" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
                 </View>

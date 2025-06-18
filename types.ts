@@ -12,12 +12,13 @@ export type User = {
     }
     profileImageScale?: number, 
     profileImageUrl?: string, 
-    token: string
+    token?: string,
+    publicKeyBase64?: string
 }
 
 export type Contact = {
     contactUserId: User["id"], 
-    id: string, 
+    id?: string, 
     ownerId: User["id"], 
     pillarId: Array<string>
 }
@@ -25,13 +26,15 @@ export type Contact = {
 export type Thread = {
     chatName?: string,
     encrtyptedKeys?: Map<string, string>, 
-    firstMessageId: string, 
+    firstMessageId?: string, 
     id: string, 
-    lastMessage: Message, 
+    lastMessage?: Message, 
     lastUpdated: Timestamp,
     pillarId?: Array<string>,
     uids: Array<User["id"]>,
-    users: Array<User>
+    users: Array<User>,
+    pillarID?: string, 
+    creatorId: User["id"]
 }
 
 export type Message = {
