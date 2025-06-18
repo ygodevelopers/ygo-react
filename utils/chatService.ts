@@ -1,6 +1,7 @@
-import { Message } from "@/types";
-import { db } from "@/firebaseConfig";
-import { collection, doc, orderBy, query, onSnapshot, Unsubscribe } from "firebase/firestore";
+import { Message, Thread, User } from "@/types";
+import { db, threadsCollection } from "@/firebaseConfig";
+import { collection, doc, orderBy, query, onSnapshot, Unsubscribe, serverTimestamp, Timestamp, setDoc } from "firebase/firestore";
+import { useAuth } from "@/context/authContext";
 
 export const subscribeToMessages = (
     threadID: string, 
@@ -29,4 +30,24 @@ export const subscribeToMessages = (
         // Return a no-op unsubscribe function in case of error
         return () => {};
     }
+}
+
+export const createThread = async (contact: User, user: User) : Promise<string> => {
+        const threadRef = doc(threadsCollection); 
+
+
+        const thread : Omit<Thread, "firstMessageId"|"lastMessage"> = {
+            lastUpdated: serverTimestamp() as Timestamp,
+            uids: [user.id, contact!.id],
+            users: [user, contact],
+            creatorId: user.id,
+            id: threadRef.id 
+        };
+
+        try {
+            await setDoc(threadRef, thread);
+            return threadRef.id;
+        } catch (error) {
+            return error instanceof Error ? error.message : String(error);
+        }
 }

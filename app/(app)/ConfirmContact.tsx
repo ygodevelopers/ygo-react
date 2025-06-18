@@ -3,6 +3,7 @@ import { SelectPillarDropDown } from '@/components/SelectPillarDropDown';
 import { useAuth } from '@/context/authContext';
 import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, Thread, User } from '@/types';
+import { createThread } from '@/utils/chatService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -57,34 +58,16 @@ export default function ConfirmContact() {
 
             try {
                 const docRef = await setDoc(contactRef, contactDoc);
-                createThread();
+                
+                createThread(contact, user).then((threadID) => {
+                    console.log(threadID);
+                }); 
+
                 router.replace('/(app)/(tabs)/chats');
 
             } catch (error) {
                 console.error('Error creating contact:', error);
             }
-        }
-    }
-
-
-    //TODO: Take this out and put it into util be able to call it from contactView.
-
-    const createThread = async () => {
-        const threadRef = doc(threadsCollection); 
-
-        const thread : Omit<Thread, "firstMessageId"|"lastMessage"> = {
-            lastUpdated: serverTimestamp() as Timestamp,
-            uids: [user.id, contact!.id],
-            users: [user, contact],
-            creatorId: user.id,
-            id: threadRef.id 
-        };
-
-        try {
-            await setDoc(threadRef, thread);
-            console.log("Thread created with ID: ", threadRef.id);
-        } catch (error) {
-            console.error('Error creating thread:', error);
         }
     }
 

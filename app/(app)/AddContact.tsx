@@ -2,12 +2,13 @@ import CustomKeyboardView from '@/components/CustomKeyboardView';
 import { useAuth } from '@/context/authContext';
 import { contactCollection, userRef } from '@/firebaseConfig';
 import { Contact, User } from '@/types';
+import { createThread } from '@/utils/chatService';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import {View, Button, StyleSheet, Text} from 'react-native';
+import {View, Button, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import {AlphabetList} from 'react-native-section-alphabet-list';
+import {AlphabetList, IData} from 'react-native-section-alphabet-list';
 
 export default function AddContact()  {
     const router = useRouter();
@@ -45,24 +46,37 @@ export default function AddContact()  {
 
 
     const verifyEmail = () => {
-    if (!email) {
-        alert("Please enter an email address");
-        return false;
-    }
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if(regex.test(email)){
-        return true;
-    } else {
-        alert("Please enter a valid email");
-        return false;
-    }
-}
+        if (!email) {
+            alert("Please enter an email address");
+            return false;
+        }
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if(regex.test(email)){
+            return true;
+        } else {
+            alert("Please enter a valid email");
+            return false;
+        }
+    }   
 
 
     const handleSearch = () => {
         if(verifyEmail()) {
             router.push({pathname: '/(app)/ConfirmContact', params: {email: email}})
         }
+    }
+
+    const sendToChatRoom = (item: IData) => {
+        const contact : User = {
+            id: item.key, 
+            firstName: item.value,
+            lastName: item.lastName,
+            email: item.email,
+        };
+
+        createThread(contact, user).then((threadID) => {
+            router.replace({pathname: '/(app)/chatRoom', params: {threadID: threadID, contactID: contact.id}});
+        })
     }
 
     return (
@@ -83,9 +97,12 @@ export default function AddContact()  {
                             fontSize: 15,
                         }}
                         renderCustomItem={(item) => (
-                            <View>
-                                <Text>{item.value} {item.lastName}</Text>
-                            </View>
+                            <TouchableOpacity onPress={() => {sendToChatRoom(item)}}>
+                                <View>
+                                    <Text>{item.value} {item.lastName}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            
                         )}
                     />
                 }
@@ -93,6 +110,9 @@ export default function AddContact()  {
         </CustomKeyboardView>
     )
 }
+
+
+
 
 const styles = StyleSheet.create({
     input: {
