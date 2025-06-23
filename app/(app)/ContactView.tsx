@@ -1,9 +1,9 @@
 import { ContactBanner } from "@/components/ContactBanner";
 import { useAuth } from "@/context/authContext";
 import { userRef } from "@/firebaseConfig";
-import { User, Pillar } from "@/types";
+import { User, Pillar, Thread } from "@/types";
 import { useLocalSearchParams } from "expo-router";
-import { getDocs, query, where, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { getDocs, query, where, updateDoc, doc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -69,13 +69,32 @@ export default function ContactView() {
             []
     );
 
+
     const handlePillarChange = async (pillarID : String) => {
         const threadRef = doc(db, "threads", threadID as string);
+        const threadSnapshot = await getDoc(threadRef);
+
+        const thread : Thread = threadSnapshot.data() as Thread;
+
+
+        Pillars.forEach((pillar: Pillar) => {
+            thread.pillarId?.forEach(async (threadPillar : string) => {
+                if(pillar.id == threadPillar){
+                    await updateDoc(threadRef, 
+                        {
+                            pillarId: arrayRemove(threadPillar)
+                        }
+                    )
+                }
+            })
+        })
+
         await updateDoc(threadRef, 
             {
                 pillarId: arrayUnion(pillarID)
             }
         )
+
         bottomSheetRef.current?.close();
     }
     

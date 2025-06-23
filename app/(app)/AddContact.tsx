@@ -2,7 +2,6 @@ import CustomKeyboardView from '@/components/CustomKeyboardView';
 import { useAuth } from '@/context/authContext';
 import { contactCollection, userRef } from '@/firebaseConfig';
 import { Contact, User } from '@/types';
-import { createThread } from '@/utils/chatService';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -14,7 +13,6 @@ export default function AddContact()  {
     const router = useRouter();
     const {user} = useAuth();
     const [email, onChangeEmail] = useState<string>();
-    // const [contacts, setContacts] = useState<Contact[]>();
     const [userContacts, setUserContacts] = useState<User[]>();
 
     useEffect(() => {
@@ -67,14 +65,7 @@ export default function AddContact()  {
     }
 
     const sendToChatRoom = (item: IData) => {
-        const contact : User = {
-            id: item.key, 
-            firstName: item.value,
-            lastName: item.lastName,
-            email: item.email,
-        };
-
-        router.replace({pathname: '/(app)/chatRoom', params: {contactID: contact.id}});
+        router.replace({pathname: '/(app)/chatRoom', params: {contactID: item.key}});
     }
 
     return (
