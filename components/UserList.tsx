@@ -18,6 +18,7 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     useEffect(()=>{
         if(user?.id){
             getThreads();
+
         }
     },[])
 
@@ -37,14 +38,28 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
         querySnapshot.forEach(doc => {
             const thread = doc.data() as Thread;
             // If pid is specified, filter manually based on pillarId array
-            console.log("getThreads id: ", pid);
             if (!pid || (thread.pillarId && thread.pillarId.includes(pid))) {
                 threadsRef.push(thread);
             }
-            // threadsRef.push(doc.data() as Thread);
         })
+
+        threadsRef.sort(sortThreads);
         setThreads(threadsRef);
     }
+
+    const sortThreads = (threadOne: Thread, threadTwo: Thread) => {
+        if(threadOne.lastUpdated.seconds < threadTwo.lastUpdated.seconds){
+
+            console.log(`${threadOne.lastUpdated.seconds} is greater than ${threadTwo.lastUpdated.seconds}`);
+            return 1;
+        }
+        if(threadOne.lastUpdated.seconds > threadTwo.lastUpdated.seconds){
+            return -1;
+        }
+        return 0;
+    }
+
+
 
     return (
         <View
@@ -64,12 +79,10 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
                             keyExtractor={(item: Thread, index) => index.toString()}
                             showsVerticalScrollIndicator = {false}
                             renderItem={({item, index})=><UserItems item={item} router={router}/>}
-                            />
-
+                        />
                     </View>
                 ):(
                     <View className="flex item-center">
-                        {/* <ActivityIndicator size="large" /> */}
                         <Text style={{ color: 'gray' }}>No Messages found</Text>
                     </View>
                 )

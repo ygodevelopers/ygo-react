@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useEffect, useState } from "react";
 import { Pillar, Thread, User } from "@/types";
 import { Router } from "expo-router";
