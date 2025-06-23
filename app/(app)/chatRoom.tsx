@@ -12,53 +12,56 @@ import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where,
 import { userRef, db} from '@/firebaseConfig';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { createThread } from '@/utils/chatService';
-import { FirebaseError } from 'firebase/app';
 
 
 export default function ChatRoom() {
-    const {threadID, contactID} = useLocalSearchParams();
+    const {threadID: initialThreadID, contactID} = useLocalSearchParams();
     const router = useRouter();
     const [messages, setMessages] = useState<Message[]>([]); 
     const [userMessage, setUserMessage] = useState<string>('');
     const [contact, setContact] = useState<User>();
     const {user} = useAuth();
-
+    const [threadID, setThreadID] = useState<string | null>(initialThreadID as string || null);
     const [unsubscribeFromMessages, setUnsubscribeFromMessages] = useState<Unsubscribe | null>(null);
 
 
     useEffect(() => {
+        // Only subscribe to messages if we have a threadID
         if (!threadID) {
-            // console.warn("threadID is undefined, cannot subscribe to messages.");
             return;
         }
 
-
-        // Subscribe to messages only once when the component mounts
-        const unsubscribe = subscribeToMessages(threadID as string, (messagesArray) => {
+        // Subscribe to messages only once when the component mounts or threadID changes
+        const unsubscribe = subscribeToMessages(threadID, (messagesArray) => {
             setMessages(messagesArray);
         });
 
         // Store the unsubscribe function
         setUnsubscribeFromMessages(() => unsubscribe);
 
+        // Cleanup function: unsubscribe when threadID changes or component unmounts
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [threadID]); // Re-run when threadID changes
+
+    useEffect(() => {
         // Fetch contact information when the component mounts
         getContact();
+    }, [contactID]);
 
-        // Cleanup function: unsubscribe when the component unmounts
+    useEffect(() => {
+        // Cleanup unsubscribe function when component unmounts
         return () => {
             if (unsubscribeFromMessages) {
                 unsubscribeFromMessages();
-                setUnsubscribeFromMessages(null); // Clear the unsubscribe function
+                setUnsubscribeFromMessages(null);
             }
         };
-    }, [threadID, contactID]); // Add dependencies to ensure effect re-runs if threadID or contactID changes
+    }, []);
 
-
-
-
-
-    // Move getContact inside useEffect or make sure it's called only when needed
-    // If contact is not changing often, it can be called once on mount
     const getContact = async () => {
         if (!contactID) {
             console.warn("contactID is undefined, cannot fetch contact.");
@@ -73,11 +76,10 @@ export default function ChatRoom() {
         }
     }
 
-
     const createMessage = () => {
         if (!user || !contactID) {
             console.error("User or contactID is missing, cannot create message.");
-            return null; // Or throw an error
+            return null;
         }
 
         const message : Message = {
@@ -98,9 +100,19 @@ export default function ChatRoom() {
     const handleSendMessage = async () => {
         try {
             const message = createMessage();
-            if (!message) return; // If message creation failed
+            if (!message) return;
 
-            const threadDoc = doc(db, 'threads' ,threadID as string);
+            let currentThreadID = threadID;
+
+            // If no thread exists, create one first
+            if (!currentThreadID) {
+                console.log("No thread exists, creating new thread...");
+                currentThreadID = await createThread(user!.id, contact!);
+                setThreadID(currentThreadID);
+                console.log("Thread created with ID:", currentThreadID);
+            }
+
+            const threadDoc = doc(db, 'threads', currentThreadID);
             const messageRef = doc(collection(threadDoc, 'messages'));
 
             message.id = messageRef.id;
@@ -108,46 +120,29 @@ export default function ChatRoom() {
             // Immediately change UI (optimistic update)
             setMessages((prevMessages) => [...prevMessages, message]);
 
-
-
             // Update Thread's last message
             await updateDoc(threadDoc, {
                 lastMessage: message,
                 lastUpdated: message.timestamp
             });
 
-            try{
+            if (messages.length === 0) {
                 await updateDoc(threadDoc, {
                     firstMessageId: message.id
                 });
+            }           
 
-            } catch(error) {
-                if(error.code === 'not-found'){
-                    await setDoc(threadDoc, {
-                        firstMessageId: message.id
-                    })
-                }   
-            }
-
-        
-
-
-            // add message to messages collection.
             await setDoc(messageRef, message);
 
         } catch (err) {
             console.log("Error sending message:", err);
         }
-
     }
     
-    // TODO: FIX KEYBOARD SCROLLING ONCE CUSTOM COMPONENT IS CREATED
-
     return (
-
         <View className='flex-1 bg-white'> 
             <StatusBar barStyle={'dark-content'}/>
-            <ChatRoomHeader user={contact!} router={router} threadID={threadID as string}/>
+            <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
             <View className='h-3 border-b border-neutral-300'/>
             <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
                 <View className='flex-1'>
@@ -155,7 +150,13 @@ export default function ChatRoom() {
                 </View>
                 <View style={{marginBottom: hp(2.7)}} className="pt-2">
                     <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
-                        <TextInput placeholder='Type message...' className='flex-1 mr-2' style={{fontSize: hp(2)}} onChangeText={(text) => {setUserMessage(text)}} value={userMessage}/>
+                        <TextInput 
+                            placeholder='Type message...' 
+                            className='flex-1 mr-2' 
+                            style={{fontSize: hp(2)}} 
+                            onChangeText={(text) => {setUserMessage(text)}} 
+                            value={userMessage}
+                        />
                         <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
                             <FontAwesome name="send" size={24} color="black" />
                         </TouchableOpacity>
