@@ -8,9 +8,12 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { Message, User } from '@/types';
 import { subscribeToMessages } from '@/utils/chatService';
 import { useAuth } from '@/context/authContext';
-import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where, serverTimestamp, Timestamp} from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where, serverTimestamp, Timestamp, UpdateData} from 'firebase/firestore';
 import { userRef, db} from '@/firebaseConfig';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { createThread } from '@/utils/chatService';
+import { FirebaseError } from 'firebase/app';
+
 
 export default function ChatRoom() {
     const {threadID, contactID} = useLocalSearchParams();
@@ -25,9 +28,10 @@ export default function ChatRoom() {
 
     useEffect(() => {
         if (!threadID) {
-            console.warn("threadID is undefined, cannot subscribe to messages.");
+            // console.warn("threadID is undefined, cannot subscribe to messages.");
             return;
         }
+
 
         // Subscribe to messages only once when the component mounts
         const unsubscribe = subscribeToMessages(threadID as string, (messagesArray) => {
@@ -48,6 +52,10 @@ export default function ChatRoom() {
             }
         };
     }, [threadID, contactID]); // Add dependencies to ensure effect re-runs if threadID or contactID changes
+
+
+
+
 
     // Move getContact inside useEffect or make sure it's called only when needed
     // If contact is not changing often, it can be called once on mount
@@ -101,11 +109,28 @@ export default function ChatRoom() {
             setMessages((prevMessages) => [...prevMessages, message]);
 
 
+
             // Update Thread's last message
             await updateDoc(threadDoc, {
                 lastMessage: message,
                 lastUpdated: message.timestamp
             });
+
+            try{
+                await updateDoc(threadDoc, {
+                    firstMessageId: message.id
+                });
+
+            } catch(error) {
+                if(error.code === 'not-found'){
+                    await setDoc(threadDoc, {
+                        firstMessageId: message.id
+                    })
+                }   
+            }
+
+        
+
 
             // add message to messages collection.
             await setDoc(messageRef, message);
@@ -119,6 +144,7 @@ export default function ChatRoom() {
     // TODO: FIX KEYBOARD SCROLLING ONCE CUSTOM COMPONENT IS CREATED
 
     return (
+
         <View className='flex-1 bg-white'> 
             <StatusBar barStyle={'dark-content'}/>
             <ChatRoomHeader user={contact!} router={router} threadID={threadID as string}/>
