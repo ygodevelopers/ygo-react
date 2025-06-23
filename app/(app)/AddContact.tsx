@@ -74,9 +74,7 @@ export default function AddContact()  {
             email: item.email,
         };
 
-        createThread(contact, user).then((threadID) => {
-            router.replace({pathname: '/(app)/chatRoom', params: {threadID: threadID, contactID: contact.id}});
-        })
+        router.replace({pathname: '/(app)/chatRoom', params: {contactID: contact.id}});
     }
 
     return (

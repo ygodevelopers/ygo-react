@@ -31,7 +31,6 @@ export default function ChatRoom() {
             return;
         }
 
-        // Subscribe to messages only once when the component mounts or threadID changes
         const unsubscribe = subscribeToMessages(threadID, (messagesArray) => {
             setMessages(messagesArray);
         });
@@ -54,6 +53,9 @@ export default function ChatRoom() {
 
     useEffect(() => {
         // Cleanup unsubscribe function when component unmounts
+        if (!threadID) {
+            return;
+        }
         return () => {
             if (unsubscribeFromMessages) {
                 unsubscribeFromMessages();
@@ -107,12 +109,11 @@ export default function ChatRoom() {
             // If no thread exists, create one first
             if (!currentThreadID) {
                 console.log("No thread exists, creating new thread...");
-                currentThreadID = await createThread(user!.id, contact!);
+                currentThreadID = await createThread(contact!, user);
                 setThreadID(currentThreadID);
-                console.log("Thread created with ID:", currentThreadID);
             }
 
-            const threadDoc = doc(db, 'threads', currentThreadID);
+            const threadDoc = doc(db, 'threads', currentThreadID!);
             const messageRef = doc(collection(threadDoc, 'messages'));
 
             message.id = messageRef.id;
