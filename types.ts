@@ -13,7 +13,8 @@ export type User = {
     profileImageScale?: number, 
     profileImageUrl?: string, 
     token?: string,
-    publicKeyBase64?: string
+    publicKeyBase64?: string,
+    activeStatus: boolean,
 }
 
 export type Contact = {
