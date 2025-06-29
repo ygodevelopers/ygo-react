@@ -33,7 +33,6 @@ export type Thread = {
     pillarId?: Array<string>,
     uids: Array<User["id"]>,
     users: Array<User>,
-    creatorId: User["id"]
 }
 
 export type Message = {

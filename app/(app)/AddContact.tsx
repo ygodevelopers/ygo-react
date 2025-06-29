@@ -2,7 +2,6 @@ import CustomKeyboardView from '@/components/CustomKeyboardView';
 import { useAuth } from '@/context/authContext';
 import { contactCollection, userRef } from '@/firebaseConfig';
 import { Contact, User } from '@/types';
-import { createThread } from '@/utils/chatService';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -14,7 +13,6 @@ export default function AddContact()  {
     const router = useRouter();
     const {user} = useAuth();
     const [email, onChangeEmail] = useState<string>();
-    // const [contacts, setContacts] = useState<Contact[]>();
     const [userContacts, setUserContacts] = useState<User[]>();
 
     useEffect(() => {
@@ -35,13 +33,19 @@ export default function AddContact()  {
     }
 
     const getUsersFromContacts = async (contacts: Contact[]) => {
-        const userContainer : User[] = [];
-        contacts.forEach(async (contact) => {
+        const promises = contacts.map(async (contact) => {
             const q = query(userRef, where('id', '==', contact.contactUserId));
             const qSnapshot = await getDocs(q);
-            qSnapshot.forEach((doc) => {userContainer.push(doc.data() as User)});
-            setUserContacts(userContainer);
-        })  
+            const user : User[] = [];
+            qSnapshot.forEach((doc) => {
+                user.push(doc.data() as User);
+            })
+            return user;
+        });
+
+        const result = await Promise.all(promises);
+        const usersContainer : User[] = result.flat();
+        setUserContacts(usersContainer);
     }
 
 
@@ -67,16 +71,7 @@ export default function AddContact()  {
     }
 
     const sendToChatRoom = (item: IData) => {
-        const contact : User = {
-            id: item.key, 
-            firstName: item.value,
-            lastName: item.lastName,
-            email: item.email,
-        };
-
-        createThread(contact, user).then((threadID) => {
-            router.replace({pathname: '/(app)/chatRoom', params: {threadID: threadID, contactID: contact.id}});
-        })
+        router.replace({pathname: '/(app)/chatRoom', params: {contactID: item.key}});
     }
 
     return (

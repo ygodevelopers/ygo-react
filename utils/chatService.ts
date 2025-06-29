@@ -40,7 +40,6 @@ export const createThread = async (contact: User, user: User) : Promise<string> 
             lastUpdated: serverTimestamp() as Timestamp,
             uids: [user.id, contact!.id],
             users: [user, contact],
-            creatorId: user.id,
             id: threadRef.id 
         };
 
