@@ -5,8 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import UserItems from '@/components/UserItems'
 import { Thread } from "@/types";
 import { useRouter} from "expo-router";
-import { getDocs, query, where } from "firebase/firestore";
-import { threadsCollection } from "@/firebaseConfig";
+import { subscribeToThreads } from "@/utils/chatService";
 
 export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     const {user} = useAuth();
@@ -14,51 +13,35 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     const router = useRouter();
     const pid = pillarid ?? null;
 
+    useEffect(()=> {
 
-    useEffect(()=>{
-        if(user?.id){
-            getThreads();
-
-        }
-    },[])
-
-
-    // TODO: Thread last update isn't real time even though messages are. Maybe create a listener for the thread too? 
-    const getThreads = async () => {
-        const threadsRef : Thread[] = [];
-        
-        // Build query conditions
-        const conditions = [where("uids", "array-contains", user?.id)];
-
-        // Construct the query
-        const q = query(threadsCollection, ...conditions);
-
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach(doc => {
-            const thread = doc.data() as Thread;
-            // If pid is specified, filter manually based on pillarId array
-            if (!pid || (thread.pillarId && thread.pillarId.includes(pid))) {
-                threadsRef.push(thread);
-            }
+        const unsubscribe = subscribeToThreads(user.id, (threadsArray) => {
+            threadsArray.sort(sortThreads);
+            setThreads(threadsArray);
         })
 
-        threadsRef.sort(sortThreads);
-        setThreads(threadsRef);
-    }
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [user.id]);
 
     const sortThreads = (threadOne: Thread, threadTwo: Thread) => {
-        if(threadOne.lastUpdated.seconds < threadTwo.lastUpdated.seconds){
-
-            console.log(`${threadOne.lastUpdated.seconds} is greater than ${threadTwo.lastUpdated.seconds}`);
+    
+        const timeOne = threadOne.lastUpdated?.seconds ?? 0;
+        const timeTwo = threadTwo.lastUpdated?.seconds ?? 0;
+        
+        if (timeOne < timeTwo) {
+            console.log(`${timeOne} is less than ${timeTwo}`);
             return 1;
         }
-        if(threadOne.lastUpdated.seconds > threadTwo.lastUpdated.seconds){
+        if (timeOne > timeTwo) {
+            console.log(`${timeOne} is greater than ${timeTwo}`);
             return -1;
         }
         return 0;
     }
-
 
 
     return (

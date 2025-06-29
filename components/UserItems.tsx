@@ -51,7 +51,7 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
             <View className="gap-1">
                 <View className="flex-row justify-between">
                     <Text style={{fontSize: hp(1.8), marginRight: 40}} className="font-semibold text-neutral-500">{contact?.firstName}</Text>
-                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated.toDate().toLocaleDateString()}</Text>
+                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated?.toDate().toLocaleDateString()}</Text>
                 </View>
                 {
                     pillar && 
