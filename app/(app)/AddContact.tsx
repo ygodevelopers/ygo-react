@@ -33,13 +33,19 @@ export default function AddContact()  {
     }
 
     const getUsersFromContacts = async (contacts: Contact[]) => {
-        const userContainer : User[] = [];
-        contacts.forEach(async (contact) => {
+        const promises = contacts.map(async (contact) => {
             const q = query(userRef, where('id', '==', contact.contactUserId));
             const qSnapshot = await getDocs(q);
-            qSnapshot.forEach((doc) => {userContainer.push(doc.data() as User)});
-            setUserContacts(userContainer);
-        })  
+            const user : User[] = [];
+            qSnapshot.forEach((doc) => {
+                user.push(doc.data() as User);
+            })
+            return user;
+        });
+
+        const result = await Promise.all(promises);
+        const usersContainer : User[] = result.flat();
+        setUserContacts(usersContainer);
     }
 
 
