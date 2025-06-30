@@ -48,10 +48,10 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
     return (
         <TouchableOpacity onPress={openChatRoom} className={`flex-row justify-between mx-4 items-center gap-3 mb-4 pb-2 border-b border-neutral-200`}>
             <Image source={contact?.profileImageUrl ? { uri: contact.profileImageUrl } : undefined} style={{borderRadius: 100, height: hp(4.5), aspectRatio: 1}}/>
-            <View className="flex-1 gap-1">
-                <View className="flex-1 flex-row justify-between">
+            <View className="gap-1">
+                <View className="flex-row justify-between">
                     <Text style={{fontSize: hp(1.8), marginRight: 40}} className="font-semibold text-neutral-500">{contact?.firstName}</Text>
-                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated.toDate().toLocaleDateString()}</Text>
+                    <Text style={{fontSize: hp(1.6)}} className="font-medium text-neutral-500">{item.lastUpdated?.toDate().toLocaleDateString()}</Text>
                 </View>
                 {
                     pillar && 
