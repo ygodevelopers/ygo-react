@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,Modal } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
-import { PillarContact } from '../../components/PillarContact';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Stack } from "expo-router";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -10,7 +9,7 @@ import { Image } from "expo-image";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 
-export default function PillarDetail ()  {
+export default function pillarDetail ()  {
   const { pillarId, pillarTitle,pillarIcon, subpillars } = useLocalSearchParams();
   const parsedSubpillars: Pillar[] = JSON.parse(
     Array.isArray(subpillars) ? subpillars[0] : subpillars
@@ -23,11 +22,6 @@ export default function PillarDetail ()  {
   console.log("PillarDetail subpillars: ", hasSubPillars);
   const [modalcontactVisible, setModalContact] = useState(false);
 
-  const handleContacts = () => {
-    setModalContact(true);
-    // setModalEditVisible(false)
-
-};
   return (
     <>
             <Stack.Screen options={{
@@ -45,7 +39,8 @@ export default function PillarDetail ()  {
                <Text style={[styles.icon, { textAlign: 'center', width: '100%' }]}>{pillarIcon} {pillarTitle}</Text>
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => handleContacts()}>   
+                <TouchableOpacity onPress={() => {router.push('/(app)/pillarContact')}}>   
+                
                     <FontAwesome name="plus" size={28} color="purple" />
                 </TouchableOpacity>
             ), 
@@ -79,10 +74,6 @@ export default function PillarDetail ()  {
       <View style={styles.container}>
         <UserList pillarid={Array.isArray(pillarId) ? pillarId[0] : pillarId} />
       </View>
-
-      <Modal visible={modalcontactVisible} animationType="slide">
-        <PillarContact setModalContact={setModalContact}/>
-      </Modal>
     </>
   );
 }

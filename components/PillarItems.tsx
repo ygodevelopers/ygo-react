@@ -1,15 +1,14 @@
-import { Pillar } from '@/types'
-import { ActivityIndicator, Text, TouchableOpacity, View, Image, TextInput,StyleSheet } from "react-native";
-import { Dimensions } from 'react-native';
+import { Pillar } from '@/types';
 import { useEffect, useState } from "react";
-import { Modal } from 'react-native';
+import { Text, TouchableOpacity, View, Image, TextInput,StyleSheet, Dimensions,Modal } from "react-native";
+import { Router } from "expo-router";
+
 import PillarAddColor from '@/components/PillarAddColor';
 import PillarAddIcon from '@/components/PillarAddIcon';
 import {usePillar} from '@/context/pillarContext';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
-// import { PillarDetail } from '@/app/(app)/pillarDetail';
-import { Router } from "expo-router";
+
 
 
 const screenWidth = Dimensions.get('window').width;

@@ -2,20 +2,20 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useRouter } from "expo-router";
 
-export const PillarContact = ({setModalContact}:{setModalContact: (visible: boolean) => void}) => {
+export default function PillarContact() {
   const router = useRouter();
 
   return (
     <>
       {/* Header */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 20 }}>
-        <TouchableOpacity onPress={() => setModalContact(false)}>
+        {/* <TouchableOpacity onPress={() => setModalContact(false)}>
           <Text style={{
             fontSize: hp(1.8),
             letterSpacing: 1,
             textAlign: 'center',
           }}>Cancel</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={{
           fontSize: hp(3),
           letterSpacing: 1,
