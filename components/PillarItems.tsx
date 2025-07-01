@@ -8,14 +8,15 @@ import PillarAddIcon from '@/components/PillarAddIcon';
 import {usePillar} from '@/context/pillarContext';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
-import { PillarDetail } from '@/components/PillarDetail';
+// import { PillarDetail } from '@/app/(app)/pillarDetail';
+import { Router } from "expo-router";
 
 
 const screenWidth = Dimensions.get('window').width;
 const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2; 
 
 
-export const PillarItems=({item}:{item: Pillar})=> {
+export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
 
     const [modalNewVisible, setModalNewVisible] = useState(false);
     const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -36,7 +37,11 @@ export const PillarItems=({item}:{item: Pillar})=> {
             setModalNewVisible(true);
         }
         else {
-            setModalEditVisible(true);
+
+             router.push({pathname: '/pillarDetail', params: {pillarId: item.id, pillarTitle: item.title, pillarIcon:item.icon,subpillars: JSON.stringify(item.subPillars) }});
+            // item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}
+    
+           // setModalEditVisible(true);
         }
         // Add your navigation or action here
     };
@@ -117,11 +122,11 @@ export const PillarItems=({item}:{item: Pillar})=> {
                 </View>
             </Modal>
 
-            <Modal visible={modalEditVisible} animationType="slide">
+            {/* <Modal visible={modalEditVisible} animationType="slide">
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     {item && <PillarDetail item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}/>}
                 </View>
-            </Modal>
+            </Modal> */}
         </>
     );
 }

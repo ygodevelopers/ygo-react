@@ -1,9 +1,9 @@
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { useRouter } from "expo-router";
 
 export const PillarContact = ({setModalContact}:{setModalContact: (visible: boolean) => void}) => {
-
+  const router = useRouter();
 
   return (
     <>
@@ -21,11 +21,12 @@ export const PillarContact = ({setModalContact}:{setModalContact: (visible: bool
           letterSpacing: 1,
           textAlign: 'center',
         }}>Contacts</Text>
-        <View style={{ width: 50 }} /> {/* Spacer to balance 'Cancel' button */}
+        <View style={{ width: 50 }} />
       </View>
       
-      <View>
-        <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20  }]}>Actions</Text>
+      <View style={{flex: 1, width: '100%', alignItems: 'center' }}>
+        <Text style={[styles.title]}>Actions</Text>
+
         <View style={styles.container} >
           <Text style={styles.icon}>🎎</Text>
           <Text style={styles.title}>New Group Chat</Text>
@@ -34,12 +35,14 @@ export const PillarContact = ({setModalContact}:{setModalContact: (visible: bool
           <Text style={styles.icon}>📁</Text>
           <Text style={styles.title}>New Sub-pillar</Text>
         </View>
-        <View style={styles.container} >
-          <Text style={styles.icon}>✉️</Text>
-          <Text style={styles.title}>Add New Contact By Email</Text>
-        </View>
+        <TouchableOpacity onPress={() => {router.push('/AddContact')}}>  
+          <View style={styles.container} >
+            <Text style={styles.icon}>✉️</Text>
+            <Text style={styles.title}>Add New Contact By Email</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-      <View>
+      <View style={{flex: 1, width: '100%', alignItems: 'center' }}>
         <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >CONTACTS:</Text>
         <View style={styles.container} >
           <Text style={styles.icon}>👤</Text>
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
               padding: 10, 
               marginHorizontal: 10,
               marginVertical: 5, 
-              width: 500,
+              width: 350,
               borderWidth: 1,
               borderColor: '#aaa',
               borderRadius: 12,
