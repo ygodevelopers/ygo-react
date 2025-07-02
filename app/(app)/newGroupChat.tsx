@@ -11,22 +11,8 @@ import {usePillar} from '@/context/pillarContext';
 import ContactByPillar from '@/components/contactByPillar';
 
 export default function newGroupChat ()  {
-
-  const [parsedSubpillars, setparsedSubpillars] = useState<Pillar[]|null>([]);
-
   const {         
-    selectedColor, 
-    pillarname, 
-    selectedicon,
-    getPillars,
-    savePillars,
-    modalNewVisible,
-    setModalNewVisible,
-    subpillar,
-    setsubpillar,
-    addSubPillar,
-    currentPillar,
-    setcurrentPillar
+    currentPillar
     } = usePillar();
 
 

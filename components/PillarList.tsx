@@ -13,9 +13,9 @@ import { useRouter} from "expo-router";
 
 export const PillarList = () => {
     const {user} = useAuth();
-    const {getPillars, Pillars} = usePillar();
+    const {getPillars, Pillars, loading} = usePillar();
 
-     const router = useRouter();
+    const router = useRouter();
 
     useEffect(()=>{
           if(user?.id){
@@ -44,7 +44,7 @@ export const PillarList = () => {
             <StatusBar style="light" />      
             {/* <Text>Pillars List</Text>       */}
             {
-                Pillars.length > 0 ? (
+                !loading ? (
                     <View className = "flex-1">
                         <FlatList
                             data = {combinedData}

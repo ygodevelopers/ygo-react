@@ -14,8 +14,6 @@ import {usePillar} from '@/context/pillarContext';
 
 
 export default function pillarDetail ()  {
-  const { pillarId, pillarTitle,pillarIcon, subpillars } = useLocalSearchParams();
-  const [parsedSubpillars, setparsedSubpillars] = useState<Pillar[]|null>([]);
 
   const {         
     selectedColor, 
@@ -32,12 +30,6 @@ export default function pillarDetail ()  {
     setcurrentPillar
     } = usePillar();
 
-  useEffect(()=>{
-        setparsedSubpillars( JSON.parse(
-            Array.isArray(subpillars) ? subpillars[0] : subpillars
-      ));
-    },[])
- 
 
   const router = useRouter();
 
@@ -116,7 +108,7 @@ export default function pillarDetail ()  {
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
       <View style={styles.container}>
-        <UserList pillarid={Array.isArray(pillarId) ? pillarId[0] : pillarId} />
+        <UserList pillarid={currentPillar.id} />
       </View>
     </>
   );

@@ -17,9 +17,11 @@ export const PillarContextProvider = ({children}) => {
      
     const [Pillars, setPillars] = useState([]);
     const [currentPillar, setcurrentPillar] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const getPillars = async()=>{
         //fetch pillars
+        setLoading(true);
         const q = query(pillarRef, where('userId','==',user?.id));
         const querySnapshot = await getDocs(q);
         let data = [];
@@ -28,6 +30,7 @@ export const PillarContextProvider = ({children}) => {
         })
         console.log("fetch Pillars: ", data);
         setPillars(data);
+        setLoading(false);
     }
     
     //save pillars to firestore
