@@ -1,4 +1,4 @@
-import { Pillar } from "@/types";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { getDocs, setDoc, doc, query, where, updateDoc ,arrayUnion } from 'firebase/firestore'
 import { pillarRef } from '@/firebaseConfig'
@@ -11,12 +11,17 @@ export const PillarContextProvider = ({children}) => {
     const [selectedColor, setSelectedColor] = useState("orange");
     const [pillarname, setpillarName] = useState('');
     const [selectedicon,setselectedicon] = useState('📸');
+    const [modalNewVisible, setModalNewVisible] = useState(false);
+    const [subpillar, setsubpillar] = useState(false);
     const {user} = useAuth();
      
     const [Pillars, setPillars] = useState([]);
+    const [currentPillar, setcurrentPillar] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const getPillars = async()=>{
         //fetch pillars
+        setLoading(true);
         const q = query(pillarRef, where('userId','==',user?.id));
         const querySnapshot = await getDocs(q);
         let data = [];
@@ -25,6 +30,7 @@ export const PillarContextProvider = ({children}) => {
         })
         console.log("fetch Pillars: ", data);
         setPillars(data);
+        setLoading(false);
     }
     
     //save pillars to firestore
@@ -75,6 +81,12 @@ export const PillarContextProvider = ({children}) => {
             setPillars,
             getPillars,
             savePillars,
+            modalNewVisible,
+            setModalNewVisible,
+            subpillar,
+            setsubpillar,
+            currentPillar,
+            setcurrentPillar,
             addSubPillar
             }}>
             {children}
