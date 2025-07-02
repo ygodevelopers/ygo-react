@@ -38,9 +38,6 @@ export default function pillarDetail ()  {
       ));
     },[])
  
-  // const parsedSubpillars: Pillar[] = JSON.parse(
-  //   Array.isArray(subpillars) ? subpillars[0] : subpillars
-  // );
 
   const router = useRouter();
 
@@ -63,7 +60,7 @@ export default function pillarDetail ()  {
               </View>
           ),
           headerTitle: () => (
-              <Text style={[styles.icon, { textAlign: 'center', width: '100%' }]}>{pillarIcon} {pillarTitle}</Text>
+              <Text style={[styles.icon, { textAlign: 'center', width: '100%' }]}>{currentPillar.icon} {currentPillar.Title}</Text>
           ),
           headerRight: () => (
               <TouchableOpacity onPress={() => {router.push('/(app)/pillarContact')}}>   
@@ -79,20 +76,7 @@ export default function pillarDetail ()  {
         {hasSubPillars ? (
           // currentPillar?.subPillars.map((sub:Pillar, index:number) => (
             <>
-              {/* <View key={sub.id || index} style={{
-                      flexDirection: 'row',
-                      padding: 10, 
-                      marginHorizontal: 10,
-                      marginVertical: 5, 
-                      width: 200,
-                      borderWidth: 1,
-                      borderColor: '#aaa',
-                      borderRadius: 12,
-                      gap: 8,}} >
-                <Text style={styles.icon}>{sub.icon}</Text>
-                <Text style={styles.title}>{sub.title}</Text>
-              </View> */}
-              
+
               <View className = "flex-1">
                   <FlatList
                       data = {currentPillar?.subPillars}
