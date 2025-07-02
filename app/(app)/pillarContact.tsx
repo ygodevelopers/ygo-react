@@ -1,9 +1,32 @@
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useRouter } from "expo-router";
+import {usePillar} from '@/context/pillarContext';
 
 export default function PillarContact() {
   const router = useRouter();
+
+     const {         
+          selectedColor, 
+          pillarname, 
+          selectedicon,
+          getPillars,
+          savePillars,
+          modalNewVisible,
+          setModalNewVisible,
+          subpillar,
+          setsubpillar,
+          addSubPillar
+          } = usePillar();
+
+      const handleSubPillar = () => {
+        setsubpillar(true);
+        // savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
+        // getPillars();
+        // setModalNewVisible(false);
+        setModalNewVisible(true);
+     
+    };
 
   return (
     <>
@@ -31,10 +54,12 @@ export default function PillarContact() {
           <Text style={styles.icon}>🎎</Text>
           <Text style={styles.title}>New Group Chat</Text>
         </View>
-        <View style={styles.container} >
-          <Text style={styles.icon}>📁</Text>
-          <Text style={styles.title}>New Sub-pillar</Text>
-        </View>
+         <TouchableOpacity onPress={() => handleSubPillar()}>  
+          <View style={styles.container} >
+            <Text style={styles.icon}>📁</Text>
+            <Text style={styles.title}>New Sub-pillar</Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => {router.push('/AddContact')}}>  
           <View style={styles.container} >
             <Text style={styles.icon}>✉️</Text>

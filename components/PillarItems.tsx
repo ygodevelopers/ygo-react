@@ -16,10 +16,6 @@ const ITEM_WIDTH = (screenWidth - 16 * 2 - 16) / 2;
 
 
 export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
-
-    const [modalNewVisible, setModalNewVisible] = useState(false);
-    const [modalEditVisible, setModalEditVisible] = useState(false);
-    const [subpillar, setsubpillar] = useState(false);
     
     const {         
         selectedColor, 
@@ -27,7 +23,13 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
         selectedicon,
         getPillars,
         savePillars,
-        addSubPillar
+        modalNewVisible,
+        setModalNewVisible,
+        subpillar,
+        setsubpillar,
+        addSubPillar,
+        currentPillar,
+        setcurrentPillar
         } = usePillar();
 
     const handlePress = () => {
@@ -38,6 +40,7 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
         else {
 
              router.push({pathname: '/pillarDetail', params: {pillarId: item.id, pillarTitle: item.title, pillarIcon:item.icon,subpillars: JSON.stringify(item.subPillars) }});
+             setcurrentPillar(item);
             // item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}
     
            // setModalEditVisible(true);
@@ -55,34 +58,27 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
             color: selectedColor,
             type: 'sub',
             subPillars: [],
-            userId: item?.userId, // Assuming you have a userId in the item
+            userId: currentPillar?.userId, // Assuming you have a userId in the item
             };
-            const result = await addSubPillar(item.id, newSub);
+            console.log("subpillar adding", currentPillar.id);
+            console.log("subpillar newSub", newSub);
+            const result = await addSubPillar(currentPillar.id, newSub);
             if (result.success) {
                 console.log("SubPillar added!");
+                let item = currentPillar;
+                item.subPillars.push(newSub);
+                setcurrentPillar(item);
             } else {
-                console.error("Failed:", result.msg);
+                console.error("SubPillar Failed:", result.msg);
             }
             setsubpillar(false);
-            setModalEditVisible(true);
 
         }else{
-            await savePillars(uuidv4(), pillarname, selectedColor, selectedicon);     
+            await savePillars(uuidv4().toUpperCase(), pillarname, selectedColor, selectedicon);     
         }
         getPillars();
         setModalNewVisible(false);
     };
-
-    const handleSubPillar = () => {
-        setsubpillar(true);
-        // savePillars(uuidv4(), pillarname, selectedColor, selectedicon);
-        // getPillars();
-        // setModalNewVisible(false);
-        setModalEditVisible(false)
-        setModalNewVisible(true);
-     
-    };
-
 
     return (
         <>
@@ -120,12 +116,6 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
                     <NewPillar />
                 </View>
             </Modal>
-
-            {/* <Modal visible={modalEditVisible} animationType="slide">
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    {item && <PillarDetail item={item} setModalEditVisible={setModalEditVisible} handleSubPillar={handleSubPillar}/>}
-                </View>
-            </Modal> */}
         </>
     );
 }

@@ -11,9 +11,12 @@ export const PillarContextProvider = ({children}) => {
     const [selectedColor, setSelectedColor] = useState("orange");
     const [pillarname, setpillarName] = useState('');
     const [selectedicon,setselectedicon] = useState('📸');
+    const [modalNewVisible, setModalNewVisible] = useState(false);
+    const [subpillar, setsubpillar] = useState(false);
     const {user} = useAuth();
      
     const [Pillars, setPillars] = useState([]);
+    const [currentPillar, setcurrentPillar] = useState(null);
 
     const getPillars = async()=>{
         //fetch pillars
@@ -75,6 +78,12 @@ export const PillarContextProvider = ({children}) => {
             setPillars,
             getPillars,
             savePillars,
+            modalNewVisible,
+            setModalNewVisible,
+            subpillar,
+            setsubpillar,
+            currentPillar,
+            setcurrentPillar,
             addSubPillar
             }}>
             {children}
