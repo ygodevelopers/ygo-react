@@ -1,4 +1,4 @@
-import { Pillar } from "@/types";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { getDocs, setDoc, doc, query, where, updateDoc ,arrayUnion } from 'firebase/firestore'
 import { pillarRef } from '@/firebaseConfig'
