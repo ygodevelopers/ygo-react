@@ -12,6 +12,7 @@ import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where,
 import { userRef, db} from '@/firebaseConfig';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { createThread } from '@/utils/chatService';
+import CustomKeyboardView from '@/components/CustomKeyboardView';
 
 
 export default function ChatRoom() {
@@ -141,29 +142,31 @@ export default function ChatRoom() {
     }
     
     return (
-        <View className='flex-1 bg-white'> 
-            <StatusBar barStyle={'dark-content'}/>
-            <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
-            <View className='h-3 border-b border-neutral-300'/>
-            <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
-                <View className='flex-1'>
-                    <MessageList messages={messages}/>
-                </View>
-                <View style={{marginBottom: hp(2.7)}} className="pt-2">
-                    <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
-                        <TextInput 
-                            placeholder='Type message...' 
-                            className='flex-1 mr-2' 
-                            style={{fontSize: hp(2)}} 
-                            onChangeText={(text) => {setUserMessage(text)}} 
-                            value={userMessage}
-                        />
-                        <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
-                            <FontAwesome name="send" size={24} color="black" />
-                        </TouchableOpacity>
+        <CustomKeyboardView>
+            <View className='flex-1 bg-white'> 
+                <StatusBar barStyle={'dark-content'}/>
+                <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
+                <View className='h-3 border-b border-neutral-300'/>
+                <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
+                    <View className='flex-1'>
+                        <MessageList messages={messages}/>
+                    </View>
+                    <View style={{marginBottom: hp(2.7)}} className="pt-2">
+                        <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
+                            <TextInput 
+                                placeholder='Type message...'
+                                className='flex-1 mr-2' 
+                                style={{fontSize: hp(2)}} 
+                                onChangeText={(text) => {setUserMessage(text)}} 
+                                value={userMessage}
+                            />
+                            <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
+                                <FontAwesome name="send" size={24} color="black" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </View>
-        </View>
+        </CustomKeyboardView>
     )
 }
