@@ -7,12 +7,14 @@ import { useAuth } from "@/context/authContext"
 import uploadImageToFirebase from "@/components/ImageUploadType";
 import { db } from "@/firebaseConfig";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { useRouter } from "expo-router";
+
 
 
 const { height, width } = Dimensions.get("window");
 
 export default function UserProfile() {
-
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [isEnabled, setIsEnabled] = useState(false);
   const { logout, user } = useAuth();
@@ -127,7 +129,7 @@ export default function UserProfile() {
           </TouchableOpacity>
         </View>
       </View>
-      
+
 
       {/* body 1*/}
       <View style={styles.content}>
@@ -145,7 +147,9 @@ export default function UserProfile() {
           </View>
 
           {/* Privacy */}
-          <TouchableOpacity style={styles.optionRow}>
+          <TouchableOpacity
+            style={styles.optionRow}
+            onPress={() => router.push("/(app)/BlockedUserList")}>
             <Ionicons name="lock-closed" size={24} color="blue" style={styles.optionIcon} />
             <Text style={styles.optionText}>Privacy</Text>
           </TouchableOpacity>
@@ -287,17 +291,17 @@ const styles = StyleSheet.create({
   },
 
   statusDot: {
-  width: 16,
-  height: 16,
-  borderRadius: 8,
-  borderWidth: 2,
-  borderColor: "white",
-},
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: "white",
+  },
 
-statusDotOverlay: {
-  position: "absolute",
-  bottom: 4,
-  right: 4,
-},
+  statusDotOverlay: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+  },
 
 });
