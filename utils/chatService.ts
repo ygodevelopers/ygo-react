@@ -1,7 +1,6 @@
 import { Message, Thread, User } from "@/types";
 import { db, threadsCollection } from "@/firebaseConfig";
-import { collection, doc, orderBy, query, onSnapshot, Unsubscribe, serverTimestamp, Timestamp, setDoc } from "firebase/firestore";
-import { useAuth } from "@/context/authContext";
+import { collection, doc, orderBy, query, onSnapshot, Unsubscribe, serverTimestamp, Timestamp, setDoc, where } from "firebase/firestore";
 
 export const subscribeToMessages = (
     threadID: string, 
@@ -31,6 +30,34 @@ export const subscribeToMessages = (
         return () => {};
     }
 }
+
+export const subscribeToThreads = ( 
+    userID: string,
+    callback: (threads: Thread[]) => void
+): Unsubscribe => {
+    try {
+        const conditions = [where("uids", "array-contains", userID)];
+        const q = query(threadsCollection, ...conditions);
+        
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const threads: Thread[] = [];
+            snapshot.forEach((doc) => {
+                threads.push(doc.data() as Thread);
+            });
+            console.log("Fetching Threads");
+            callback(threads);
+        }, (error) => {
+            console.log("Error listening to threads:", error);
+        });
+
+        return unsubscribe;
+    } catch (e) {
+        console.log("Error setting up threads subscription:", e);
+        return () => {};
+    }
+}
+
+
 
 export const createThread = async (contact: User, user: User) : Promise<string> => {
         const threadRef = doc(threadsCollection); 

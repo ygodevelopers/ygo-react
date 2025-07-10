@@ -5,8 +5,7 @@ import { Contact, User } from '@/types';
 import { useRouter} from 'expo-router';
 import { getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import {View, Button, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import {View, Button, StyleSheet, Text, TouchableOpacity, TextInput} from 'react-native';
 import {AlphabetList, IData} from 'react-native-section-alphabet-list';
 
 export default function AddContact()  {
@@ -75,34 +74,32 @@ export default function AddContact()  {
     }
 
     return (
-        <CustomKeyboardView>
-            <View className='flex-1 flex-col justify-center items-center'>
-                <TextInput onChangeText={onChangeEmail} style={styles.input} placeholder='Enter an Email' keyboardType='email-address'/>
-                <Button title='Search' onPress={handleSearch}/>
-                {
-                    userContacts && 
-                    <AlphabetList
-                        data={userContacts.map((contact) => ({
-                            key: contact.id!,
-                            value: contact.firstName, // or contact.email, depending on what you want to display
-                            ...contact
-                        }))}
-                        indexLetterStyle={{ 
-                            color: 'blue', 
-                            fontSize: 15,
-                        }}
-                        renderCustomItem={(item) => (
-                            <TouchableOpacity onPress={() => {sendToChatRoom(item)}}>
-                                <View>
-                                    <Text>{item.value} {item.lastName}</Text>
-                                </View>
-                            </TouchableOpacity>
-                            
-                        )}
-                    />
-                }
-            </View>
-        </CustomKeyboardView>
+                <View className='flex-1 flex-col justify-center items-center'>
+                    <TextInput onChangeText={onChangeEmail} style={styles.input} placeholder='Enter an Email' keyboardType='email-address'/>
+                    <Button title='Search' onPress={handleSearch}/>
+                    {
+                        userContacts && 
+                        <AlphabetList
+                            data={userContacts.map((contact) => ({
+                                key: contact.id!,
+                                value: contact.firstName, // or contact.email, depending on what you want to display
+                                ...contact
+                            }))}
+                            indexLetterStyle={{ 
+                                color: 'blue', 
+                                fontSize: 15,
+                            }}
+                            renderCustomItem={(item) => (
+                                <TouchableOpacity onPress={() => {sendToChatRoom(item)}}>
+                                    <View>
+                                        <Text>{item.value} {item.lastName}</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                            )}
+                        />
+                    }
+                </View>
     )
 }
 
