@@ -41,7 +41,7 @@ export default function PrivacyAndSecurityModal({ contact, onClose }: { contact:
 
 
             <TouchableOpacity style={styles.option} onPress={onClose}>
-                <Text style={{ color: 'blue', fontWeight: '500' }}>Close</Text>
+                <Text style={{ color: 'blue', fontWeight: '500' }}>Cancel</Text>
             </TouchableOpacity>
         </View>
     );

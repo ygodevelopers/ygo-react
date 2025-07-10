@@ -17,6 +17,7 @@ import { usePillar } from "@/context/pillarContext";
 import { db } from "@/firebaseConfig";
 import { SelectPillarDropDown } from "@/components/SelectPillarDropDown";
 import PrivacyAndSecurityModal from "@/components/PrivacyAndSecurityModal";
+import { useRouter } from "expo-router";
 
 // TODO: Separate out select menu, prop should be array of pillars.
 // Add null pillar or simply don't unless they tap into it? Clear selected pillar if they close the select menu?
@@ -27,20 +28,19 @@ export default function ContactView() {
     const { user } = useAuth();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
     const { Pillars } = usePillar();
-
+    const router = useRouter();
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["40%"], []);
-
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const handlePresentPress = useCallback(() => {
         bottomSheetRef.current?.expand();
     }, []);
-    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
 
 
     useEffect(() => {
         getContactInfo();
     }, [contactID])
-
 
     const getContactInfo = async () => {
         if (!contactID) {
@@ -72,13 +72,10 @@ export default function ContactView() {
         []
     );
 
-
     const handlePillarChange = async (pillarID: String) => {
         const threadRef = doc(db, "threads", threadID as string);
         const threadSnapshot = await getDoc(threadRef);
-
         const thread: Thread = threadSnapshot.data() as Thread;
-
 
         Pillars.forEach((pillar: Pillar) => {
             thread.pillarId?.forEach(async (threadPillar: string) => {
@@ -105,24 +102,18 @@ export default function ContactView() {
         setSelectedPillar(item);
     }
 
-
     return (
-
-
         <GestureHandlerRootView style={{ flex: 1 }}>
             <View className="flex-1 flex-col gap-3">
                 <ContactBanner contact={contact as User} />
                 <View className="flex-1 flex-col">
                     <ContactOption symbol={<FontAwesome name="refresh" size={24} color="black" />} text="Change Pillar" handlePress={handlePresentPress} />
                     <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People" handlePress={handleNotFinishedPress} />
-                    {/*<ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security" handlePress={handleNotFinishedPress} />*/}
-
                     <ContactOption
                         symbol={<FontAwesome5 name="lock" size={24} color="black" />}
                         text="Privacy and Security"
-                        handlePress={() => setShowPrivacyModal(true)}
+                        handlePress={() => router.push({ pathname: "/privacy", params: { contactID } })}
                     />
-
                     <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments" handlePress={handleNotFinishedPress} />
                 </View>
                 <BottomSheet
@@ -158,8 +149,6 @@ export default function ContactView() {
                 </BottomSheet>
             </View>
 
-
-
             {showPrivacyModal && (
                 <View style={{
                     position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -168,8 +157,6 @@ export default function ContactView() {
                     <PrivacyAndSecurityModal contact={contact} onClose={() => setShowPrivacyModal(false)} />
                 </View>
             )}
-
-
         </GestureHandlerRootView>
     )
 }
