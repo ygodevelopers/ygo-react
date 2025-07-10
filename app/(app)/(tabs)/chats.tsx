@@ -37,20 +37,22 @@ export default function Chats() {
   return (
     <SafeAreaView className="flex-1 bg-white">
 
-      <View className="px-4 pb-2 pt-2" style={{paddingTop: insets.top}}>
-        <View className="bg-gray-100 rounded-xl px-4 py-3 flex-row items-center">
-          <AntDesign name="search1" size={16} color="#8E8E93" />
-          <Text className="ml-2 text-gray-500">Search...</Text>
+      <View className="px-4 pb-4 pt-2" style={{paddingTop: insets.top}}>
+        <View className="px-4 py-3 flex-row items-center" style={{backgroundColor: "#d3d3d3", borderRadius: "15px"}}>
+          <AntDesign name="search1" size={18} color="#8E8E93" />
+          <Text className="ml-3 text-gray-500 text-base">Search...</Text>
         </View>
       </View>
 
-      <View className="flex-row items-center justify-center px-4 pb-2">
-        <View>
-          <Text className="text-3xl font-bold text-black text-center">Chats</Text>
+      <View className="flex-row items-center justify-between px-4 pb-4">
+        <View className="" />
+          <Text className="text-3xl font-bold text-black">Chats</Text>
+        <View className="flex-1">
+          <TouchableOpacity 
+            onPress={() => {router.push('/AddContact')}}>
+            <AntDesign name="plussquare" size={20} color="#9C52FF"/>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => {router.push('/AddContact')}}>
-          <AntDesign name="plussquare" size={24} color="#9C52FF" />
-        </TouchableOpacity>
       </View>
       
       <UserList pillarid={null}/>

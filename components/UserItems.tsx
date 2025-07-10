@@ -41,7 +41,7 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
         });
     }
 
-    // Format time like iOS Messages
+    // Format time like iOS Messages, make it state based to update when minute changes? 
     const formatTime = () => {
         if (!item.lastUpdated) return "";
         
@@ -70,7 +70,6 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
             onPress={openChatRoom} 
             className="flex-row items-center px-4 py-3 bg-white active:bg-gray-50"
         >
-            {/* Profile Image */}
             <View className="mr-4">
                 {contact?.profileImageUrl ? (
                     <Image 
@@ -86,8 +85,7 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
                     </View>
                 )}
             </View>
-            
-            {/* Chat Info */}
+
             <View className="flex-1 border-b border-gray-200 pb-3">
                 <View className="flex-row items-center justify-between mb-1">
                     <Text className="text-black font-semibold text-lg">
