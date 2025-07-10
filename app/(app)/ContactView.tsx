@@ -12,7 +12,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/build/FontAwesome5";
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
 import { db } from "@/firebaseConfig";
 import { SelectPillarDropDown } from "@/components/SelectPillarDropDown";
@@ -105,13 +104,16 @@ export default function ContactView() {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <View className="flex-1 flex-col gap-3">
+            <View className="flex-col gap-3 bg-slate-200">
                 <ContactBanner contact={contact as User}/>
-                <View className="flex-1 flex-col">
-                    <ContactOption symbol={<FontAwesome name="refresh" size={24} color="black" />} text="Change Pillar" handlePress={handlePresentPress}/>
-                    <ContactOption symbol={<FontAwesome6 name="people-group" size={24} color="black" />} text="People" handlePress={handleNotFinishedPress}/>
-                    <ContactOption symbol={<FontAwesome5 name="lock" size={24} color="black" />} text="Privacy and Security" handlePress={handleNotFinishedPress}/>
-                    <ContactOption symbol={<FontAwesome6 name="paperclip" size={24} color="black" />} text="Attachments" handlePress={handleNotFinishedPress}/>
+                <View className="flex-col bg-white p-3 m-3" style={{borderRadius: 10}}>
+                    <ContactOption symbol={<FontAwesome name="refresh" size={15} color="gray" />} text="Change Pillar" handlePress={handlePresentPress}/>
+                    <View style={{height: 1, backgroundColor: '#D1D5DB', marginVertical: 8}}/>
+                    <ContactOption symbol={<FontAwesome6 name="people-group" size={15} color="gray" />} text="People" handlePress={handleNotFinishedPress}/>
+                    <View style={{height: 1, backgroundColor: '#D1D5DB', marginVertical: 8}}/>
+                    <ContactOption symbol={<FontAwesome5 name="lock" size={15} color="gray" />} text="Privacy and Security" handlePress={handleNotFinishedPress}/>
+                    <View style={{height: 1, backgroundColor: '#D1D5DB', marginVertical: 8}}/>
+                    <ContactOption symbol={<FontAwesome6 name="paperclip" size={15} color="gray" />} text="Attachments" handlePress={handleNotFinishedPress}/>
                 </View>
                 <BottomSheet 
                     ref={bottomSheetRef}    
