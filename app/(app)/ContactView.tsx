@@ -27,7 +27,7 @@ export default function ContactView() {
     const {Pillars} = usePillar();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ["40%"], []);
+    const snapPoints = useMemo(() => ["33%"], []);
     
     const handlePresentPress = useCallback(() => {
         bottomSheetRef.current?.expand();
@@ -104,7 +104,7 @@ export default function ContactView() {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <View className="flex-col gap-3 bg-slate-200">
+            <View style={{ flex: 1 }} className="flex-col gap-3 bg-slate-200">
                 <ContactBanner contact={contact as User}/>
                 <View className="flex-col bg-white p-3 m-3" style={{borderRadius: 10}}>
                     <ContactOption symbol={<FontAwesome name="refresh" size={15} color="gray" />} text="Change Pillar" handlePress={handlePresentPress}/>
@@ -119,17 +119,30 @@ export default function ContactView() {
                     ref={bottomSheetRef}    
                     index={-1} 
                     snapPoints={snapPoints} 
-                    enablePanDownToClose={false} 
+                    enablePanDownToClose={true} 
                     enableContentPanningGesture={false}
-                    enableHandlePanningGesture={false}
+                    enableHandlePanningGesture={true}
                     handleComponent={null}
                     backdropComponent={renderBackdrop}
+                    bottomInset={0}
+                    detached={false}
+                    style={styles.bottomSheetContainer}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
-                        <Text style={styles.bottomSheetTitle}>Select Pillar</Text>
-                        <SelectPillarDropDown showIcons={false} handleSelectPillar={handleSelectPillar}/>
-                        <Text>Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}</Text>
+                        <Text style={styles.titleText}>Select Pillar for this Thread</Text>
+                        
+                        <View style={styles.dropdownContainer}>
+                            <SelectPillarDropDown showIcons={false} handleSelectPillar={handleSelectPillar}/>
+                        </View>
+                        
+                        <View style={styles.selectedPillarContainer}>
+                            <Text style={styles.selectedPillarText}>
+                                Selected Pillar: {selectedPillar?.icon} {selectedPillar?.title}
+                            </Text>
+                        </View>
+
                         <TouchableOpacity
+                            style={styles.changePillarButton}
                             onPress={() => {
                                 if (selectedPillar) {
                                     handlePillarChange(selectedPillar.id);
@@ -137,12 +150,9 @@ export default function ContactView() {
                                     alert("Please select a pillar first.");
                                 }
                             }}
-                            className="flex-1"
                         >
-                            <View className=" flex-row justify-between items-center">
-                                <Text>Change Pillar</Text>
-                                <FontAwesome name="refresh" size={24} color="blue" />
-                            </View>
+                            <Text style={styles.changePillarButtonText}>Change Pillar</Text>
+                            <FontAwesome name="refresh" size={16} color="#007AFF" />
                         </TouchableOpacity>
                     </BottomSheetView>
                 </BottomSheet>  
@@ -151,53 +161,120 @@ export default function ContactView() {
     )
 }
 
-// Copied styles from documentation
+// Updated styles to match iOS design
 const styles = StyleSheet.create({
+    bottomSheetContainer: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: -2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 5,
+    },
     bottomSheetContent: {
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 20,
+        paddingBottom: 40,
+        backgroundColor: 'white',
+        alignItems: 'stretch',
+    },
+    titleText: {
+        fontSize: 16,
+        color: '#000',
+        textAlign: 'center',
+    },
+    dropdownContainer: {
+        marginBottom: 16,
         alignItems: 'center',
     },
-    bottomSheetTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#151E26',
-        marginBottom: 20,
+    selectedPillarContainer: {
+        backgroundColor: '#F2F2F7',
+        borderRadius: 12,
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        marginBottom: 16,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    selectedPillarText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#000',
+        textAlign: 'center',
+    },
+    changePillarButton: {
+        backgroundColor: '#F2F2F7',
+        borderRadius: 12,
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    changePillarButtonText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#007AFF',
     },
     dropdownButtonStyle: {
-        width: 250,
+        width: 280,
         height: 50,
-        backgroundColor: '#E9ECEF',
+        backgroundColor: '#FFF',
         borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 16,
         borderWidth: 1,
-        borderColor: '#D1D5DB',
+        borderColor: '#E5E5EA',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     dropdownButtonTxtStyle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '500',
-        color: '#151E26',
+        color: '#000',
         flex: 1,
     },
     dropdownMenuStyle: {
-        backgroundColor: '#E9ECEF',
+        backgroundColor: '#FFF',
         borderRadius: 12,
         marginTop: 4,
-        width: 250,
+        width: 280,
         maxHeight: 200,
         borderWidth: 1,
-        borderColor: '#D1D5DB',
+        borderColor: '#E5E5EA',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
         elevation: 5,
     },
     dropdownItemStyle: {
@@ -212,7 +289,7 @@ const styles = StyleSheet.create({
     dropdownItemTxtStyle: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#151E26',
+        color: '#000',
         textAlign: 'left',
     },
 });
