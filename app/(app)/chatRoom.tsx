@@ -142,7 +142,6 @@ export default function ChatRoom() {
     }
     
     return (
-        <CustomKeyboardView>
             <View className='flex-1 bg-white'> 
                 <StatusBar barStyle={'dark-content'}/>
                 <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
@@ -167,6 +166,5 @@ export default function ChatRoom() {
                     </View>
                 </View>
             </View>
-        </CustomKeyboardView>
     )
 }
