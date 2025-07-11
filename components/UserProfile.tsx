@@ -21,8 +21,14 @@ export default function UserProfile() {
   const [activeStatus, setActiveStatus] = useState(false);
 
   const handleLogout = async () => {
-    await logout()
-  }
+    //await logout()
+    const result = await logout();
+    if (result.success) {
+      router.replace("/signIn");
+    } else {
+      Alert.alert("Logout failed", result.msg);
+    }
+  };
 
   useEffect(() => {
     if (!user?.id) return;
@@ -51,7 +57,7 @@ export default function UserProfile() {
       }
     };
     fetchProfileImage();
-  }, [user?.uid]);
+  }, [user?.id]);
 
   const handleImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
