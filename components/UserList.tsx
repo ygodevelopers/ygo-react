@@ -1,37 +1,57 @@
-import { View, FlatList, Text} from "react-native";
+import { View, FlatList, Text } from "react-native";
 import { useEffect, useState } from "react";
 import { useAuth } from '@/context/authContext'
 import { StatusBar } from 'expo-status-bar'
 import UserItems from '@/components/UserItems'
 import { Thread } from "@/types";
-import { useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 import { subscribeToThreads } from "@/utils/chatService";
+import { onSnapshot, query, where } from "firebase/firestore";
+import { threadsCollection, userRef } from "@/firebaseConfig";
+import { doc } from "firebase/firestore";
 
 export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [threads, setThreads] = useState<Thread[]>([]);
     const router = useRouter();
     const pid = pillarid ?? null;
+    const [blockedUserIds, setBlockedUserIds] = useState<string[]>([]);
 
-    useEffect(()=> {
-
+    useEffect(() => {
+        if (!user?.id) return;
         const unsubscribe = subscribeToThreads(user.id, (threadsArray) => {
-            threadsArray.sort(sortThreads);
-            setThreads(threadsArray);
-        })
+            const filteredThreads = threadsArray.filter(thread => {
+                const otherUserId = thread.uids.find((uid: string) => uid !== user.id);
+                return !blockedUserIds.includes(otherUserId || "");
+            });
+            filteredThreads.sort(sortThreads);
+            setThreads(filteredThreads);
+        });
 
         return () => {
             if (unsubscribe) {
                 unsubscribe();
             }
         };
-    }, [user.id]);
+    }, [user?.id, blockedUserIds]);
+
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const unsubscribe = onSnapshot(doc(userRef, user.id), (docSnapshot) => {
+            const data = docSnapshot.data();
+            setBlockedUserIds([...(data?.blockedUsers || [])]);
+        });
+
+        return () => unsubscribe();
+    }, [user?.id]);
 
     const sortThreads = (threadOne: Thread, threadTwo: Thread) => {
-    
+
         const timeOne = threadOne.lastUpdated?.seconds ?? 0;
         const timeTwo = threadTwo.lastUpdated?.seconds ?? 0;
-        
+
         if (timeOne < timeTwo) {
             console.log(`${timeOne} is less than ${timeTwo}`);
             return 1;
@@ -51,20 +71,24 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
                 justifyContent: "center",
                 alignItems: "center",
             }}
-            >
-            <StatusBar style="light" />     
+        >
+            <StatusBar style="light" />
             {
                 threads.length > 0 ? (
                     <View className="flex-1">
                         <FlatList
-                            data = {threads}
-                            contentContainerStyle = {{flex:1, paddingVertical: 25}}
+                            data={threads}
+                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}
                             keyExtractor={(item: Thread, index) => index.toString()}
-                            showsVerticalScrollIndicator = {false}
-                            renderItem={({item, index})=><UserItems item={item} router={router}/>}
+                            showsVerticalScrollIndicator={false}
+                            renderItem={({ item, index }) =>
+                                item.lastUpdated ? (
+                                    <UserItems item={item} router={router} />
+                                ) : null // 
+                            }
                         />
                     </View>
-                ):(
+                ) : (
                     <View className="flex item-center">
                         <Text style={{ color: 'gray' }}>No Messages found</Text>
                     </View>
