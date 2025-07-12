@@ -1,30 +1,33 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useEffect, useState } from "react";
 import { Pillar, Thread, User } from "@/types";
 import { Router } from "expo-router";
 import { useAuth } from "@/context/authContext";
 import { usePillar } from "@/context/pillarContext";
 
-export default function UserItems({item, router}: {item: Thread, router: Router}) {
+export default function UserItems({ item, router }: { item: Thread, router: Router }) {
     const [contact, setContact] = useState<User>();
     const [pillar, setPillar] = useState<Pillar>();
-    const {Pillars} = usePillar();
-    const {user} = useAuth();
+    const { Pillars } = usePillar();
+    const { user } = useAuth();
+
+    if (!user) return null;
 
     useEffect(() => {
         getUserInfo();
         getPillarInfo();
-    },[]);
+    }, [item]);
 
     const openChatRoom = () => {
-        const threadID = item.id; 
-        router.push({pathname: '/(app)/chatRoom', params: {threadID: threadID, contactName: contact?.firstName, contactID: contact?.id}});
+        const threadID = item.id;
+        router.push({ pathname: '/(app)/chatRoom', params: { threadID: threadID, contactName: contact?.firstName, contactID: contact?.id } });
     }
 
     const getUserInfo = () => {
-        const {users} = item;
+        const { users } = item;
         users.forEach((otherUser) => {
-            if(otherUser.id !== user?.id) {
+            if (otherUser.id !== user?.id) {
                 setContact(otherUser);
             }
         })
@@ -33,7 +36,7 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
     const getPillarInfo = () => {
         Pillars.forEach((element: Pillar) => {
             item.pillarId?.forEach(threadPillar => {
-                if(element.id == threadPillar){
+                if (element.id == threadPillar) {
                     setPillar(element);
                 }
             })
@@ -43,13 +46,13 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
     // Format time like iOS Messages, make it state based to update when minute changes? 
     const formatTime = () => {
         if (!item.lastUpdated) return "";
-        
+
         const messageDate = item.lastUpdated.toDate();
         const now = new Date();
         const diffInMinutes = Math.floor((now.getTime() - messageDate.getTime()) / (1000 * 60));
         const diffInHours = Math.floor(diffInMinutes / 60);
         const diffInDays = Math.floor(diffInHours / 24);
-        
+
         if (diffInMinutes < 60) {
             return `${diffInMinutes}m`;
         } else if (diffInHours < 24) {
@@ -57,24 +60,19 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
         } else if (diffInDays < 7) {
             return `${diffInDays}d`;
         } else {
-            return messageDate.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
+            return messageDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
             });
         }
     }
 
     return (
-        <TouchableOpacity 
-            onPress={openChatRoom} 
-            className="flex-row items-center px-4 py-3 bg-white active:bg-gray-50"
-        >
+        <TouchableOpacity onPress={openChatRoom} className={"flex-row items-center px-4 py-3 bg-white active:bg-gray-50"}>
             <View className="mr-4">
                 {contact?.profileImageUrl ? (
-                    <Image 
-                        source={{ uri: contact.profileImageUrl }} 
-                        className="w-12 h-12 rounded-full"
-                        style={{width: 48, height: 48}}
+                    <Image
+                        source={{ uri: contact.profileImageUrl }} className="w-12 h-12 rounded-full" style={{ width: 48, height: 48 }}
                     />
                 ) : (
                     <View className="w-12 h-12 rounded-full bg-gray-300 items-center justify-center">
@@ -83,34 +81,36 @@ export default function UserItems({item, router}: {item: Thread, router: Router}
                         </Text>
                     </View>
                 )}
+                {contact?.activeStatus !== undefined && (
+                    <View
+                        style={{
+                            position: "absolute", bottom: 0, right: 0, width: 10, height: 10, borderRadius: 5, backgroundColor: contact.activeStatus ? "green" : "gray",
+                            borderWidth: 1.5, borderColor: "white",
+                        }}
+                    />
+                )}
             </View>
 
             <View className="flex-1 border-b border-gray-200 pb-3">
                 <View className="flex-row items-center justify-between mb-1">
-                    <Text className="text-black font-semibold text-lg">
-                        {contact?.firstName || "Unknown"}
-                    </Text>
-                    <Text className="text-gray-500 text-sm">
-                        {formatTime()}
-                    </Text>
+                    <Text className="text-black font-semibold text-lg"> {contact?.firstName || "Unknown"} </Text>
+                    {/* <Text style={{ fontSize: hp(1.6) }} className="font-medium text-neutral-500">{item.lastUpdated?.toDate ? item.lastUpdated.toDate().toLocaleDateString() : ""}
+                    </Text> */}
+                    <Text className="text-gray-500 text-sm"> {formatTime()}</Text>
                 </View>
-                
-                <View className="flex-row items-center justify-between">
-                    <View className="flex-1">
-                        {pillar && (
-                            <Text 
-                                className="text-sm font-medium mb-1"
-                                style={{color: pillar.color}}
-                            >
-                                {pillar.title}
-                            </Text>
-                        )}
-                        <Text className="text-gray-500 text-base" numberOfLines={1}>
-                            {item.lastMessage?.messageText || "No messages yet"}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-        </TouchableOpacity>
+                {
+                    pillar && (
+                        <Text className="text-sm font-medium mb-1" style={{ color: pillar.color }}>{pillar.title}</Text>
+                    )}
+                <Text className="text-gray-500 text-base" numberOfLines={1}>
+                    {item.lastMessage?.messageText
+                        ? item.lastMessage.messageText.length <= 10
+                            ? item.lastMessage.messageText
+                            : `${item.lastMessage.messageText.slice(0, 7)}...`
+                        : "No messages yet"
+                    }
+                </Text>
+            </View >
+        </TouchableOpacity >
     );
 }

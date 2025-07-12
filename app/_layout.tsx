@@ -3,7 +3,7 @@ import { useAuth, AuthContextProvider} from '@/context/authContext'
 import { useEffect } from "react";
 import { Slot } from "expo-router";
 import { PillarContextProvider } from "@/context/pillarContext";
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 const MainLayout = () => {
@@ -34,12 +34,13 @@ const MainLayout = () => {
 
 export default function RootLayout() {
   return (
-
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <AuthContextProvider>
           <PillarContextProvider>
             <MainLayout/>
           </PillarContextProvider>
         </AuthContextProvider>    
+      </GestureHandlerRootView>
 
     )
 }
