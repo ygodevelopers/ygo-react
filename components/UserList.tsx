@@ -53,47 +53,35 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
         const timeTwo = threadTwo.lastUpdated?.seconds ?? 0;
 
         if (timeOne < timeTwo) {
-            console.log(`${timeOne} is less than ${timeTwo}`);
             return 1;
         }
         if (timeOne > timeTwo) {
-            console.log(`${timeOne} is greater than ${timeTwo}`);
             return -1;
         }
         return 0;
     }
 
-
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
-            <StatusBar style="light" />
+        <View className="flex-1 bg-white">
+            <StatusBar style="dark" />
             {
                 threads.length > 0 ? (
-                    <View className="flex-1">
+                    <View className="flex-1">{/*// review, it is not in marge*/}
                         <FlatList
                             data={threads}
-                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}
+                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}// review, it is not in marge
                             keyExtractor={(item: Thread, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
-                            renderItem={({ item, index }) =>
-                                item.lastUpdated ? (
-                                    <UserItems item={item} router={router} />
-                                ) : null // 
-                            }
+                            renderItem={({ item, index }) => item.lastUpdated ? (<UserItems item={item} router={router} />) : null}
+                            className="flex-1"
                         />
                     </View>
                 ) : (
-                    <View className="flex item-center">
-                        <Text style={{ color: 'gray' }}>No Messages found</Text>
-                    </View>
-                )
-            }
-        </View>
-    )
+                    <View className="flex-1 items-center justify-center">
+                        <Text className="text-gray-500 text-lg">No Messages found</Text>
+                                    </View>
+                                )
+                            }
+                        </View>
+                        )
 }

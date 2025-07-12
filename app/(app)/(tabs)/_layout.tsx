@@ -25,7 +25,7 @@ export default function TabLayout() {
         name="chats"
         options={{
           title: 'Chats',
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="file-text" size={24} color={color} />
           )
