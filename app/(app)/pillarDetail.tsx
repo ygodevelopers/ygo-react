@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Dimensions, FlatList } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -66,45 +66,48 @@ export default function pillarDetail ()  {
 
       <View style={styles.container}>
         {hasSubPillars ? (
-          // currentPillar?.subPillars.map((sub:Pillar, index:number) => (
-            <>
-
-              <View className = "flex-1">
-                  <FlatList
-                      data = {currentPillar?.subPillars}
-                      contentContainerStyle = {{flex:1, paddingVertical: 55}}
-                      keyExtractor={(item, index) => index.toString()}
-                      numColumns={2}
-                      showsVerticalScrollIndicator = {false}
-                      columnWrapperStyle={{justifyContent: 'space-between'}}
-                      renderItem={({item, index})=>(          
-                          // <TouchableOpacity onPress={setcurrentPillar} activeOpacity={0.7}>
-                            <View style={{
-                                flexDirection: 'row',
-                                padding: 10, 
-                                marginHorizontal: 10,
-                                marginVertical: 5, 
-                                width: 300,
-                                borderWidth: 1,
-                                borderColor: '#aaa',
-                                borderRadius: 12,
-                                gap: 8,}} >
-
-                                    <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.icon}</Text>
-   
-                                    <Text>{item?.title}</Text>
-                            </View>
-                        // </TouchableOpacity>
-                        )}
-                      />
-
+          <FlatList
+            data={currentPillar?.subPillars}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal={true}
+            showsHorizontalScrollIndicator={true} // 可选，开发调试可开启
+            contentContainerStyle={{
+              paddingVertical: 20,
+              paddingHorizontal: 10,
+            }}
+            renderItem={({ item, index }) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 10,
+                  marginHorizontal: 8,
+                  width: 160, // 固定宽度，适合横向排列
+                  height: 60,
+                  borderWidth: 1,
+                  borderColor: '#aaa',
+                  borderRadius: 12,
+                  backgroundColor: '#f5f5f5',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 24,
+                    width: 40,
+                    borderWidth: 3,
+                    borderColor: item.color || 'gray',
+                    borderRadius: 10,                
+                  }}
+                >
+                  {item?.icon}
+                </Text>
+                <Text>{item?.title}</Text>
               </View>
-            </>
-          
+            )}
+          />
         ) : (
           <Text style={{ color: 'gray' }}>No subpillars</Text>
         )}
-     
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
       <View style={styles.container}>
@@ -115,7 +118,7 @@ export default function pillarDetail ()  {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { flexDirection: 'row', alignItems: 'center', padding: 10, marginHorizontal: 8 },
   icon: { fontSize: 24 },
   title: { fontSize: 24 },
 });
