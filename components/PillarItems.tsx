@@ -97,7 +97,8 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
                     borderColor: '#aaa',
                     borderRadius: 12,
                     gap: 8,
-                    elevation: 4,
+                    elevation: 25,
+                    backgroundColor: 'white'
                     }} >
                         {item.type === 'new' ? 
                         (
