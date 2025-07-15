@@ -3,7 +3,7 @@ import { View, Image, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Swi
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
-import { useAuth } from "@/context/authContext"
+import { useAuth } from "@/context/authContext";
 import uploadImageToFirebase from "@/components/ImageUploadType";
 import { db } from "@/firebaseConfig";
 import { doc, updateDoc, getDoc } from "firebase/firestore";

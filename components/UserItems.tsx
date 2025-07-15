@@ -7,18 +7,19 @@ import { useAuth } from "@/context/authContext";
 import { usePillar } from "@/context/pillarContext";
 
 export default function UserItems({ item, router }: { item: Thread, router: Router }) {
-    const [contact, setContact] = useState<User>();
-    const [pillar, setPillar] = useState<Pillar>();
+
     const { Pillars } = usePillar();
     const { user } = useAuth();
-
-    if (!user) return null;
+    const [contact, setContact] = useState<User>();
+    const [pillar, setPillar] = useState<Pillar>();
+    
 
     useEffect(() => {
         getUserInfo();
         getPillarInfo();
     }, [item]);
 
+    if (!user) return null;
     const openChatRoom = () => {
         const threadID = item.id;
         router.push({ pathname: '/(app)/chatRoom', params: { threadID: threadID, contactName: contact?.firstName, contactID: contact?.id } });

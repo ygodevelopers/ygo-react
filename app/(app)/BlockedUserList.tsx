@@ -61,7 +61,7 @@ export default function BlockedUsersScreen() {
           <ActivityIndicator size="large" color="gray" />
         </View>
       ) : blockedUsers.length === 0 ? (
-        <Text style={styles.empty}>You haven't blocked anyone.</Text>
+        <Text style={styles.empty}>You have not blocked anyone.</Text>
       ) : (
         <FlatList
           data={blockedUsers}

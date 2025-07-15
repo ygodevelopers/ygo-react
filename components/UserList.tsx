@@ -13,9 +13,10 @@ import { doc } from "firebase/firestore";
 export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
     const { user } = useAuth();
     const [threads, setThreads] = useState<Thread[]>([]);
+    const [blockedUserIds, setBlockedUserIds] = useState<string[]>([]);
     const router = useRouter();
     const pid = pillarid ?? null;
-    const [blockedUserIds, setBlockedUserIds] = useState<string[]>([]);
+    
 
     useEffect(() => {
         if (!user?.id) return;
@@ -66,10 +67,10 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
             <StatusBar style="dark" />
             {
                 threads.length > 0 ? (
-                    <View className="flex-1">{/*// review, it is not in marge*/}
+                    <View className="flex-1">
                         <FlatList
                             data={threads}
-                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}// review, it is not in marge
+                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}
                             keyExtractor={(item: Thread, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item, index }) => item.lastUpdated ? (<UserItems item={item} router={router} />) : null}
@@ -79,9 +80,9 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
                 ) : (
                     <View className="flex-1 items-center justify-center">
                         <Text className="text-gray-500 text-lg">No Messages found</Text>
-                                    </View>
-                                )
-                            }
-                        </View>
-                        )
+                    </View>
+                )
+            }
+        </View>
+    )
 }
