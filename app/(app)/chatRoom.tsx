@@ -105,6 +105,9 @@ export default function ChatRoom() {
 
     const handleSendMessage = async () => {
         try {
+
+            if(userMessage.length === 0) return;
+
             const message = createMessage();
             if (!message) return;
 
@@ -150,8 +153,8 @@ export default function ChatRoom() {
                 <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
                 <View className='h-3 border-b border-neutral-300'/>
                 <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
-                    <View className='flex-1'>
-                        <MessageList messages={messages}/>
+                    <View>
+                        <MessageList messages={messages} userID={user.id}/>
                     </View>
                     <View style={{marginBottom: hp(2.7)}} className="pt-2">
                         <View className='flex-row items-center pl-5 pr-3 py-2 mx-3'>
