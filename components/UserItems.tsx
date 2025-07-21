@@ -5,6 +5,8 @@ import { Pillar, Thread, User } from "@/types";
 import { Router } from "expo-router";
 import { useAuth } from "@/context/authContext";
 import { usePillar } from "@/context/pillarContext";
+import { userRef } from "@/firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
 
 export default function UserItems({ item, router }: { item: Thread, router: Router }) {
 
@@ -12,7 +14,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
     const { user } = useAuth();
     const [contact, setContact] = useState<User>();
     const [pillar, setPillar] = useState<Pillar>();
-    
+
 
     useEffect(() => {
         getUserInfo();
@@ -25,14 +27,20 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
         router.push({ pathname: '/(app)/chatRoom', params: { threadID: threadID, contactName: contact?.firstName, contactID: contact?.id } });
     }
 
-    const getUserInfo = () => {
-        const { users } = item;
-        users.forEach((otherUser) => {
-            if (otherUser.id !== user?.id) {
-                setContact(otherUser);
+    const getUserInfo = async () => {
+        const { uids } = item;
+        const otherUserId = uids.find((uid) => uid !== user?.id);
+        if (!otherUserId) return;
+
+        try {
+            const userDoc = await getDoc(doc(userRef, otherUserId));
+            if (userDoc.exists()) {
+                setContact(userDoc.data() as User);
             }
-        })
-    }
+        } catch (error) {
+            console.error("Failed to fetch contact info:", error);
+        }
+    };
 
     const getPillarInfo = () => {
         Pillars.forEach((element: Pillar) => {

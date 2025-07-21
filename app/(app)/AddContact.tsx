@@ -92,7 +92,7 @@ export default function AddContact()  {
                             renderCustomItem={(item) => (
                                 <TouchableOpacity onPress={() => {sendToChatRoom(item)}}>
                                     <View>
-                                        <Text>{item.value} {item.lastName}</Text>
+                                        <Text>{item.value} {}</Text>
                                     </View>
                                 </TouchableOpacity>
 
