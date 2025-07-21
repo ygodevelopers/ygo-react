@@ -90,15 +90,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
                         </Text>
                     </View>
                 )}
-                {/*{contact?.activeStatus !== undefined && (*/}
-                
-                    <View
-                        style={{
-                            position: "absolute", bottom: 0, right: 0, width: 10, height: 10, borderRadius: 5, backgroundColor: contact?.activeStatus ? "green" : "gray",
-                            borderWidth: 1.5, borderColor: "white",
-                        }}
-                    />
-                {/*)}*/}
+
             </View>
 
             <View className="flex-1 border-b border-gray-200 pb-3">

@@ -18,7 +18,7 @@ export default function UserProfile() {
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [isEnabled, setIsEnabled] = useState(false);
   const { logout, user } = useAuth();
-  const [activeStatus, setActiveStatus] = useState(false);
+
 
   const handleLogout = async () => {
     //await logout()
@@ -48,12 +48,9 @@ export default function UserProfile() {
             console.warn("profileImageUrl is missing or invalid");
           }
 
-          if (data?.activeStatus !== undefined) {
-            setActiveStatus(data.activeStatus);
-          }
         }
       } catch (err) {
-        console.error("Error loading profile image or activeStatus:", err);
+        console.error("Error loading profile image:", err);
       }
     };
     fetchProfileImage();
@@ -93,22 +90,6 @@ export default function UserProfile() {
     }
   };
 
-
-  const toggleActiveStatus = async () => {
-    const newStatus = !activeStatus;
-    setActiveStatus(newStatus);
-
-    try {
-      const userDocRef = doc(db, "users", user.id);
-      await updateDoc(userDocRef, { activeStatus: newStatus });
-    } catch (err) {
-      console.error("Error updating active status:", err);
-    }
-  };
-
-
-
-
   return (
     <View style={styles.container}>
 
@@ -123,16 +104,6 @@ export default function UserProfile() {
               <FontAwesome name="user-circle" size={100} color="gray" />
             )}
           </TouchableOpacity>
-
-          {/* Status Dot Overlay */}
-          <TouchableOpacity onPress={toggleActiveStatus} style={styles.statusDotOverlay}>
-            <View
-              style={[
-                styles.statusDot,
-                { backgroundColor: activeStatus ? "green" : "gray" },
-              ]}
-            />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -142,15 +113,10 @@ export default function UserProfile() {
         <View style={styles.card}>
           {/* Active Status */}
 
-          <View style={styles.optionRow}>
+          <TouchableOpacity style={styles.optionRow}>
             <Ionicons name="chatbubbles" size={24} color="green" style={styles.optionIcon} />
             <Text style={styles.optionText}>Active Status</Text>
-            <Switch
-              value={activeStatus}
-              onValueChange={toggleActiveStatus}
-              style={{ marginLeft: 'auto' }}
-            />
-          </View>
+          </TouchableOpacity>
 
           {/* Privacy */}
           <TouchableOpacity

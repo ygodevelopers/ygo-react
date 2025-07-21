@@ -23,11 +23,6 @@ export const ChatRoomHeader = ({ user, router, threadID }: { user: User, router:
                         <View className="flex-row items-center gap-3">
                             <View style={{ position: "relative" }}>
                                 <Image source={user?.profileImageUrl} style={{ borderRadius: 100, height: hp(4.5), aspectRatio: 1 }} />
-                                <View style={{
-                                    position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: 5, borderWidth: 1.5, borderColor: 'white',
-                                    backgroundColor: user?.activeStatus ? 'green' : 'gray',
-                                }}
-                                />
                             </View>
                             <View>
                                 <Text style={{ fontSize: hp(2.5) }} className="text-neutral-700 font-medium">

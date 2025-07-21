@@ -1,35 +1,34 @@
 import { Timestamp } from "firebase/firestore"
 
 export type User = {
-    email:  string,
-    fcmToken?: string, 
-    firstName: string, 
-    id: string, 
+    email: string,
+    fcmToken?: string,
+    firstName: string,
+    id: string,
     lastName: string,
     profileImageOffset?: {
-        height: number, 
+        height: number,
         width: number
     }
-    profileImageScale?: number, 
-    profileImageUrl?: string, 
+    profileImageScale?: number,
+    profileImageUrl?: string,
     token?: string,
     publicKeyBase64?: string,
-    activeStatus: boolean,
 }
 
 export type Contact = {
-    contactUserId: User["id"], 
-    id?: string, 
-    ownerId: User["id"], 
+    contactUserId: User["id"],
+    id?: string,
+    ownerId: User["id"],
     pillarId: Array<string>
 }
 
 export type Thread = {
     chatName?: string,
-    encrtyptedKeys?: Map<string, string>, 
-    firstMessageId?: string, 
-    id: string, 
-    lastMessage?: Message, 
+    encrtyptedKeys?: Map<string, string>,
+    firstMessageId?: string,
+    id: string,
+    lastMessage?: Message,
     lastUpdated: Timestamp,
     pillarId?: Array<string>,
     uids: Array<User["id"]>,
@@ -38,18 +37,18 @@ export type Thread = {
 
 export type Message = {
     fromId: User['id'],
-    id: string, 
-    isEncrypted: boolean, 
-    messageText: string, 
+    id: string,
+    isEncrypted: boolean,
+    messageText: string,
     status: Object,
-    timestamp: Timestamp, 
+    timestamp: Timestamp,
     toId: User['id'];
 }
 
 export type Pillar = {
-    color: string,   
-    icon: string,       
-    id: string, 
+    color: string,
+    icon: string,
+    id: string,
     subPillars: Pillar[],
     title: string,
     type: string,
