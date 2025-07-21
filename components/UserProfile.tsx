@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 
 
 
+
 const { height, width } = Dimensions.get("window");
 
 export default function UserProfile() {
@@ -30,33 +31,24 @@ export default function UserProfile() {
     }
   };
 
+
   useEffect(() => {
-    if (!user?.id) return;
-
-    const fetchProfileImage = async () => {
-      try {
-        const userDoc = await getDoc(doc(db, "users", user.id));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-
-          if (data?.profileImageUrl && typeof data.profileImageUrl === "string") {
-            const finalUrl = data.profileImageUrl.includes("?alt=media")
-              ? data.profileImageUrl
-              : `${data.profileImageUrl}?alt=media`;
-            setProfileImage(finalUrl);
-          } else {
-            console.warn("profileImageUrl is missing or invalid");
-          }
-
-        }
-      } catch (err) {
-        console.error("Error loading profile image:", err);
+    try {
+      if (user?.profileImageUrl && typeof user.profileImageUrl === "string") {
+        const finalUrl = user.profileImageUrl.includes("?alt=media")
+          ? user.profileImageUrl
+          : `${user.profileImageUrl}?alt=media`;
+        setProfileImage(finalUrl);
+      } else {
+        setProfileImage(null);
       }
-    };
-    fetchProfileImage();
-  }, [user?.id]);
+    } catch (error) {
+      console.error("Error setting profile image:", error);
+      setProfileImage(null);
+    }
+  }, [user?.profileImageUrl]);
 
-  const handleImagePicker = async () => {
+   const handleImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {

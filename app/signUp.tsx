@@ -17,23 +17,34 @@ export default function SingUp() {
   const usernameRef = useRef("");
   const profileRef = useRef("");
 
-  const {register} = useAuth();
+  const { register } = useAuth();
 
 
   // TODO: Need to confirm unique email address and handle it. 
+
   const handleRegister = async () => {
-    if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileRef.current) {
+    if (!emailRef.current || !passwordRef.current || !usernameRef.current) {
       Alert.alert('Sign Up', "Please fill all the fields!");
       return;
     }
-    const response =  await register(emailRef.current,passwordRef.current,usernameRef.current,profileRef.current);
-    if(!response.success){
-      console.log("sign up error:", response.msg);
-  }
-  console.log("sign up user success: ");
-  }
 
-  
+    const response = await register(
+      emailRef.current,
+      passwordRef.current,
+      usernameRef.current,
+      null 
+    );
+
+    if (!response.success) {
+      console.log("sign up error:", response.msg);
+      Alert.alert("Error", response.msg); 
+      return;
+    }
+
+    console.log("sign up user success:");
+    
+  };
+
   return (
     <CustomKeyboardView>
       <StatusBar style="dark" />
@@ -55,7 +66,7 @@ export default function SingUp() {
         width: wp(90),
         alignSelf: 'center',
         alignItems: 'center',
-        }}>
+      }}>
         <Text style={{
           fontSize: hp(4),
           fontWeight: 'bold',
@@ -85,7 +96,7 @@ export default function SingUp() {
             }} placeholder="Username" placeholderTextColor={'gray'} onChangeText={value => usernameRef.current = value} />
           </View>
 
-            <View style={{
+          <View style={{
             width: wp(90),
             height: hp(7),
             gap: 16,
@@ -124,7 +135,7 @@ export default function SingUp() {
               onChangeText={value => passwordRef.current = value} />
           </View>
 
-            <View style={{
+          <View style={{
             width: wp(90),
             height: hp(7),
             gap: 16,
@@ -185,7 +196,7 @@ export default function SingUp() {
 
           }}>
             <Text style={{ width: wp(50), textAlign: 'center', fontSize: hp(1.8), fontWeight: '600', color: '#737373', }}>
-              Already have an account? 
+              Already have an account?
             </Text>
 
             <Pressable onPress={() => router.push('/signIn')}>
