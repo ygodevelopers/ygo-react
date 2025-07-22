@@ -32,6 +32,10 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
         setcurrentPillar
         } = usePillar();
 
+        const emojis = Array.from(item.icon || "");
+        const emoji1 = emojis[0];
+        const emoji2 = emojis[1];
+
     const handlePress = () => {
 
         if (item?.title === 'New Pillar') {
@@ -89,17 +93,25 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
                     marginHorizontal: 10,
                     marginVertical: 5, 
                     width: ITEM_WIDTH,
-                    borderWidth: 1,
+                    borderWidth: 2,
                     borderColor: '#aaa',
                     borderRadius: 12,
-                    gap: 8,}} >
+                    gap: 8,
+                    elevation: 25,
+                    backgroundColor: 'white'
+                    }} >
                         {item.type === 'new' ? 
-                        (<Text style={{ fontSize: 24, width:40, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{item?.icon}</Text>)
+                        (
+                            <Text style={{ fontSize: 24, width:40, color:'red'}}>{item?.icon}</Text>
+                        )
                         
                         :(
-                            <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.icon}</Text>
+                            <>
+                            <Text style={[styles.icon,{borderColor: item.color}]}>{emoji1}</Text>
+                            {/* <Text style={{ fontSize: 24, width:40, borderWidth: 3, borderColor: item.color, borderRadius: 10, textAlign: 'center',textAlignVertical: 'center'}}>{emoji2}</Text> */}
+                            </>
                         )}
-                        <Text>{item?.title}</Text>
+                        <Text style={styles.title}>{item?.title}</Text>
                 </View>
             </TouchableOpacity>
             <Modal visible={modalNewVisible} animationType="slide">
@@ -128,7 +140,7 @@ function NewPillar(){
     return(
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
 
-            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 5 ,backgroundColor:'gray',color: 'gold'}}>{selectedicon}</Text>
+            <Text style={{ fontSize: 48,  marginRight: 0, borderWidth: 3, borderColor: selectedColor, borderRadius: 15 ,color: 'gold'}}>{selectedicon}</Text>
             <View style={{ flexDirection: 'row'}}>
                 <PillarAddIcon />
                 <PillarAddColor />
@@ -151,6 +163,6 @@ function NewPillar(){
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  icon: { fontSize: 20 },
-  title: { fontSize: 20, marginTop: 12 },
+  icon: {  fontSize: 24, width:40, borderWidth: 3, borderRadius: 10, textAlign: 'center',textAlignVertical: 'center' },
+  title: { fontSize: 18, marginTop: 8 },
 });

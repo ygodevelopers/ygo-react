@@ -24,7 +24,7 @@ export const PillarList = () => {
     },[user])
 
 
-    const combinedData = [...Pillars, { icon: '➕', title: 'New Pillar' }];
+    const combinedData = [...Pillars, { icon: '➕', title: 'New Pillar',type:'new' }];
 
     console.log("Pillar got:", Pillars);
 
