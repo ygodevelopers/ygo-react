@@ -78,10 +78,16 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
 
     return (
         <TouchableOpacity onPress={openChatRoom} className={"flex-row items-center px-4 py-3 bg-white active:bg-gray-50"}>
-            <View className="mr-4">
+            <View className="mr-4 items-center justify-center" style={{
+                width: 56,
+                height: 56,
+                borderRadius: 26,
+                borderWidth: 2,
+                borderColor: pillar?.color || "#d1d5db",
+            }}>
                 {contact?.profileImageUrl ? (
                     <Image
-                        source={{ uri: contact.profileImageUrl }} className="w-12 h-12 rounded-full" style={{ width: 48, height: 48 }}
+                        source={{ uri: contact.profileImageUrl }} className="w-12 h-12 rounded-full" style={{ width: 52, height: 52 }}
                     />
                 ) : (
                     <View className="w-12 h-12 rounded-full bg-gray-300 items-center justify-center">
@@ -109,7 +115,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
                         ? item.lastMessage.messageText.length <= 10
                             ? item.lastMessage.messageText
                             : `${item.lastMessage.messageText.slice(0, 7)}...`
-                        : "No messages yet"
+                        : ""
                     }
                 </Text>
             </View >
