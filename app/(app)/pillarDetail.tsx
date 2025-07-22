@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,TextInput, FlatList } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -38,6 +38,11 @@ export default function pillarDetail ()  {
   console.log("PillarDetail subpillars: ", hasSubPillars);
   const [modalcontactVisible, setModalContact] = useState(false);
 
+  const searchpillarName = (text: string) => {
+    // Update the pillar name state
+    setcurrentPillar((prev: Pillar) => ({ ...prev, title: text }));
+  };
+
   return (
     <>
       <Stack.Screen options={{
@@ -63,48 +68,64 @@ export default function pillarDetail ()  {
       }}>
 
       </Stack.Screen>
+      <TextInput
+              style={{borderWidth: 1,
+                      borderColor: '#ccc',
+                      padding: 10,
+                      fontSize: 16,
+                      borderRadius: 6,
+                      marginBottom: 20,}}
+              placeholder="Search"
+              value={pillarname}
+              onChangeText={searchpillarName}
+          />
+
+      <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Sub-pillars</Text>
 
       <View style={styles.container}>
         {hasSubPillars ? (
-          // currentPillar?.subPillars.map((sub:Pillar, index:number) => (
-            <>
-
-              <View className = "flex-1">
-                  <FlatList
-                      data = {currentPillar?.subPillars}
-                      contentContainerStyle = {{flex:1, paddingVertical: 55}}
-                      keyExtractor={(item, index) => index.toString()}
-                      numColumns={2}
-                      showsVerticalScrollIndicator = {false}
-                      columnWrapperStyle={{justifyContent: 'space-between'}}
-                      renderItem={({item, index})=>(          
-                          // <TouchableOpacity onPress={setcurrentPillar} activeOpacity={0.7}>
-                            <View style={{
-                                flexDirection: 'row',
-                                padding: 10, 
-                                marginHorizontal: 10,
-                                marginVertical: 5, 
-                                width: 300,
-                                borderWidth: 1,
-                                borderColor: '#aaa',
-                                borderRadius: 12,
-                                gap: 8,}} >
-
-                                    <Text style={{ fontSize: 24, marginRight: 8, borderWidth: 1, borderColor: 'black', borderRadius: 5 ,backgroundColor:'gray'}}>{item?.icon}</Text>
-   
-                                    <Text>{item?.title}</Text>
-                            </View>
-                        // </TouchableOpacity>
-                        )}
-                      />
-
+          <FlatList
+            data={currentPillar?.subPillars}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal={true}
+            showsHorizontalScrollIndicator={true} // optional，may enable for debug
+            contentContainerStyle={{
+              paddingVertical: 20,
+              paddingHorizontal: 10,
+            }}
+            renderItem={({ item, index }) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 10,
+                  marginHorizontal: 8,
+                  width: 160, // fiexd width, Suitable for horizontal arrangement
+                  height: 60,
+                  borderWidth: 1,
+                  borderColor: '#aaa',
+                  borderRadius: 12,
+                  backgroundColor: 'white',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 24,
+                    width: 40,
+                    borderWidth: 3,
+                    borderColor: item.color || 'gray',
+                    borderRadius: 10,                
+                  }}
+                >
+                  {item?.icon}
+                </Text>
+                <Text>{item?.title}</Text>
               </View>
-            </>
-          
+            )}
+          />
         ) : (
           <Text style={{ color: 'gray' }}>No subpillars</Text>
         )}
-     
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
       <View style={styles.container}>
@@ -115,7 +136,7 @@ export default function pillarDetail ()  {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { flexDirection: 'row', alignItems: 'center', padding: 10, marginHorizontal: 8 },
   icon: { fontSize: 24 },
   title: { fontSize: 24 },
 });
