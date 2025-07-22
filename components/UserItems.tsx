@@ -92,7 +92,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
                 ) : (
                     <View className="w-12 h-12 rounded-full bg-gray-300 items-center justify-center">
                         <Text className="text-white font-semibold text-lg">
-                            {contact?.firstName?.charAt(0).toUpperCase() || "?"}
+                            {`${contact?.firstName?.charAt(0) || ""}${contact?.lastName?.charAt(0) || ""}`.toUpperCase() || "?"}
                         </Text>
                     </View>
                 )}
