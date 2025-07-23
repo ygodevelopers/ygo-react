@@ -85,13 +85,7 @@ export default function ConfirmContact() {
             };
 
             try {
-                const docRef = await setDoc(contactRef, contactDoc);
-                
-                createThread(contact, user).then((threadID) => {
-                    console.log(threadID);
-                }); 
-
-                router.replace('/(app)/(tabs)/chats');
+                router.replace({pathname: '/(app)/chatRoom', params: {contactID: contact.id}});
 
             } catch (error) {
                 console.error('Error creating contact:', error);
