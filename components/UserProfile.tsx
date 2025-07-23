@@ -3,64 +3,65 @@ import { View, Image, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Swi
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
-import { useAuth } from "@/context/authContext"
+import { useAuth } from "@/context/authContext";
 import uploadImageToFirebase from "@/components/ImageUploadType";
 import { db } from "@/firebaseConfig";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { useRouter } from "expo-router";
+
+
 
 
 const { height, width } = Dimensions.get("window");
 
 export default function UserProfile() {
-
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [isEnabled, setIsEnabled] = useState(false);
   const { logout, user } = useAuth();
 
+
   const handleLogout = async () => {
-    await logout()
-  }
+    //await logout()
+    const result = await logout();
+    if (result.success) {
+      router.replace("/signIn");
+    } else {
+      Alert.alert("Logout failed", result.msg);
+    }
+  };
+
 
   useEffect(() => {
-    if (!user?.id) return;
-
-    const fetchProfileImage = async () => {
-      try {
-        const userDoc = await getDoc(doc(db, "users", user.id));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-
-          if (data?.profileImageUrl && typeof data.profileImageUrl === "string") {
-              const finalUrl = data.profileImageUrl.includes("?alt=media")
-              ? data.profileImageUrl
-              : `${data.profileImageUrl}?alt=media`;
-            setProfileImage(finalUrl);
-          } else {
-            console.warn("profileImageUrl is missing or invalid");
-          }
-        }
-      } catch (err) {
-        console.error("Error loading profile image:", err);
+    try {
+      if (user?.profileImageUrl && typeof user.profileImageUrl === "string") {
+        const finalUrl = user.profileImageUrl.includes("?alt=media")
+          ? user.profileImageUrl
+          : `${user.profileImageUrl}?alt=media`;
+        setProfileImage(finalUrl);
+      } else {
+        setProfileImage(null);
       }
-    };
+    } catch (error) {
+      console.error("Error setting profile image:", error);
+      setProfileImage(null);
+    }
+  }, [user?.profileImageUrl]);
 
-    fetchProfileImage();
-  }, [user?.uid]);
+   const handleImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-  const handleImagePicker = async () => {
-  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert("Permissions required", "Access to the gallery is needed to select an image.");
+      return;
+    }
 
-  if (!permissionResult.granted) {
-    Alert.alert("Permissions required", "Access to the gallery is needed to select an image.");
-    return;
-  }
-
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [1, 1],
-    quality: 1,
-  });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const selectedImageUri = result.assets[0].uri;
@@ -69,11 +70,11 @@ export default function UserProfile() {
         const downloadUrl = await uploadImageToFirebase(selectedImageUri, "profile");
         const userDocRef = doc(db, "users", user.id);
         const finalDownloadUrl = downloadUrl.includes("?alt=media")
-            ? downloadUrl
-            : `${downloadUrl}?alt=media`;
-      await updateDoc(userDocRef, {
-            profileImageUrl: finalDownloadUrl,
-      });
+          ? downloadUrl
+          : `${downloadUrl}?alt=media`;
+        await updateDoc(userDocRef, {
+          profileImageUrl: finalDownloadUrl,
+        });
       } catch (error) {
         console.error("Error uploading image:", error);
         Alert.alert("Error", "imagen din not uploaded");
@@ -85,30 +86,34 @@ export default function UserProfile() {
     <View style={styles.container}>
 
       {/* profile picture */}
+
       <View style={styles.profileHeader}>
-        <TouchableOpacity onPress={handleImagePicker}>
-          {profileImage ? (
-            <Image
-              source={{ uri: profileImage }}
-              style={styles.profileImage}
-            />
-          ) : (
-            <FontAwesome name="user-circle" size={100} color="gray" />
-          )}
-        </TouchableOpacity>
+        <View style={{ position: "relative" }}>
+          <TouchableOpacity onPress={handleImagePicker}>
+            {profileImage ? (
+              <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            ) : (
+              <FontAwesome name="user-circle" size={100} color="gray" />
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
+
 
       {/* body 1*/}
       <View style={styles.content}>
         <View style={styles.card}>
           {/* Active Status */}
+
           <TouchableOpacity style={styles.optionRow}>
             <Ionicons name="chatbubbles" size={24} color="green" style={styles.optionIcon} />
             <Text style={styles.optionText}>Active Status</Text>
           </TouchableOpacity>
 
           {/* Privacy */}
-          <TouchableOpacity style={styles.optionRow}>
+          <TouchableOpacity
+            style={styles.optionRow}
+            onPress={() => router.push("/(app)/BlockedUserList")}>
             <Ionicons name="lock-closed" size={24} color="blue" style={styles.optionIcon} />
             <Text style={styles.optionText}>Privacy</Text>
           </TouchableOpacity>
@@ -247,6 +252,20 @@ const styles = StyleSheet.create({
     color: '#d32f2f',
     fontSize: 16,
     fontWeight: '500',
+  },
+
+  statusDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+
+  statusDotOverlay: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
   },
 
 });
