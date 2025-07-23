@@ -113,7 +113,6 @@ export default function ChatRoom() {
 
             let currentThreadID = threadID;
 
-            // If no thread exists, create one first
             if (!currentThreadID) {
                 console.log("No thread exists, creating new thread...");
                 currentThreadID = await createThread(contact!, user);
@@ -148,12 +147,12 @@ export default function ChatRoom() {
     }
     
     return (
-            <View className='flex-1 bg-white'> 
+            <View className='flex-1'> 
                 <StatusBar barStyle={'dark-content'}/>
                 <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
                 <View className='h-3 border-b border-neutral-300'/>
-                <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
-                    <View>
+                <View className='flex-1 justify-between overflow-visible'>
+                    <View className='flex-1' style={{backgroundColor: '#33C6EB'}}>
                         <MessageList messages={messages} userID={user.id}/>
                     </View>
                     <View style={{marginBottom: hp(2.7)}} className="pt-2">

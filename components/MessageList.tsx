@@ -15,7 +15,7 @@ export const MessageList = ({ messages, userID }: { messages: Message[], userID:
                     fromUser={userID === item.fromId}
                 />
             )}
-            contentContainerStyle={{ paddingBottom: 12 }}
+            contentContainerStyle={{ paddingBottom: 12}}
         />
     );
 };
