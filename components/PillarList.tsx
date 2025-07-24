@@ -21,10 +21,10 @@ export const PillarList = () => {
           if(user?.id){
             getPillars();
         }
-    },[])
+    },[user])
 
 
-    const combinedData = [...Pillars, { icon: '➕', title: 'New Pillar' }];
+    const combinedData = [...Pillars, { icon: '➕', title: 'New Pillar',type:'new' }];
 
     console.log("Pillar got:", Pillars);
 

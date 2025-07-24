@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from "../firebaseConfig";
-import { doc, getDoc, setDoc} from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 
 export const AuthContext = createContext();
 
-export const AuthContextProvider = ({children}) => {
+export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(undefined);
     const currentuser = auth.currentUser;
@@ -13,11 +13,17 @@ export const AuthContextProvider = ({children}) => {
     useEffect(() => {
 
         const unsub = onAuthStateChanged(auth, (currentuser) => {
-            if(currentuser){
+            if (currentuser) {
                 setIsAuthenticated(true);
-                setUser({...user, email: currentuser.email, id: currentuser.uid });
-                updateUserData(currentuser.uid);
-            }else{
+                const docRef = doc(db, "users", currentuser.uid);
+                const unsubDoc = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        setUser(docSnap.data());
+                    }
+                });
+                return () => unsubDoc();
+            } else {
                 setIsAuthenticated(false);
                 setUser(null);
             }
@@ -26,36 +32,25 @@ export const AuthContextProvider = ({children}) => {
         return unsub;
     }, []);
 
-    const updateUserData = async (userId) => {
-        const docRef = doc(db,'users', userId);
-        const docSnap = await getDoc(docRef);
-        if(docSnap.exists()){
-            let data = docSnap.data();
-            setUser(data);
-            console.log('update user data:', user);
-        }
-    }
-
-
     const login = async (email, password) => {
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
             updateUserData(response?.user?.uid);
 
-            return {success: true, data: response?.user}
+            return { success: true, data: response?.user }
         }
         catch (e) {
-            return {success: false, msg: e.message}
+            return { success: false, msg: e.message }
         }
     }
 
     const logout = async () => {
         try {
             await signOut(auth);
-            return {success: true}
+            return { success: true }
         }
         catch (e) {
-            return {success: false, msg: e.message, error: e}
+            return { success: false, msg: e.message, error: e }
         }
     }
 
@@ -64,22 +59,22 @@ export const AuthContextProvider = ({children}) => {
             const response = await createUserWithEmailAndPassword(auth, email, password);
             console.log('response.user:', response?.user);
 
-            await setDoc(doc(db, "users", response?.user?.uid),{
+            await setDoc(doc(db, "users", response?.user?.uid), {
                 email,
                 firstName,
                 id: response?.user?.uid,
-                profileImageUrl
+                profileImageUrl: profileImageUrl || null,
             });
 
-            return {success: true, data: response?.user}
-        }   
+            return { success: true, data: response?.user }
+        }
         catch (e) {
-            return {success: false, msg: e.message};
+            return { success: false, msg: e.message };
         }
     }
 
     return (
-        <AuthContext.Provider value={{user, isAuthenticated, login, logout, register}}>
+        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
             {children}
         </AuthContext.Provider>
     )
@@ -88,7 +83,7 @@ export const AuthContextProvider = ({children}) => {
 export const useAuth = () => {
     const value = useContext(AuthContext);
 
-    if(!value) {
+    if (!value) {
         throw new Error('useAuth must be wrapped inside AuthContextProvider');
     }
     return value;
