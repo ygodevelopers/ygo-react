@@ -12,7 +12,6 @@ import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where,
 import { userRef, db} from '@/firebaseConfig';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { createThread } from '@/utils/chatService';
-import CustomKeyboardView from '@/components/CustomKeyboardView';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
