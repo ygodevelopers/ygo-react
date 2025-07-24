@@ -12,7 +12,9 @@ import { collection, doc, getDocs, query, setDoc, Unsubscribe, updateDoc, where,
 import { userRef, db} from '@/firebaseConfig';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { createThread } from '@/utils/chatService';
-import CustomKeyboardView from '@/components/CustomKeyboardView';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 
 export default function ChatRoom() {
@@ -102,12 +104,14 @@ export default function ChatRoom() {
 
     const handleSendMessage = async () => {
         try {
+
+            if(userMessage.length === 0) return;
+
             const message = createMessage();
             if (!message) return;
 
             let currentThreadID = threadID;
 
-            // If no thread exists, create one first
             if (!currentThreadID) {
                 console.log("No thread exists, creating new thread...");
                 currentThreadID = await createThread(contact!, user);
@@ -142,26 +146,55 @@ export default function ChatRoom() {
     }
     
     return (
-            <View className='flex-1 bg-white'> 
+            <View className='flex-1'> 
                 <StatusBar barStyle={'dark-content'}/>
                 <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
                 <View className='h-3 border-b border-neutral-300'/>
-                <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
-                    <View className='flex-1'>
-                        <MessageList messages={messages}/>
+                <View className='flex-1 justify-between overflow-visible'>
+                    <View className='flex-1' style={{backgroundColor: '#33C6EB'}}>
+                        <MessageList messages={messages} userID={user.id}/>
                     </View>
                     <View style={{marginBottom: hp(2.7)}} className="pt-2">
-                        <View className='flex-row justify-between bg-white border border-neutral-300 rounded-full pl-5 p-2 mx-3'>
+                        <View className='flex-row items-center pl-5 pr-3 py-2 mx-3'>
+                            <TouchableOpacity className='bg-neutral-200 p-2 mr-2 rounded-full'>
+                                <Feather name="plus" size={24} color="black" />
+                            </TouchableOpacity>
+                            
                             <TextInput 
                                 placeholder='Type message...'
-                                className='flex-1 mr-2' 
-                                style={{fontSize: hp(2)}} 
+                                className='flex-1 border border-neutral-300 rounded-full px-4 py-2 mr-2'
+                                style={{
+                                    fontSize: hp(2),
+                                    maxHeight: hp(4), 
+                                    minHeight: hp(4),
+                                    backgroundColor: "#f2f2f7"
+                                }} 
                                 onChangeText={(text) => {setUserMessage(text)}} 
                                 value={userMessage}
+                                multiline={true}
+                                textAlignVertical='top'
+                                placeholderTextColor="#9CA3AF"
                             />
-                            <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
-                                <FontAwesome name="send" size={24} color="black" />
-                            </TouchableOpacity>
+
+                            {
+                                userMessage.length == 0 ?  
+                                (
+                                    <>
+                                        <TouchableOpacity className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
+                                            <Feather name="camera" size={24} color="black" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
+                                            <MaterialCommunityIcons name="microphone-outline" size={24} color="black" />
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                                : 
+                                (
+                                    <TouchableOpacity onPress={handleSendMessage} className='bg-neutral-200 p-2 mr-[1px] rounded-full'>
+                                        <FontAwesome name="send" size={24} color="black" />
+                                    </TouchableOpacity>
+                                )
+                            }
                         </View>
                     </View>
                 </View>

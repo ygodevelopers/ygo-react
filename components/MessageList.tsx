@@ -1,15 +1,21 @@
 import { Message } from "@/types";
 import { View, Text } from "react-native";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { MessageBubble } from "./MessageBubble";
+import { FlatList } from 'react-native';
 
 
-export const MessageList = ({messages}: {messages: Message[]}) => {
-    
+export const MessageList = ({ messages, userID }: { messages: Message[], userID: string }) => {
     return (
-        <View className="flex-1 flex-col justify-center items-center">
-            {
-                messages.map((message) => (<Text key={message.id}>{message.messageText}</Text>))
-            }
-        </View>
-    )
-}
+        <FlatList
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+                <MessageBubble
+                    message={item.messageText}
+                    fromUser={userID === item.fromId}
+                />
+            )}
+            contentContainerStyle={{ paddingBottom: 12}}
+        />
+    );
+};

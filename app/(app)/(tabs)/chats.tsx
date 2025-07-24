@@ -1,60 +1,37 @@
-import { TouchableOpacity, View, Text, SafeAreaView } from "react-native";
+import { TouchableOpacity, View, Text, SafeAreaView, StatusBar } from "react-native";
 import { UserList } from "@/components/UserList";
-import { useEffect, useState } from "react";
-import { useFocusEffect, useRouter } from "expo-router";
-import { Thread } from "@/types";
-import { useAuth } from "@/context/authContext";
-import { threadsCollection } from "@/firebaseConfig";
-import { getDocs, query, where } from "firebase/firestore";
+import { useRouter } from "expo-router";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default function Chats() {
-  const [threads, setThreads] = useState<Thread[]>([]);
   const router = useRouter();
-  const {user} = useAuth();
-  
-  useEffect(()=>{
-      if(user?.id){
-          getThreads();
-      }
-  },[]);
-
-  const getThreads = async () => {
-      const threadsRef : Thread[] = [];
-      const q = query(threadsCollection, where("uids", "array-contains", user?.id));
-      const querySnapshot = await getDocs(q);
-      
-      querySnapshot.forEach(doc => {
-          console.log(doc.data());
-          threadsRef.push(doc.data() as Thread);
-      })
-      setThreads(threadsRef);
-  }
-
   const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">     
+      <StatusBar barStyle={'dark-content'}/>
 
-      <View className="px-4 pb-4 pt-2" style={{paddingTop: insets.top}}>
-        <View className="px-4 py-3 flex-row items-center" style={{backgroundColor: "#d3d3d3", borderRadius: "15px"}}>
-          <AntDesign name="search1" size={18} color="#8E8E93" />
-          <Text className="ml-3 text-gray-500 text-base">Search...</Text>
+      <View className="items-center">
+        <View style={{paddingTop: insets.top, width: '85%'}}>
+          <View className="px-4 py-3 flex-row items-center gap-3" style={{backgroundColor: "#d3d3d3", borderRadius: 10, overflow: "hidden"}}>
+            <AntDesign name="search1" size={18} color="#8E8E93"/>
+            <Text className="ml-3 text-gray-500 text-base">Search...</Text>
+          </View>
         </View>
       </View>
 
-      <View className="flex-row items-center justify-between px-4 pb-4">
-        <View className="" />
-          <Text className="text-3xl font-bold text-black">Chats</Text>
-        <View className="flex-1">
-          <TouchableOpacity 
-            onPress={() => {router.push('/AddContact')}}>
-            <AntDesign name="plussquare" size={20} color="#9C52FF"/>
-          </TouchableOpacity>
+      <View className="flex-row items-center px-4" style={{marginTop: 16}}>
+        <View className="flex-1 items-center">
+          <Text className="font-bold text-black" style={{fontSize: hp(2)}}>Chats</Text>
         </View>
+        <TouchableOpacity 
+          onPress={() => {router.push('/AddContact')}}>
+          <AntDesign name="plussquare" size={30} color="#9C52FF"/>
+        </TouchableOpacity>
       </View>
-      
+
       <UserList pillarid={null}/>
     </SafeAreaView>
   );
