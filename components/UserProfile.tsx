@@ -93,7 +93,9 @@ export default function UserProfile() {
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.profileImage} />
             ) : (
-              <FontAwesome name="user-circle" size={100} color="gray" />
+              
+                <FontAwesome name="user-circle" size={100} color="gray" />
+              
             )}
           </TouchableOpacity>
         </View>
