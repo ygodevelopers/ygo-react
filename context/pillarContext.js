@@ -18,6 +18,7 @@ export const PillarContextProvider = ({children}) => {
     const [Pillars, setPillars] = useState([]);
     const [currentPillar, setcurrentPillar] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [ currentThread, setCurrentThread ] = useState(null);
 
     const getPillars = async()=>{
         //fetch pillars
@@ -87,7 +88,9 @@ export const PillarContextProvider = ({children}) => {
             setsubpillar,
             currentPillar,
             setcurrentPillar,
-            addSubPillar
+            addSubPillar,
+            currentThread,
+            setCurrentThread
             }}>
             {children}
         </PillarContext.Provider>

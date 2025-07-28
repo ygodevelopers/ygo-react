@@ -10,7 +10,7 @@ import { getDoc, doc } from "firebase/firestore";
 
 export default function UserItems({ item, router }: { item: Thread, router: Router }) {
 
-    const { Pillars } = usePillar();
+    const { Pillars, setCurrentThread } = usePillar();
     const { user } = useAuth();
     const [contact, setContact] = useState<User>();
     const [pillar, setPillar] = useState<Pillar>();
@@ -19,6 +19,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
     useEffect(() => {
         getUserInfo();
         getPillarInfo();
+        setCurrentThread(item);
     }, [item]);
 
     if (!user) return null;

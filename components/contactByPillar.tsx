@@ -1,15 +1,25 @@
 import { Contact,User } from "@/types";
 import { useEffect, useState } from 'react';
-import { View, FlatList, Image, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Image, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { getDocs, setDoc, doc, query, where, updateDoc ,arrayUnion } from 'firebase/firestore'
 import { contactCollection, userRef } from '@/firebaseConfig';
 import {AlphabetList, IData} from 'react-native-section-alphabet-list';
 import { useAuth } from '@/context/authContext';
+import {usePillar} from '@/context/pillarContext';
+import { Router, useRouter } from "expo-router";
 
 export default function ContactByPillar(){
 
+  const router = useRouter();
+
   const {user} = useAuth();
+
+  const {
+      currentPillar,
+      currentThread
+    } = usePillar();
+
   const [userContacts, setUserContacts] = useState<User[]>();
   useEffect(() => {
         getContacts();
@@ -18,7 +28,7 @@ export default function ContactByPillar(){
   const getContacts = async () => {
     try {
         const contactsContainer : Contact[] = [];
-        const q = query(contactCollection, where('ownerId', '==', user.id));
+        const q = query(contactCollection, where('ownerId', '==', user.id),where('pillarId', 'array-contains', currentPillar?.id));
         const qSnapshot = await getDocs(q);
         qSnapshot.forEach((doc) => {
           console.log("contacts: ",doc.data())
@@ -55,7 +65,9 @@ return (
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator = {false}
             renderItem={({item, index})=>(          
-                // <TouchableOpacity onPress={setcurrentPillar} activeOpacity={0.7}>
+                // <TouchableOpacity onPress={() => router.push({ params: { contactID: item.id, threadID: null }, pathname: '/(app)/ContactView' })}>
+                <TouchableOpacity onPress={() => router.push({ pathname: '/(app)/chatRoom', params: { threadID: currentThread?.id, contactName: item?.firstName, contactID: item?.id } })}>
+                 
                   <View style={{
                       flexDirection: 'row',
                       padding: 10, 
@@ -69,7 +81,7 @@ return (
 
                           <Text>{item?.firstName} {item?.lastName}</Text>
                   </View>
-              // </TouchableOpacity>
+               </TouchableOpacity>
               )}
             />
       }
