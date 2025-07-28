@@ -30,7 +30,7 @@ export default function ContactView() {
     const { Pillars } = usePillar();
     const router = useRouter();
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ["40%"], []);
+    const snapPoints = useMemo(() => ["60%"], []);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const handlePresentPress = useCallback(() => {
         bottomSheetRef.current?.expand();
@@ -119,7 +119,7 @@ export default function ContactView() {
                     ref={bottomSheetRef}
                     index={-1}
                     snapPoints={snapPoints}
-                    enablePanDownToClose={false}
+                    enablePanDownToClose={true}
                     enableContentPanningGesture={false}
                     enableHandlePanningGesture={true}
                     handleComponent={null}
