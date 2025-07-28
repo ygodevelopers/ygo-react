@@ -12,19 +12,19 @@ import { v4 } from "uuid";
 
 export default function ConfirmContact() {
     const {user} = useAuth();
+    const {contactID} = useLocalSearchParams();
     const [contact, setContact] = useState<User>();
-    const {email} = useLocalSearchParams();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
     const router = useRouter();
 
     useEffect( () => {  
         getContact();
         console.log(user);
-    }, [email]);
+    }, [contactID]);
 
     const getContact = async () => {
         try {
-            const q = query(userRef, where('email', '==', email));
+            const q = query(userRef, where('id', '==', contactID));
             const qSnapshot = await getDocs(q);
             qSnapshot.forEach((doc) => setContact(doc.data() as User));
         } catch (error) {
@@ -83,6 +83,8 @@ export default function ConfirmContact() {
                 pillarId: [selectedPillar ? selectedPillar.id : ""],
                 id: v4().toUpperCase()
             };
+
+            setDoc(contactRef, contactDoc);
 
             try {
                 router.replace({pathname: '/(app)/chatRoom', params: {contactID: contact.id}});

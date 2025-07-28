@@ -1,4 +1,4 @@
-import {View, Text, StatusBar, TextInput, TouchableOpacity} from 'react-native';
+import {View, StatusBar, TextInput, TouchableOpacity} from 'react-native';
 import '@/global.css';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {ChatRoomHeader} from '@/components/ChatRoomHeader';
