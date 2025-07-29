@@ -101,7 +101,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
 
             <View className="flex-1 border-b border-gray-200 pb-3">
                 <View className="flex-row items-center justify-between mb-1">
-                    <Text className="text-black font-semibold text-lg"> {contact?.firstName || "Unknown"} </Text>
+                    <Text className="text-black font-semibold text-lg"> {`${contact?.firstName || ''} ${contact?.lastName || ''}`.trim() || "Unknown"} </Text>
                     {/* <Text style={{ fontSize: hp(1.6) }} className="font-medium text-neutral-500">{item.lastUpdated?.toDate ? item.lastUpdated.toDate().toLocaleDateString() : ""}
                     </Text> */}
                     <Text className="text-gray-500 text-sm"> {formatTime()}</Text>
