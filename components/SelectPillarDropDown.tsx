@@ -41,6 +41,7 @@ export const SelectPillarDropDown = ({handleSelectPillar, showIcons} : {handleSe
                 showsVerticalScrollIndicator={true}
                 dropdownStyle={styles.dropdownMenuStyle}
                 dropdownOverlayColor="transparent"
+                
             />
     )
 }

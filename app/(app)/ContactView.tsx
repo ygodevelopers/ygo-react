@@ -12,7 +12,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/build/FontAwesome5";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import SelectDropdown from 'react-native-select-dropdown';
 import { usePillar } from "@/context/pillarContext";
 import { db } from "@/firebaseConfig";
 import { SelectPillarDropDown } from "@/components/SelectPillarDropDown";
