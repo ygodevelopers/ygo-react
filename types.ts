@@ -59,3 +59,18 @@ export type PillarStackParamList = {
     Home: undefined;
     Detail: Pillar;
 };
+
+export type PillarUsage = {
+    id: string;
+    pillarId: string;
+    startDate: Date;
+    endDate?: Date;
+    totalTimeSpent: number;
+    lastActiveDate?: Date;
+};
+
+export type UserActivity = {
+    id: string;
+    userId: string;
+    pillarUsages: PillarUsage[];
+};
