@@ -1,5 +1,4 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useEffect, useState } from "react";
 import { Pillar, Thread, User } from "@/types";
 import { Router } from "expo-router";
@@ -7,6 +6,8 @@ import { useAuth } from "@/context/authContext";
 import { usePillar } from "@/context/pillarContext";
 import { userRef } from "@/firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
+import tinycolor from "tinycolor2";
+
 
 export default function UserItems({ item, router }: { item: Thread, router: Router }) {
 
@@ -18,8 +19,11 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
 
     useEffect(() => {
         getUserInfo();
+        console.log(user);
         getPillarInfo();
     }, [item]);
+
+
 
     if (!user) return null;
     const openChatRoom = () => {
@@ -79,15 +83,13 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
     return (
         <TouchableOpacity onPress={openChatRoom} className={"flex-row items-center px-4 py-3 bg-white active:bg-gray-50"}>
             <View className="mr-4 items-center justify-center" style={{
-                width: 56,
-                height: 56,
-                borderRadius: 26,
-                borderWidth: 2,
+                borderRadius: 100,
+                borderWidth: 4,
                 borderColor: pillar?.color || "#d1d5db",
             }}>
                 {contact?.profileImageUrl ? (
                     <Image
-                        source={{ uri: contact.profileImageUrl }} className="w-12 h-12 rounded-full" style={{ width: 52, height: 52 }}
+                        source={{ uri: contact.profileImageUrl }} className="w-12 h-12 rounded-full" style={{ width: 62, height: 62 }}
                     />
                 ) : (
                     <View className="w-12 h-12 rounded-full bg-gray-300 items-center justify-center">
@@ -96,27 +98,30 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
                         </Text>
                     </View>
                 )}
-
             </View>
 
             <View className="flex-1 border-b border-gray-200 pb-3">
                 <View className="flex-row items-center justify-between mb-1">
-                    <Text className="text-black font-semibold text-lg"> {`${contact?.firstName || ''} ${contact?.lastName || ''}`.trim() || "Unknown"} </Text>
-                    {/* <Text style={{ fontSize: hp(1.6) }} className="font-medium text-neutral-500">{item.lastUpdated?.toDate ? item.lastUpdated.toDate().toLocaleDateString() : ""}
-                    </Text> */}
+                    <Text className="text-black font-semibold text-lg">{contact?.firstName || "Unknown"} {contact?.lastName || "Unknown"}</Text>
                     <Text className="text-gray-500 text-sm"> {formatTime()}</Text>
                 </View>
                 {
                     pillar && (
-                        <Text className="text-sm font-medium mb-1" style={{ color: pillar.color }}>{pillar.title}</Text>
-                    )}
+                        <View style={{borderRadius: 10, backgroundColor: pillar.color, alignSelf: 'flex-start'}} className="justify-center items-center px-2">
+                            <Text className="text-sm font-medium mb-1" style={{ color: tinycolor(pillar.color).darken(40).toString()}}>{pillar.title}</Text>
+                        </View>
+                        
+                )}
                 <Text className="text-gray-500 text-base" numberOfLines={1}>
-                    {item.lastMessage?.messageText
-                        ? item.lastMessage.messageText.length <= 10
-                            ? item.lastMessage.messageText
-                            : `${item.lastMessage.messageText.slice(0, 7)}...`
-                        : ""
-                    }
+                    {(() => {
+                        if (!item.lastMessage?.messageText) return "";
+                        
+                        const messageText = item.lastMessage.messageText;
+                        const isFromUser = item.lastMessage.fromId === user.id;
+                        
+                        const prefix = isFromUser ? "You: " : "";
+                        return `${prefix}${messageText.slice(0, 7)}...`;
+                    })()}
                 </Text>
             </View >
         </TouchableOpacity >
