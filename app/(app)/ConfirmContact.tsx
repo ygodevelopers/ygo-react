@@ -1,8 +1,8 @@
 import { ContactBanner } from '@/components/ContactBanner';
 import { SelectPillarDropDown } from '@/components/SelectPillarDropDown';
 import { useAuth } from '@/context/authContext';
-import { threadsCollection, userRef, contactCollection } from '@/firebaseConfig';
-import { Contact, Pillar, Thread, User } from '@/types';
+import { userRef, contactCollection } from '@/firebaseConfig';
+import { Contact, Pillar, User } from '@/types';
 import { createThread } from '@/utils/chatService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDocs, query, serverTimestamp, getDoc,setDoc, Timestamp, where } from 'firebase/firestore';
