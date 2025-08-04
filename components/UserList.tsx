@@ -6,8 +6,8 @@ import UserItems from '@/components/UserItems'
 import { Thread } from "@/types";
 import { useRouter } from "expo-router";
 import { subscribeToThreads } from "@/utils/chatService";
-import { onSnapshot, query, where } from "firebase/firestore";
-import { threadsCollection, userRef } from "@/firebaseConfig";
+import { onSnapshot } from "firebase/firestore";
+import { userRef } from "@/firebaseConfig";
 import { doc } from "firebase/firestore";
 
 export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
@@ -74,7 +74,7 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
                     <View className="flex-1">
                         <FlatList
                             data={threads}
-                            contentContainerStyle={{ flex: 1, paddingVertical: 25 }}
+                            contentContainerStyle={{ paddingVertical: 25 }}
                             keyExtractor={(item: Thread, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item, index }) => item.lastUpdated ? (<UserItems item={item} router={router} />) : null}

@@ -1,4 +1,4 @@
-import {View, Text, StatusBar, TextInput, TouchableOpacity} from 'react-native';
+import {View, StatusBar, TextInput, TouchableOpacity} from 'react-native';
 import '@/global.css';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {ChatRoomHeader} from '@/components/ChatRoomHeader';
@@ -14,7 +14,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { createThread } from '@/utils/chatService';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
+import { KeyboardAvoidingView } from 'react-native';
 
 
 export default function ChatRoom() {
@@ -146,6 +146,11 @@ export default function ChatRoom() {
     }
     
     return (
+        <KeyboardAvoidingView 
+            style={{flex: 1}} 
+            behavior='height'
+            keyboardVerticalOffset={90}
+        >
             <View className='flex-1'> 
                 <StatusBar barStyle={'dark-content'}/>
                 <ChatRoomHeader user={contact!} router={router} threadID={threadID || ''}/>
@@ -154,7 +159,7 @@ export default function ChatRoom() {
                     <View className='flex-1' style={{backgroundColor: '#33C6EB'}}>
                         <MessageList messages={messages} userID={user.id}/>
                     </View>
-                    <View style={{marginBottom: hp(2.7)}} className="pt-2">
+                    <View className="pt-2 pb-2">
                         <View className='flex-row items-center pl-5 pr-3 py-2 mx-3'>
                             <TouchableOpacity className='bg-neutral-200 p-2 mr-2 rounded-full'>
                                 <Feather name="plus" size={24} color="black" />
@@ -165,9 +170,9 @@ export default function ChatRoom() {
                                 className='flex-1 border border-neutral-300 rounded-full px-4 py-2 mr-2'
                                 style={{
                                     fontSize: hp(2),
-                                    maxHeight: hp(4), 
+                                    maxHeight: hp(10), 
                                     minHeight: hp(4),
-                                    backgroundColor: "#f2f2f7"
+                                    backgroundColor: "#e0e0e0"
                                 }} 
                                 onChangeText={(text) => {setUserMessage(text)}} 
                                 value={userMessage}
@@ -199,5 +204,6 @@ export default function ChatRoom() {
                     </View>
                 </View>
             </View>
+        </KeyboardAvoidingView>
     )
 }

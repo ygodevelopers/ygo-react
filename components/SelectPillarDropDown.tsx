@@ -3,10 +3,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 
-
 export const SelectPillarDropDown = ({handleSelectPillar, showIcons} : {handleSelectPillar: Function, showIcons: Boolean}) => {
     const {Pillars} = usePillar();
-    
     
     return (
         <SelectDropdown
@@ -40,9 +38,10 @@ export const SelectPillarDropDown = ({handleSelectPillar, showIcons} : {handleSe
                         </View>
                     );
                 }}
-                showsVerticalScrollIndicator={false}
+                showsVerticalScrollIndicator={true}
                 dropdownStyle={styles.dropdownMenuStyle}
                 dropdownOverlayColor="transparent"
+                
             />
     )
 }
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginTop: 4,
         width: 250,
-        maxHeight: 200,
+        maxHeight: 300,
         borderWidth: 1,
         borderColor: '#D1D5DB',
         shadowColor: '#000',

@@ -7,24 +7,24 @@ import { createThread } from '@/utils/chatService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDocs, query, serverTimestamp, getDoc,setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Button, View} from 'react-native';
+import { TouchableOpacity, Text, View} from 'react-native';
 import { v4 } from "uuid";
 
 export default function ConfirmContact() {
     const {user} = useAuth();
+    const {contactID} = useLocalSearchParams();
     const [contact, setContact] = useState<User>();
-    const {email} = useLocalSearchParams();
     const [selectedPillar, setSelectedPillar] = useState<Pillar>();
     const router = useRouter();
 
     useEffect( () => {  
         getContact();
         console.log(user);
-    }, [email]);
+    }, [contactID]);
 
     const getContact = async () => {
         try {
-            const q = query(userRef, where('email', '==', email));
+            const q = query(userRef, where('id', '==', contactID));
             const qSnapshot = await getDocs(q);
             qSnapshot.forEach((doc) => setContact(doc.data() as User));
         } catch (error) {
@@ -35,7 +35,6 @@ export default function ConfirmContact() {
     const handleSelectedPillar = (item: Pillar) => {
         setSelectedPillar(item);
     }
-
 
     const checkContact = async (): Promise<boolean> => {
         try {
@@ -52,10 +51,6 @@ export default function ConfirmContact() {
         }
     }
 
-
-    // TODO: Should I check to see if the contact has already been added?
-    // Create thread with contact? Why is the contact id handled differently?
-    // Should messages collection be created as just left empty? or wait until first message to create?
     const handleSaveContact = async () => {
         saveContact();
         // checkContact().then((valid) => {
@@ -75,43 +70,19 @@ export default function ConfirmContact() {
         }
 
         if(contact) {
+            const contactRef = doc(contactCollection);
 
-            //const contactRef = doc(contactCollection);
-            const contactRef = doc(contactCollection, `${user.id}_${contact.id}`); 
-            // Prepare the pillarId array
-            let pId: string[] = [];
-             try {
+            const contactDoc : Contact = {
+                contactUserId: contact.id,
+                ownerId: user.id,
+                pillarId: [selectedPillar ? selectedPillar.id : ""],
+                id: v4().toUpperCase()
+            };
 
-                const existingDoc = await getDoc(contactRef);
+            setDoc(contactRef, contactDoc);
 
-                // Start with existing pillarId if document exists
-                if (existingDoc.exists()) {
-                    const existingData = existingDoc.data() as Contact;
-                    pId = [...(existingData.pillarId ?? [])];
-                }
-
-                const selectedId =  selectedPillar ? selectedPillar.id : ""
-
-                if (selectedId && !pId.includes(selectedId)) {
-                    pId.push(selectedId);
-                }
-
-                const contactDoc : Contact = {
-                    contactUserId: contact.id,
-                    ownerId: user.id,
-                    pillarId: pId,
-                    id: existingDoc.exists() ? existingDoc.data().id : v4().toUpperCase(),
-                };
-
-           
-                const docRef = await setDoc(contactRef, contactDoc);
-                
-                createThread(contact, user).then((threadID) => {
-                    console.log(threadID);
-                }); 
-
-                router.replace('/(app)/(tabs)/chats');
-
+            try {
+                router.replace({pathname: '/(app)/chatRoom', params: {contactID: contact.id}});
             } catch (error) {
                 console.error('Error creating contact:', error);
             }
@@ -119,10 +90,18 @@ export default function ConfirmContact() {
     }
 
     return (
-        <View>
+        <View className='flex-col gap-3'>
             {contact && <ContactBanner contact={contact} />}
-            <SelectPillarDropDown handleSelectPillar={handleSelectedPillar} showIcons={true}/>
-            <Button title='Save Contact' onPress={handleSaveContact}/>
+            <View className='flex-col justify-center items-center gap-3'>
+                <SelectPillarDropDown handleSelectPillar={handleSelectedPillar} showIcons={true}/>
+                <TouchableOpacity 
+                    className='bg-blue-500 p-3 mt-2'
+                    style={{borderRadius: 10}}
+                    onPress={handleSaveContact}
+                >
+                    <Text className='text-white font-semibold text-center'>SAVE CONTACT</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
