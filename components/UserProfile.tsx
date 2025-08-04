@@ -93,7 +93,9 @@ export default function UserProfile() {
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.profileImage} />
             ) : (
-              <FontAwesome name="user-circle" size={100} color="gray" />
+              
+                <FontAwesome name="user-circle" size={100} color="gray" />
+              
             )}
           </TouchableOpacity>
         </View>
@@ -130,7 +132,9 @@ export default function UserProfile() {
           </View>
 
           {/* Usage Reports */}
-          <TouchableOpacity style={styles.optionRow}>
+          <TouchableOpacity 
+            style={styles.optionRow}
+            onPress={() => router.push("/(app)/UsageReport")}>
             <Ionicons name="bar-chart" size={24} color="orange" style={styles.optionIcon} />
             <Text style={styles.optionText}>Usage Reports</Text>
           </TouchableOpacity>
