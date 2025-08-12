@@ -5,7 +5,7 @@ import { userRef, contactCollection } from '@/firebaseConfig';
 import { Contact, Pillar, User } from '@/types';
 import { createThread } from '@/utils/chatService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
+import { doc, getDocs, query, serverTimestamp, getDoc,setDoc, Timestamp, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity, Text, View} from 'react-native';
 import { v4 } from "uuid";
@@ -52,14 +52,15 @@ export default function ConfirmContact() {
     }
 
     const handleSaveContact = async () => {
-        checkContact().then((valid) => {
-            if(valid){
-                saveContact();
-            }
-            else{
-                alert('Cant add same contact!');
-            }
-        })
+        saveContact();
+        // checkContact().then((valid) => {
+        //     if(valid){
+        //         saveContact();
+        //     }
+        //     else{
+        //         alert('Cant add same contact!');
+        //     }
+        // })
     }
 
     const saveContact = async () => {

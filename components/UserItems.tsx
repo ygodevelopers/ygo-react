@@ -11,7 +11,7 @@ import tinycolor from "tinycolor2";
 
 export default function UserItems({ item, router }: { item: Thread, router: Router }) {
 
-    const { Pillars } = usePillar();
+    const { Pillars, setCurrentThread } = usePillar();
     const { user } = useAuth();
     const [contact, setContact] = useState<User>();
     const [pillar, setPillar] = useState<Pillar>();
@@ -21,6 +21,7 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
         getUserInfo();
         console.log(user);
         getPillarInfo();
+        setCurrentThread(item);
     }, [item]);
 
 
