@@ -64,11 +64,8 @@ export const PillarItems=({item, router}:{item: Pillar, router: Router})=> {
             subPillars: [],
             userId: currentPillar?.userId, // Assuming you have a userId in the item
             };
-            console.log("subpillar adding", currentPillar.id);
-            console.log("subpillar newSub", newSub);
             const result = await addSubPillar(currentPillar.id, newSub);
             if (result.success) {
-                console.log("SubPillar added!");
                 let item = currentPillar;
                 item.subPillars.push(newSub);
                 setcurrentPillar(item);

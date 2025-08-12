@@ -26,7 +26,6 @@ export const UserList = ({ pillarid }: { pillarid?: string | null }) => {
                 const isUserAllowed = !blockedUserIds.includes(otherUserId || "");
        
                 const isPillarMatched = pid ? thread.pillarId?.includes(pid) : true;
-                console.log("thread.pillarId: ", thread.pillarId, "pid: ", pid ,"isUserAllowed:",isUserAllowed, "isPillarMatched: ", isPillarMatched);
                 return isUserAllowed && isPillarMatched;
             });
             filteredThreads.sort(sortThreads);

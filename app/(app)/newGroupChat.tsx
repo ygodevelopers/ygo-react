@@ -18,9 +18,7 @@ export default function newGroupChat ()  {
 
   const router = useRouter();
 
-  console.log("PillarDetail item id: ", currentPillar.id);
   const hasSubPillars = currentPillar.subPillars && currentPillar.subPillars.length > 0;
-  console.log("PillarDetail subpillars: ", hasSubPillars);
   const [modalcontactVisible, setModalContact] = useState(false);
 
   return (

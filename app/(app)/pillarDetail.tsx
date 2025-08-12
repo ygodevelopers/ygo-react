@@ -8,9 +8,6 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {usePillar} from '@/context/pillarContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-
-
-
 export default function pillarDetail ()  {
 
   const {         
@@ -31,9 +28,7 @@ export default function pillarDetail ()  {
 
   const router = useRouter();
 
-  console.log("PillarDetail item id: ", currentPillar.id);
   const hasSubPillars = currentPillar.subPillars && currentPillar.subPillars.length > 0;
-  console.log("PillarDetail subpillars: ", hasSubPillars);
   const [modalcontactVisible, setModalContact] = useState(false);
 
   const searchpillarName = (text: string) => {
@@ -127,7 +122,7 @@ export default function pillarDetail ()  {
         )}
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
-      <View style={styles.container}>
+      <View style={styles.chatContainer}>
         <UserList pillarid={currentPillar.id} />
       </View>
     </>
@@ -137,5 +132,6 @@ export default function pillarDetail ()  {
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center', padding: 10, marginHorizontal: 8 },
   icon: { fontSize: 24 },
+  chatContainer: { flex: 1, padding: 10 },
   title: { fontSize: 24 },
 });

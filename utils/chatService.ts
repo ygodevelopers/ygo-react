@@ -17,7 +17,6 @@ export const subscribeToMessages = (
             snapshot.forEach((doc) => {
                 messages.push(doc.data() as Message);
             });
-            console.log("Fetching messages");
             callback(messages);
         }, (error) => {
             console.log("Error listening to messages:", error);
@@ -44,7 +43,6 @@ export const subscribeToThreads = (
             snapshot.forEach((doc) => {
                 threads.push(doc.data() as Thread);
             });
-            console.log("Fetching Threads");
             callback(threads);
         }, (error) => {
             console.log("Error listening to threads:", error);
