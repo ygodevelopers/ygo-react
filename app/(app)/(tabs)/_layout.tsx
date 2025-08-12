@@ -1,63 +1,54 @@
 import { Tabs } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { Dimensions, useWindowDimensions } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { View, Dimensions } from 'react-native';
+import { BottomTabBar } from '@react-navigation/bottom-tabs';
+
+function CustomTabBar(props: any) {
+  const tabBarWidth = 250; // fixed compact size
+  const screenWidth = Dimensions.get('window').width;
+
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: 10,
+        left: (screenWidth - tabBarWidth) / 2, // force center
+        width: tabBarWidth,
+        borderRadius: 20,
+        overflow: 'hidden', // round corners
+        backgroundColor: '#fff',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+      }}
+    >
+      <BottomTabBar {...props} />
+    </View>
+  );
+}
 
 export default function TabLayout() {
-  const { width: screenWidth } = useWindowDimensions();
-  
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerTitleAlign: 'center',
         tabBarActiveTintColor: 'purple',
-
-        headerTitleStyle: {
-          textAlignVertical: 'center',
-          lineHeight: 24,
-          fontSize: 18,
-          height: 50,
-        },
-
-        // Custom tab bar container style
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 10,
-          left: (screenWidth - 250) / 2, // Back to calculated centering
-          width: 250,
-          height: 80,
-          borderRadius: 20,
-          backgroundColor: '#fff',
-          shadowColor: '#000',
-          shadowOpacity: 0.1,
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5,
-          elevation: 10,
-
+          height: 80, // height of the inner bar
         },
-
-        // Center each tab item
-        tabBarItemStyle: {
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 8,
-        },
-
-        // Center the label text
         tabBarLabelStyle: {
           fontSize: 12,
           textAlign: 'center',
           marginTop: 4,
         },
-
-        // Center the icon
         tabBarIconStyle: {
           marginBottom: 0,
         },
-
-        // Ensure the tab bar shows labels
         tabBarShowLabel: true,
       }}
     >
