@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,TextInput, FlatList } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Stack } from "expo-router";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Image } from "expo-image";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {usePillar} from '@/context/pillarContext';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 
@@ -52,7 +50,8 @@ export default function pillarDetail ()  {
           headerLeft: () => (
               <View className="flex-row items-center justify-between">
                   <TouchableOpacity onPress={() => router.back()}>
-                      <Text style={styles.title}>{"<"}Pillars</Text>
+                      <Ionicons name="arrow-back" size={24} color="black" />
+                      <Text style={styles.title}>Pillars</Text>
                   </TouchableOpacity>
               </View>
           ),
