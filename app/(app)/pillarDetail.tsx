@@ -1,17 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,TextInput, FlatList } from 'react-native';
 import { Pillar } from '@/types';
 import { UserList } from "@/components/UserList";
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Stack } from "expo-router";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Image } from "expo-image";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {usePillar} from '@/context/pillarContext';
-
-
-
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function pillarDetail ()  {
 
@@ -33,9 +28,7 @@ export default function pillarDetail ()  {
 
   const router = useRouter();
 
-  console.log("PillarDetail item id: ", currentPillar.id);
   const hasSubPillars = currentPillar.subPillars && currentPillar.subPillars.length > 0;
-  console.log("PillarDetail subpillars: ", hasSubPillars);
   const [modalcontactVisible, setModalContact] = useState(false);
 
   const searchpillarName = (text: string) => {
@@ -52,7 +45,8 @@ export default function pillarDetail ()  {
           headerLeft: () => (
               <View className="flex-row items-center justify-between">
                   <TouchableOpacity onPress={() => router.back()}>
-                      <Text style={styles.title}>{"<"}Pillars</Text>
+                      <Ionicons name="arrow-back" size={24} color="black" />
+                      <Text style={styles.title}>Pillars</Text>
                   </TouchableOpacity>
               </View>
           ),
@@ -128,7 +122,7 @@ export default function pillarDetail ()  {
         )}
       </View>
       <Text style={[styles.title, { alignSelf: 'flex-start',marginLeft:20 }]} >Chats</Text>
-      <View style={styles.container}>
+      <View style={styles.chatContainer}>
         <UserList pillarid={currentPillar.id} />
       </View>
     </>
@@ -138,5 +132,6 @@ export default function pillarDetail ()  {
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center', padding: 10, marginHorizontal: 8 },
   icon: { fontSize: 24 },
+  chatContainer: { flex: 1, padding: 10 },
   title: { fontSize: 24 },
 });

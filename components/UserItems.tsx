@@ -19,7 +19,6 @@ export default function UserItems({ item, router }: { item: Thread, router: Rout
 
     useEffect(() => {
         getUserInfo();
-        console.log(user);
         getPillarInfo();
         setCurrentThread(item);
     }, [item]);
