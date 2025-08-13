@@ -31,7 +31,6 @@ export default function ContactByPillar(){
         const q = query(contactCollection, where('ownerId', '==', user.id),where('pillarId', 'array-contains', currentPillar?.id));
         const qSnapshot = await getDocs(q);
         qSnapshot.forEach((doc) => {
-          console.log("contacts: ",doc.data())
           contactsContainer.push(doc.data() as Contact)
         });
         getUsersFromContacts(contactsContainer);

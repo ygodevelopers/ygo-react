@@ -53,7 +53,6 @@ export default function SingUp() {
         Alert.alert("Error", response.msg);
         return;
       }
-      console.log("sign up user success:");
     } catch (error) {
       console.error("Unexpected error during sign up:", error);
       Alert.alert("Error", "Unexpected error occurred");

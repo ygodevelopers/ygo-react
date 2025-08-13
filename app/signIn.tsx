@@ -25,7 +25,6 @@ export default function SingIn() {
         if (!response.success) {
             console.log("sign in error:", response.msg);
         }
-        console.log("handleLogin user success: ", user);
     }
 
     return (

@@ -29,7 +29,6 @@ export const PillarContextProvider = ({children}) => {
         querySnapshot.forEach(doc => {
             data.push({...doc.data() });
         })
-        console.log("fetch Pillars: ", data);
         setPillars(data);
         setLoading(false);
     }

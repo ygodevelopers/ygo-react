@@ -19,7 +19,6 @@ export default function ConfirmContact() {
 
     useEffect( () => {  
         getContact();
-        console.log(user);
     }, [contactID]);
 
     const getContact = async () => {
